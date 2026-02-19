@@ -5,16 +5,12 @@ import { InventoryGrid } from "@/components/inventory/InventoryGrid";
 import { Button } from "@/components/ui/Button";
 import { GrungeDivider } from "@/components/ui/GrungeDivider";
 import { vehicles } from "@/lib/data";
-import { HomeIntroController } from "@/components/ui/HomeIntroController";
 
 export default function Home() {
   const featuredVehicles = vehicles.slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#1A1A1A]">
-      {/* Animated intro — plays once on first load */}
-      <HomeIntroController />
-
       <SplitScreenHero />
 
       <TrustBar />
