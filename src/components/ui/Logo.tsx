@@ -48,6 +48,7 @@ export function Logo({
             width={width}
             height={height}
             priority
+            style={{ height: "auto" }}
             className={`object-contain ${className}`}
         />
     ) : (
