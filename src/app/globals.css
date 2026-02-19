@@ -1,42 +1,252 @@
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@import "tailwindcss";
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* ─── BRAND COLORS ─────────────────────────────────────────── */
+  --color-brand-yellow: #FFC107;
+  /* Safety Yellow */
+  --color-brand-yellow-dark: #E6AC00;
+  --color-brand-red: #E53935;
+  /* Engine Red */
+  --color-brand-teal: #26C6DA;
+  /* Mechanic Teal */
+
+  /* ─── SEMANTIC MAPPINGS ─────────────────────────────────────── */
+  --color-primary: var(--primary);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+
+  --color-bg-primary: var(--bg-primary);
+  --color-bg-secondary: var(--bg-secondary);
+
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-border: var(--border);
+
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-error: var(--error);
+
+  /* ─── TRUST PALETTE → DARK REMAPPING ───────────────────────── */
+  --color-trust-50: #1E1E1E;
+  --color-trust-100: #252525;
+  --color-trust-200: #2D2D2D;
+  --color-trust-300: #3D3D3D;
+  --color-trust-400: #6B7280;
+  --color-trust-500: #9CA3AF;
+  --color-trust-600: #D1D5DB;
+  --color-trust-700: #E5E7EB;
+  --color-trust-800: #F3F4F6;
+  --color-trust-900: var(--primary);
+  --color-trust-950: #FFFFFF;
+
+  /* ─── ACTION TOKENS ─────────────────────────────────────────── */
+  --color-action-teal: #26C6DA;
+  /* Mechanic Teal */
+  --color-action-tealHover: #00B8CC;
+  --color-action-yellow: #FFC107;
+  /* Safety Yellow */
+  --color-action-red: #E53935;
+  /* Engine Red */
+
+  /* ─── NEXT.JS COMPAT ─────────────────────────────────────────── */
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+
+  /* ─── FONTS ─────────────────────────────────────────────────── */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-heading: var(--font-bebas), "Bebas Neue", Impact, sans-serif;
+  --font-slab: var(--font-roboto-slab), "Roboto Slab", Georgia, serif;
+  --font-mono: var(--font-courier), "Courier Prime", "Courier New", monospace;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* ─── BORDER RADIUS ─────────────────────────────────────────── */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-3xl: 20px;
+  --radius-4xl: 24px;
+
+  /* ─── SHADOWS ────────────────────────────────────────────────── */
+  --shadow-soft: 0 10px 25px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 20px 40px rgba(0, 0, 0, 0.6);
+  --shadow-glow: 0 0 20px rgba(255, 193, 7, 0.25);
+  /* Yellow glow */
+  --shadow-glow-red: 0 0 20px rgba(229, 57, 53, 0.3);
+  /* Red glow */
+
+  /* ─── ANIMATIONS ─────────────────────────────────────────────── */
+  --animate-fade-in: fadeIn 300ms ease-out;
+  --animate-slide-up: slideUp 400ms ease-out;
+  --animate-scale-in: scaleIn 200ms ease-out;
+  --animate-flicker: flicker 4s infinite;
+
+  /* ─── EASINGS ────────────────────────────────────────────────── */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-slower: cubic-bezier(0.33, 1, 0.68, 1);
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+    }
+
+    100% {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    0% {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+
+    100% {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes scaleIn {
+    0% {
+      transform: scale(0.95);
+      opacity: 0;
+    }
+
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  @keyframes flicker {
+
+    0%,
+    95%,
+    100% {
+      opacity: 1;
+    }
+
+    96% {
+      opacity: 0.85;
+    }
+
+    97% {
+      opacity: 1;
+    }
+
+    98% {
+      opacity: 0.9;
+    }
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+
+    to {
+      transform: translateX(-50%);
+    }
   }
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
+/* ─── BASE VARIABLES — DARK MODE BY DEFAULT ───────────────────────── */
+:root {
+  /* Brand */
+  --primary: #F5F5F5;
+  /* Distressed White — main text / "brand" on dark */
+  --primary-soft: #E0E0E0;
+
+  /* Backgrounds */
+  --bg-primary: #1A1A1A;
+  /* Charcoal Black */
+  --bg-secondary: #252525;
+  /* Slightly lighter panels */
+
+  /* Text */
+  --text-primary: #F5F5F5;
+  --text-muted: #9CA3AF;
+
+  /* Border */
+  --border: #2D2D2D;
+
+  /* Accent = Safety Yellow */
+  --accent: #FFC107;
+  --accent-soft: #FFD54F;
+  --accent-hover: #E6AC00;
+
+  /* Status */
+  --success: #4CAF50;
+  --warning: #FFC107;
+  --error: #E53935;
 }
 
+/* ─── GLOBAL RESET ───────────────────────────────────────────────── */
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+/* ─── UTILITY CLASSES ────────────────────────────────────────────── */
+
+@utility glass {
+  background-color: rgba(26, 26, 26, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
+@utility glass-dark {
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+@utility text-grunge {
+  /* Stamped / eroded text effect */
+  text-shadow:
+    2px 2px 0 rgba(0, 0, 0, 0.6),
+    -1px -1px 0 rgba(255, 255, 255, 0.04),
+    0 0 30px rgba(255, 193, 7, 0.08);
+  filter: contrast(1.05);
+}
+
+@utility scanline {
+  /* Retro CRT scanline overlay */
+  background-image: repeating-linear-gradient(0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.06) 2px,
+      rgba(0, 0, 0, 0.06) 4px);
+}
+
+@utility hazard-stripe {
+  /* Yellow/black hazard tape diagonal stripes */
+  background-image: repeating-linear-gradient(-45deg,
+      #FFC107,
+      #FFC107 10px,
+      #1A1A1A 10px,
+      #1A1A1A 20px);
+}
+
+@utility text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@utility hover-lift {
+  transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    transform: translateY(-4px);
   }
+}
+
+@utility tabular-nums {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
 }
