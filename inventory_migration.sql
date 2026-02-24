@@ -56,13 +56,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Mazda'), 'Mazda CX-5') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Mazda'), 'Mazda CX-5', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Mazda CX-5'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Mazda CX-5 XD L Package', 2019, true, 1500000, 50000, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Mazda CX-5 XD L Package', 2019, 3100000, 68000, 'Diesel', 'Automatic', true, 1500000, 50000, 'Premium Mazda CX-5 XD L Package featuring Keyless entry, Full Leather Upholstery, and a Premium Bose Sound System. This diesel 4WD offers a perfect blend of power and luxury.', '{"features": ["Keyless Entry and Start","Full Leather Upholstery","Bose Sound System","Power Boot","360 Bird's Eye Camera","Adaptive Cruise Control","Heated Steering Wheel"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/mazda-cx5/1.jpeg', true, 0);
@@ -96,13 +96,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Landcruiser Prado') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Landcruiser Prado', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Landcruiser Prado'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Landcruiser Prado TX.L', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Landcruiser Prado TX.L', 2019, 8000000, 72000, 'Diesel', 'Automatic', false, 0, 0, 'Rugged yet refined Landcruiser Prado TX.L with 7 leather seats, Sunroof, and 360-degree camera. Ideal for Kenyan terrain with superior comfort.', '{"features": ["7 Leather Seats","360 Degree Camera","Sunroof","Body Kit","LED Headlights","Multifunctional Steering"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/toyota-prado/1.jpeg', true, 0);
@@ -136,13 +136,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Mercedes-Benz'), 'Mercedes Benz') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Mercedes-Benz'), 'Mercedes Benz', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Mercedes Benz'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Mercedes Benz GLC220d', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Mercedes Benz GLC220d', 2019, 5800000, 83000, 'Diesel', 'Automatic', false, 0, 0, 'Luxury SUV Mercedes Benz GLC220d featuring a panoramic sunroof and premium leather interior. Excellent diesel efficiency with German engineering.', '{"features": ["Sunroof","Leather Interior","New Registration","Diesel Efficiency","Luxury Upholstery"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/mercedez-glc/1.jpeg', true, 0);
@@ -178,13 +178,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Subaru'), 'Subaru Forester') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Subaru'), 'Subaru Forester', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Subaru Forester'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Subaru Forester', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Subaru Forester', 2019, 3400000, 45000, 'Petrol', 'Automatic', false, 0, 0, 'Versatile and reliable Subaru Forester with full leather electric seats and 360-degree camera system. Perfect for family adventures.', '{"features": ["Leather Seats","Electric Seats","360 Camera","Alloy Rims","Fog Lights","Multifunctional Steering"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/subaru-forester/1.jpeg', true, 0);
@@ -292,13 +292,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Toyota Fielder') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Toyota Fielder', 'sedan') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Toyota Fielder'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Toyota Fielder WXB', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Toyota Fielder WXB', 2019, 1850000, 85000, 'Petrol', 'Automatic', false, 0, 0, 'Sleek Toyota Fielder WXB (non-hybrid) with leather seats and low mileage. A reliable and stylish choice for city and long-distance driving.', '{"features": ["Leather Seats","Alloy Wheels","Fog Lights","Low Mileage","Non-Hybrid Engine"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/toyota-fielder/1.jpeg', true, 0);
@@ -322,13 +322,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Toyota Harrier') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Toyota'), 'Toyota Harrier', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Toyota Harrier'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Toyota Harrier Hybrid Premium', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Toyota Harrier Hybrid Premium', 2019, 4200000, 76000, 'Hybrid', 'Automatic', false, 0, 0, 'Eco-friendly Toyota Harrier Hybrid Premium Grade. Features top-tier JBL sound system, powered leather seats, and advanced cruise control.', '{"features": ["JBL Sound System","Powered Leather Seats","Powered Boot","Multifunctional Cruise Control","Hybrid Efficiency"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/toyota-harrier/1.jpeg', true, 0);
@@ -376,13 +376,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Volvo'), 'Volvo XC-90') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Volvo'), 'Volvo XC-90', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Volvo XC-90'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2019 Volvo XC-90 T5', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2019 Volvo XC-90 T5', 2019, 6500000, 55000, 'Petrol', 'Automatic', false, 0, 0, 'Scandinavian luxury with natural wood accents and Harman Kardon sound. This Volvo XC-90 T5 includes a 360° Surround-View Camera and 7 electric leather seats.', '{"features": ["7 Electric Leather Seats","Natural Wood Accents","Harman Kardon Sound","360° Surround-View Camera","Heads Up Display","AWD"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/volvo-xc90-2019/1.jpeg', true, 0);
@@ -432,13 +432,13 @@ DECLARE
   v_model_id UUID;
   v_car_id UUID;
 BEGIN
-  INSERT INTO models (brand_id, name) VALUES ((SELECT id FROM brands WHERE name = 'Volvo'), 'Volvo XC90') 
+  INSERT INTO models (brand_id, name, body_type) VALUES ((SELECT id FROM brands WHERE name = 'Volvo'), 'Volvo XC90', 'suv') 
      ON CONFLICT DO NOTHING RETURNING id INTO v_model_id;
   IF v_model_id IS NULL THEN 
     SELECT id INTO v_model_id FROM models WHERE name = 'Volvo XC90'; 
   END IF;
-  INSERT INTO cars (model_id, title, year, hire_purchase_available, min_deposit, monthly_payment, status)
-  VALUES (v_model_id, '2022 Volvo XC90 B6 AWD Inscription', 2019, false, 0, 0, 'available')
+  INSERT INTO cars (model_id, title, year, price, mileage, fuel_type, transmission, hire_purchase_available, min_deposit, monthly_payment, description, specifications, status)
+  VALUES (v_model_id, '2022 Volvo XC90 B6 AWD Inscription', 2022, 11500000, 53530, 'Petrol', 'Automatic', false, 0, 0, 'Top-of-the-line 2022 Volvo XC90 Inscription with Air Suspension. Features a panoramic sunroof, 7-seater capacity, and advanced TV Navigation.', '{"features": ["Air Suspension","Inscription Trim","7 Seater","Sunroof","TV Navigation","Privacy Glass","Smart Key"]}', 'available')
   RETURNING id INTO v_car_id;
   INSERT INTO car_images (car_id, image_url, is_primary, sort_order)
   VALUES (v_car_id, '/images/inventory/volvo-xc90-2022/1.jpeg', true, 0);
