@@ -44,6 +44,7 @@ export function mapSupabaseToVehicle(car: any): Vehicle {
 }
 
 export async function getVehicles() {
+    console.log('Fetching vehicles from Supabase...');
     const { data, error } = await supabase
         .from('cars')
         .select(`
@@ -65,10 +66,11 @@ export async function getVehicles() {
         .order('created_at', { ascending: false });
 
     if (error) {
-        console.error('Error fetching vehicles:', error);
+        console.error('Supabase Error (getVehicles):', error);
         return [];
     }
 
+    console.log(`Successfully fetched ${data?.length || 0} vehicles.`);
     return (data || []).map(mapSupabaseToVehicle);
 }
 
