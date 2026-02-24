@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
+import { Facebook, Instagram, Youtube, MessageCircle, Music } from "lucide-react";
 
 export function Footer() {
     return (
@@ -22,6 +23,23 @@ export function Footer() {
                             Premier Digital Showroom.<br />
                             Mombasa, Kenya.
                         </p>
+                        <div className="flex gap-4 mt-6">
+                            <Link href="https://tiktok.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="TikTok">
+                                <Music className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://instagram.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Instagram">
+                                <Instagram className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://wa.me/254722511803" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="WhatsApp">
+                                <MessageCircle className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://facebook.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Facebook">
+                                <Facebook className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://youtube.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="YouTube">
+                                <Youtube className="w-5 h-5" />
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Shop */}
@@ -53,12 +71,14 @@ export function Footer() {
                         <h4 className="font-heading uppercase tracking-widest text-[#F5F5F5] mb-4 text-lg">
                             Contact
                         </h4>
-                        <p className="font-slab text-[#E53935] text-xl font-bold tracking-widest mb-3">
-                            +254 722 511 803
-                        </p>
+                        <Link href="https://wa.me/254722511803" target="_blank" className="group">
+                            <p className="font-slab text-[#E53935] text-xl font-bold tracking-widest mb-3 group-hover:text-[#FFC107] transition-colors">
+                                +254 722 511 803
+                            </p>
+                        </Link>
                         <p className="font-mono text-sm text-[#6B7280] leading-loose">
                             Mombasa, Kenya<br />
-                            info@konastonemotors.com
+                            info@konastoneautos.com
                         </p>
                     </div>
                 </div>
@@ -66,7 +86,7 @@ export function Footer() {
                 {/* Bottom bar */}
                 <div className="mt-12 pt-6 border-t border-[#2D2D2D] flex flex-col md:flex-row justify-between items-center gap-4">
                     <p className="font-mono text-xs text-[#4B5563] tracking-widest uppercase">
-                        &copy; {new Date().getFullYear()} Konastone Motors. All rights reserved.
+                        &copy; {new Date().getFullYear()} Konastone Autos. All rights reserved.
                     </p>
                     <div className="h-[2px] w-24 hazard-stripe opacity-60 rounded" />
                 </div>

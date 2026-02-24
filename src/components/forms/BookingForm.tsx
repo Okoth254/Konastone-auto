@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { supabase } from "@/lib/supabase";
 import {
     useFormField,
     FormItem,
@@ -46,8 +47,24 @@ export function BookingForm({ vehicleName, vehicleId }: { vehicleName: string, v
 
     async function onSubmit(data: BookingFormData) {
         setIsSubmitting(true)
-        // Simulate API call
-        await new Promise((resolve) => setTimeout(resolve, 2000))
+
+        const { error } = await (supabase
+            .from('purchase_inquiries') as any)
+            .insert({
+                car_id: vehicleId,
+                full_name: user?.name || "Anonymous Client",
+                phone: "0700000000",
+                email: user?.email || null,
+                message: `Booking Test Drive for ${vehicleName}. Preferred Date: ${data.date.toDateString()}, Time: ${data.time}, Location: ${data.location}. Notes: ${data.notes || 'None'}`,
+                inquiry_status: 'new'
+            });
+
+        if (error) {
+            console.error('Submission error:', error);
+            toast.error("Failed to book test drive. Please try again or contact us via WhatsApp.");
+            setIsSubmitting(false);
+            return;
+        }
 
         addBooking({
             id: Math.random().toString(36).substr(2, 9),
@@ -57,8 +74,8 @@ export function BookingForm({ vehicleName, vehicleId }: { vehicleName: string, v
             status: 'Pending'
         });
 
-        toast.success("Test Drive Booked!", {
-            description: `We've confirmed your appointment for ${data.vehicleName} on ${data.date.toDateString()}.`,
+        toast.success("Interest Captured!", {
+            description: `We've received your inquiry for the ${vehicleName}. Our sales team will contact you shortly to confirm the appointment.`,
         });
 
         setIsSubmitting(false)

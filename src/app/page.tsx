@@ -4,10 +4,11 @@ import { TrustBar } from "@/components/home/TrustBar";
 import { InventoryGrid } from "@/components/inventory/InventoryGrid";
 import { Button } from "@/components/ui/Button";
 import { GrungeDivider } from "@/components/ui/GrungeDivider";
-import { vehicles } from "@/lib/data";
+import { getVehicles } from "@/lib/data";
 
-export default function Home() {
-  const featuredVehicles = vehicles.slice(0, 3);
+export default async function Home() {
+  const allVehicles = await getVehicles();
+  const featuredVehicles = allVehicles.slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#1A1A1A]">
@@ -36,7 +37,7 @@ export default function Home() {
         <InventoryGrid vehicles={featuredVehicles} mode="buy" />
       </section>
 
-      <GrungeDivider height={6} opacity={40} label="Konastone Motors" />
+      <GrungeDivider height={6} opacity={40} label="Konastone Autos" />
 
       {/* ─── CTA BANNER ─────────────────────────────────────── */}
       <section className="bg-[#111111] py-20">

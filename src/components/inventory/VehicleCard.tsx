@@ -26,9 +26,16 @@ export function VehicleCard({ vehicle, mode }: VehicleCardProps) {
 
             {/* Image Container */}
             <div className="relative h-52 w-full overflow-hidden bg-[#111111]">
-                {/* Placeholder */}
-                <div className="w-full h-full flex items-center justify-center transition-transform duration-500 group-hover:scale-105">
-                    <div className="text-[#2D2D2D] font-heading text-4xl uppercase tracking-widest select-none">
+                {/* Image */}
+                <img
+                    src={vehicle.images[0]}
+                    alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
+                {/* Secondary Brand Layer (reveals on hover) */}
+                <div className="absolute inset-0 bg-[#0D0D0D]/40 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                    <div className="text-[#FFC107]/20 font-heading text-4xl uppercase tracking-[0.3em] select-none">
                         {vehicle.make}
                     </div>
                 </div>

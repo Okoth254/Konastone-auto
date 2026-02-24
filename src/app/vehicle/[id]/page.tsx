@@ -1,4 +1,4 @@
-import { vehicles } from "@/lib/data";
+import { getVehicles, getVehicleById } from "@/lib/data";
 import { MediaGallery } from "@/components/vehicle/MediaGallery";
 import { HPCalculator } from "@/components/vehicle/HPCalculator";
 import { Button } from "@/components/ui/Button";
@@ -6,14 +6,31 @@ import { cn } from "@/lib/utils";
 import { Check, Shield, TrendingUp } from "lucide-react";
 import { BookingForm } from "@/components/forms/BookingForm";
 
-export default function VehicleDetailPage({
+import { type Metadata } from "next";
+
+export async function generateMetadata(
+    { params }: { params: { id: string } }
+): Promise<Metadata> {
+    const vehicle = await getVehicleById(params.id);
+    if (!vehicle) return { title: "Vehicle Not Found" };
+
+    return {
+        title: `${vehicle.year} ${vehicle.make} ${vehicle.model} for Sale in Mombasa | Konastone Autos`,
+        description: `Buy this ${vehicle.year} ${vehicle.make} ${vehicle.model} in Mombasa. Mileage: ${vehicle.mileage.toLocaleString()}km. Cash price: KES ${vehicle.price.toLocaleString()}. Hire purchase available.`,
+        openGraph: {
+            images: [vehicle.images[0]],
+        },
+    };
+}
+
+export default async function VehicleDetailPage({
     params,
     searchParams
 }: {
     params: { id: string };
     searchParams: { mode?: string };
 }) {
-    const vehicle = vehicles.find((v) => v.id === params.id);
+    const vehicle = await getVehicleById(params.id);
     const mode = searchParams.mode === "buy" ? "buy" : "hire";
 
     if (!vehicle) {
@@ -24,6 +41,29 @@ export default function VehicleDetailPage({
         );
     }
 
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+        "image": `https://konastoneautos.com${vehicle.images[0]}`,
+        "description": `Premium ${vehicle.category} with ${vehicle.transmission} transmission and ${vehicle.fuelType} engine.`,
+        "brand": {
+            "@type": "Brand",
+            "name": vehicle.make
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `https://konastoneautos.com/vehicle/${vehicle.id}`,
+            "priceCurrency": "KES",
+            "price": vehicle.price,
+            "availability": "https://schema.org/InStock",
+            "seller": {
+                "@type": "CarDealer",
+                "name": "Konastone Autos"
+            }
+        }
+    };
+
     const isHire = mode === "hire";
 
     const formatCurrency = (n: number) =>
@@ -31,6 +71,10 @@ export default function VehicleDetailPage({
 
     return (
         <div className="min-h-screen bg-[#1A1A1A] pb-20">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
 
             {/* Breadcrumb */}
             <div className="bg-[#111111] border-b border-[#2D2D2D] py-4">
@@ -71,17 +115,25 @@ export default function VehicleDetailPage({
                             </div>
 
                             {/* Editorial copy */}
-                            <div className="space-y-4 font-mono text-sm text-[#9CA3AF] leading-relaxed">
-                                <h2 className="font-heading text-2xl uppercase text-[#F5F5F5]">Vehicle Overview</h2>
-                                <p>
-                                    Experience the pinnacle of automotive engineering with this {vehicle.year} {vehicle.make} {vehicle.model}.
-                                    Meticulously maintained and offering a perfect balance of performance and comfort, this vehicle represents
-                                    a smart investment for the discerning driver.
-                                </p>
-                                <p>
-                                    Highlighted features include premium interior finishes, advanced safety systems, and a responsive {vehicle.fuelType} engine
-                                    that delivers efficiency without compromise.
-                                </p>
+                            <div className="space-y-8 font-mono text-sm text-[#9CA3AF] leading-relaxed">
+                                <div>
+                                    <h2 className="font-heading text-2xl uppercase text-[#F5F5F5] mb-4">Vehicle Overview</h2>
+                                    <p>
+                                        {vehicle.description}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <h3 className="font-heading text-xl uppercase text-[#F5F5F5] mb-4">Key Features</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 gap-x-8">
+                                        {vehicle.features.map((feature) => (
+                                            <div key={feature} className="flex items-center gap-3">
+                                                <Check className="w-4 h-4 text-[#FFC107] flex-shrink-0" />
+                                                <span className="text-[#D1D5DB]">{feature}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

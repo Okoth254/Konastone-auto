@@ -137,7 +137,7 @@ export default function CheckoutPage() {
                             <h2 className="font-heading text-3xl uppercase text-[#F5F5F5]">Review Terms</h2>
                             <div className="bg-[#111111] border border-[#2D2D2D] p-6 h-64 overflow-y-auto text-sm text-[#9CA3AF] font-mono leading-relaxed">
                                 <p><strong className="text-[#F5F5F5]">1. HIRE PURCHASE AGREEMENT</strong></p>
-                                <p className="mt-2">This agreement is made between Konastone Motors ("Owner") and the Customer ("Hirer")...</p>
+                                <p className="mt-2">This agreement is made between Konastone Autos ("Owner") and the Customer ("Hirer")...</p>
                                 <p className="mt-2"><strong className="text-[#F5F5F5]">2. PAYMENT SCHEDULE</strong></p>
                                 <p>The Hirer agrees to pay the monthly installments as specified in the schedule...</p>
                                 <p className="mt-2"><strong className="text-[#F5F5F5]">3. OWNERSHIP TRANSFER</strong></p>

@@ -7,6 +7,7 @@ import { MobileNav } from "@/components/layout/MobileNav";
 import { Chatbot } from "@/components/layout/Chatbot";
 import { ActivityFeed } from "@/components/dashboard/ActivityFeed";
 import { Toaster } from "@/components/ui/sonner";
+import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,8 +36,18 @@ const courierPrime = Courier_Prime({
 });
 
 export const metadata: Metadata = {
-  title: "Konastone Motors — Mombasa's Premier Dealership",
-  description: "Premium cars in Mombasa. Cash, hire purchase & trade-ins available. Call +254 722 511 803.",
+  title: "Konastone Autos — Best Cars for Sale in Mombasa, Kenya",
+  description: "Buy premium cars in Mombasa at Konastone Autos. Cash, hire purchase & trade-ins available. Wide range of SUV, Sedan, and Hatchbacks in Kenya. Call +254 722 511 803.",
+  keywords: ["cars for sale Mombasa", "car dealership Kenya", "hire purchase cars Mombasa", "used cars Kenya", "Konastone Autos", "Mombasa car showroom"],
+  authors: [{ name: "Konastone Autos" }],
+  openGraph: {
+    title: "Konastone Autos — Best Cars for Sale in Mombasa, Kenya",
+    description: "Premium car dealership in Mombasa. Flexible hire purchase and cash deals.",
+    url: "https://konastoneautos.com",
+    siteName: "Konastone Autos",
+    locale: "en_KE",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -44,8 +55,56 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CarDealer",
+    "name": "Konastone Autos",
+    "image": "https://konastoneautos.com/logo.svg",
+    "@id": "https://konastoneautos.com",
+    "url": "https://konastoneautos.com",
+    "telephone": "+254722511803",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Mombasa Island",
+      "addressLocality": "Mombasa",
+      "addressRegion": "Coast",
+      "postalCode": "80100",
+      "addressCountry": "KE"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -4.0435,
+      "longitude": 39.6682
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+      ],
+      "opens": "08:00",
+      "closes": "18:00"
+    },
+    "sameAs": [
+      "https://facebook.com",
+      "https://instagram.com",
+      "https://tiktok.com",
+      "https://youtube.com"
+    ]
+  };
+
   return (
     <html lang="en">
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
       <body
         className={`
           ${inter.variable}
@@ -63,6 +122,7 @@ export default function RootLayout({
         <MobileNav />
         <Chatbot />
         <ActivityFeed />
+        <WhatsAppButton />
         <Toaster />
       </body>
     </html>

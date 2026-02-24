@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/Button";
+import { TradeInForm } from "@/components/forms/TradeInForm";
 import { Banknote, ShieldCheck, Car } from "lucide-react";
 
 export default function SellPage() {
@@ -9,7 +10,7 @@ export default function SellPage() {
 
             {/* Hero */}
             <section className="relative py-20 lg:py-32 overflow-hidden">
-                {/* Hazard stripe top accent */}
+                {/* ... (existing hero content) ... */}
                 <div
                     className="absolute top-0 left-0 right-0 h-[6px]"
                     style={{ backgroundImage: "repeating-linear-gradient(-45deg,#FFC107,#FFC107 8px,#1A1A1A 8px,#1A1A1A 16px)" }}
@@ -28,7 +29,9 @@ export default function SellPage() {
                             Get a competitive offer for your vehicle instantly. No haggle, no hassle. We handle all the paperwork and settlement.
                         </p>
                         <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
-                            <Button size="lg">Get Instant Offer</Button>
+                            <a href="#trade-form">
+                                <Button size="lg">Get Instant Offer</Button>
+                            </a>
                             <Button size="lg" variant="outline">How it Works</Button>
                         </div>
                     </div>
@@ -36,7 +39,7 @@ export default function SellPage() {
             </section>
 
             {/* Features Grid */}
-            <section className="py-16 bg-[#111111]">
+            <section className="py-16 bg-[#111111] border-y border-[#2D2D2D]">
                 <div className="container mx-auto px-4">
                     <div className="grid md:grid-cols-3 gap-4">
                         {[
@@ -61,9 +64,8 @@ export default function SellPage() {
                         ].map((feature) => (
                             <div
                                 key={feature.title}
-                                className="p-8 bg-[#1E1E1E] border border-[#2D2D2D] hover:border-[#FFC107]/30 transition-colors group relative overflow-hidden"
+                                className="p-8 bg-[#1A1A1A] border border-[#2D2D2D] hover:border-[#FFC107]/30 transition-colors group relative overflow-hidden"
                             >
-                                {/* Left color accent bar on hover */}
                                 <div
                                     className="absolute top-0 left-0 bottom-0 w-0 group-hover:w-[3px] transition-all duration-300"
                                     style={{ backgroundColor: feature.color }}
@@ -80,6 +82,23 @@ export default function SellPage() {
                         ))}
                     </div>
                 </div>
+            </section>
+
+            {/* Submission Form Section */}
+            <section id="trade-form" className="py-24 relative overflow-hidden">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-4xl mx-auto">
+                        <div className="mb-12 text-center space-y-4">
+                            <p className="font-mono text-[10px] text-[#FFC107] uppercase tracking-[0.3em]">Vehicle Intake</p>
+                            <h2 className="font-heading text-4xl lg:text-5xl uppercase text-[#F5F5F5]">Ready to start?</h2>
+                            <p className="font-mono text-xs text-[#4B5563] uppercase">Complete the form below and our team will get back to you within 24 hours.</p>
+                        </div>
+                        <TradeInForm />
+                    </div>
+                </div>
+
+                {/* Background decorative element */}
+                <div className="absolute -bottom-24 -right-24 w-96 h-96 border border-[#FFC107]/5 rounded-full pointer-events-none" />
             </section>
         </div>
     );

@@ -15,7 +15,7 @@ import Link from "next/link";
 // Logo image is live — /public/logo.svg is present
 const USE_IMAGE = true;
 const LOGO_SRC = "/logo.svg";
-const LOGO_ALT = "Konastone Motors";
+const LOGO_ALT = "Konastone Autos";
 
 interface LogoProps {
     /** Controls the rendered size of the image logo (ignored for text variant) */

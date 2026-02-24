@@ -47,6 +47,7 @@ export function SplitScreenHero() {
                         {/* Big Headline */}
                         <motion.h1 variants={itemVariants}
                             className="font-heading text-grunge text-7xl lg:text-[100px] leading-[0.95] tracking-tight text-[#F5F5F5] uppercase">
+                            <span className="sr-only">Premium Cars for Sale in Mombasa - Konastone Autos Kenya</span>
                             Drive Now.{" "}
                             <br />
                             <span className="text-[#FFC107]">Pay Over</span>

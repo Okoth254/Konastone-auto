@@ -8,6 +8,8 @@ import { useStore } from "@/lib/store";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { supabase } from "@/lib/supabase";
+
 interface HPCalculatorProps {
     vehicle: Vehicle;
 }
@@ -31,7 +33,26 @@ export function HPCalculator({ vehicle }: HPCalculatorProps) {
     const { addFinanceApp, user } = useStore();
     const router = useRouter();
 
-    const handleStartApplication = () => {
+    const handleStartApplication = async () => {
+        const { error } = await (supabase
+            .from('hire_purchase_applications') as any)
+            .insert({
+                car_id: vehicle.id,
+                full_name: user?.name || "Anonymous Applicant",
+                phone: "0700000000", // Placeholder
+                email: user?.email || null,
+                deposit_amount: deposit,
+                requested_duration: term,
+                monthly_income: 0, // Placeholder
+                application_status: 'pending'
+            });
+
+        if (error) {
+            console.error('HP Submission error:', error);
+            toast.error("Failed to start application. Please check your connection.");
+            return;
+        }
+
         addFinanceApp({
             id: Math.random().toString(36).substr(2, 9),
             vehicleId: vehicle.id,
@@ -42,8 +63,9 @@ export function HPCalculator({ vehicle }: HPCalculatorProps) {
             status: "Review",
             date: new Date().toDateString(),
         });
-        toast.success("Application Started", {
-            description: "Redirecting to your secure finance dashboard...",
+
+        toast.success("Application Received", {
+            description: "We've received your financing request. Redirecting to your dashboard...",
             duration: 2000,
         });
         setTimeout(() => router.push("/account"), 1500);

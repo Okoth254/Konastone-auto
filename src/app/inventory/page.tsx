@@ -4,13 +4,32 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { InventoryGrid } from "@/components/inventory/InventoryGrid";
 import { InventoryFilters } from "@/components/inventory/InventoryFilters";
-import { vehicles } from "@/lib/data";
+import { getVehicles, type Vehicle } from "@/lib/data";
 import { cn } from "@/lib/utils";
+import { useEffect } from "react";
 
 function InventoryContent() {
     const searchParams = useSearchParams();
     const initialMode = searchParams.get("mode") === "buy" ? "buy" : "hire";
     const [mode, setMode] = useState<"hire" | "buy">(initialMode);
+    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+
+    useEffect(() => {
+        getVehicles().then(setVehicles);
+    }, []);
+
+    // Filter states
+    const [maxPrice, setMaxPrice] = useState<number>(10000000);
+    const [maxMileage, setMaxMileage] = useState<number>(200000);
+    const [minYear, setMinYear] = useState<number>(2010);
+
+    const filteredVehicles = vehicles.filter((v) => {
+        const matchesMode = mode === "hire" ? v.hirePurchaseAvailable : true;
+        const matchesPrice = v.price <= maxPrice;
+        const matchesMileage = v.mileage <= maxMileage;
+        const matchesYear = v.year >= minYear;
+        return matchesMode && matchesPrice && matchesMileage && matchesYear;
+    });
 
     return (
         <div className="min-h-screen bg-[#1A1A1A] flex flex-col">
@@ -50,8 +69,16 @@ function InventoryContent() {
             </div>
 
             <div className="container mx-auto px-4 py-8 flex items-start gap-8">
-                <InventoryFilters mode={mode} />
-                <InventoryGrid vehicles={vehicles} mode={mode} />
+                <InventoryFilters
+                    mode={mode}
+                    maxPrice={maxPrice}
+                    setMaxPrice={setMaxPrice}
+                    maxMileage={maxMileage}
+                    setMaxMileage={setMaxMileage}
+                    minYear={minYear}
+                    setMinYear={setMinYear}
+                />
+                <InventoryGrid vehicles={filteredVehicles} mode={mode} />
             </div>
         </div>
     );

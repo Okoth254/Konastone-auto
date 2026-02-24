@@ -4,16 +4,18 @@ import { useState, useEffect } from "react";
 import { Command } from "cmdk";
 import { Search, Car, HelpCircle, ArrowRight, X } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { vehicles } from "@/lib/data";
+import { getVehicles, type Vehicle } from "@/lib/data";
 
-interface SearchModalProps {
-    isOpen: boolean;
-    onClose: () => void;
-}
-
-export function SearchModal({ isOpen, onClose }: SearchModalProps) {
+export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
     const router = useRouter();
-    const [search, setSearch] = useState("");
+    const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    useEffect(() => {
+        if (isOpen) {
+            getVehicles().then(setVehicles);
+        }
+    }, [isOpen]);
 
     // Toggle scroll lock
     useEffect(() => {
@@ -26,16 +28,21 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
 
     if (!isOpen) return null;
 
-    const filteredVehicles = vehicles.filter(v =>
-        `${v.make} ${v.model}`.toLowerCase().includes(search.toLowerCase()) ||
-        v.make.toLowerCase().includes(search.toLowerCase())
-    );
+    const filteredVehicles = searchQuery === ""
+        ? []
+        : vehicles.filter((v) =>
+            `${v.make} ${v.model}`.toLowerCase().includes(searchQuery.toLowerCase())
+        );
 
-    const helpTopics = [
-        { label: "How Hire Purchase Works", href: "/help" },
-        { label: "Trade-in process", href: "/sell" },
-        { label: "Contact Support", href: "/help" },
-    ].filter(t => t.label.toLowerCase().includes(search.toLowerCase()));
+    // Filter help topics (simplified mock)
+    const filteredHelp = searchQuery === ""
+        ? []
+        : [
+            "How to apply for finance?",
+            "What is hire purchase?",
+            "Exporting cars to Kenya",
+            "Mombasa showroom location"
+        ].filter(topic => topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
     const handleSelect = (href: string) => {
         router.push(href);
@@ -43,86 +50,85 @@ export function SearchModal({ isOpen, onClose }: SearchModalProps) {
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[10vh] px-4">
-            <div
-                className="absolute inset-0 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
-                onClick={onClose}
-            />
-
-            <div className="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200 ring-1 ring-gray-200">
-                <div className="flex items-center px-4 border-b border-gray-100">
-                    <Search className="w-5 h-5 text-gray-400 mr-3" />
-                    <input
+        <Command.Dialog
+            open={isOpen}
+            onOpenChange={(open) => {
+                if (!open) onClose();
+            }}
+            label="Search cars and guides"
+            className="fixed inset-0 z-[100] p-4 pt-[15vh] overflow-y-auto bg-[#0D0D0D]/90 backdrop-blur-sm animate-in fade-in duration-300"
+        >
+            <div className="mx-auto max-w-2xl w-full bg-[#1A1A1A] border border-[#2D2D2D] shadow-2xl overflow-hidden rounded-lg">
+                <div className="flex items-center px-4 border-b border-[#2D2D2D]">
+                    <Search className="w-5 h-5 text-[#4B5563]" />
+                    <Command.Input
                         autoFocus
-                        placeholder="Search vehicles, help topics..."
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        className="flex-1 h-14 outline-none text-lg placeholder:text-gray-400"
+                        placeholder="Search cars, financing, guides..."
+                        value={searchQuery}
+                        onValueChange={setSearchQuery}
+                        className="w-full h-14 bg-transparent border-none text-trust-100 placeholder:text-[#4B5563] focus:ring-0 font-mono text-sm"
                     />
-                    <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-lg text-gray-400">
+                    <button onClick={onClose} className="p-2 hover:bg-[#262626] rounded-lg text-[#4B5563] transition-colors">
                         <X className="w-5 h-5" />
                     </button>
                 </div>
 
-                <div className="max-h-[60vh] overflow-y-auto p-2">
-                    {filteredVehicles.length === 0 && helpTopics.length === 0 && (
-                        <div className="py-12 text-center text-gray-500">
-                            No results found.
-                        </div>
-                    )}
+                <div className="max-h-[60vh] overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-[#2D2D2D]">
+                    <Command.List>
+                        <Command.Empty className="py-12 text-center text-[#4B5563] font-mono text-xs uppercase tracking-widest">
+                            No matching items found.
+                        </Command.Empty>
 
-                    {filteredVehicles.length > 0 && (
-                        <div className="mb-4">
-                            <h3 className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Vehicles</h3>
-                            <div className="space-y-1">
+                        {filteredVehicles.length > 0 && (
+                            <Command.Group heading={<span className="px-3 py-2 text-[10px] font-mono font-semibold text-[#4B5563] uppercase tracking-wider block">Vehicles</span>}>
                                 {filteredVehicles.map(v => (
-                                    <button
+                                    <Command.Item
                                         key={v.id}
-                                        onClick={() => handleSelect(`/vehicle/${v.id}`)}
-                                        className="w-full flex items-center justify-between px-3 py-3 rounded-xl hover:bg-gray-50 group transition-colors text-left"
+                                        onSelect={() => handleSelect(`/vehicle/${v.id}`)}
+                                        className="w-full flex items-center justify-between px-3 py-3 rounded-lg hover:bg-[#262626] aria-selected:bg-[#262626] group transition-colors text-left cursor-pointer"
                                     >
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-lg bg-gray-100 overflow-hidden shrink-0">
-                                                <img src={v.image} alt={`${v.year} ${v.make} ${v.model}`} className="w-full h-full object-cover" />
+                                            <div className="w-12 h-12 rounded bg-[#0D0D0D] border border-[#2D2D2D] overflow-hidden shrink-0">
+                                                <img src={v.images[0]} alt={`${v.year} ${v.make} ${v.model}`} className="w-full h-full object-cover" />
                                             </div>
                                             <div>
-                                                <p className="font-semibold text-trust-900 group-hover:text-action-teal transition-colors">{v.year} {v.make} {v.model}</p>
-                                                <p className="text-sm text-gray-500">{v.category} • {v.fuelType}</p>
+                                                <p className="font-heading uppercase text-sm text-[#F5F5F5] group-hover:text-[#FFC107] transition-colors">{v.year} {v.make} {v.model}</p>
+                                                <p className="font-mono text-[10px] text-[#4B5563] uppercase">{v.category} • {v.fuelType}</p>
                                             </div>
                                         </div>
-                                        <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-action-teal -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
-                                    </button>
+                                        <ArrowRight className="w-4 h-4 text-[#4B5563] group-hover:text-[#FFC107] -translate-x-2 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all" />
+                                    </Command.Item>
                                 ))}
-                            </div>
-                        </div>
-                    )}
+                            </Command.Group>
+                        )}
 
-                    {helpTopics.length > 0 && (
-                        <div>
-                            <h3 className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">Help & Guide</h3>
-                            <div className="space-y-1">
-                                {helpTopics.map((topic, i) => (
-                                    <button
+                        {filteredHelp.length > 0 && (
+                            <Command.Group heading={<span className="px-3 py-2 text-[10px] font-mono font-semibold text-[#4B5563] uppercase tracking-wider block">Help & Guide</span>}>
+                                {filteredHelp.map((topic, i) => (
+                                    <Command.Item
                                         key={i}
-                                        onClick={() => handleSelect(topic.href)}
-                                        className="w-full flex items-center gap-3 px-3 py-3 rounded-xl hover:bg-gray-50 group text-left"
+                                        onSelect={() => handleSelect('/help')}
+                                        className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-[#262626] aria-selected:bg-[#262626] group text-left cursor-pointer"
                                     >
-                                        <div className="p-2 rounded-lg bg-trust-50 text-trust-600 group-hover:bg-action-teal group-hover:text-white transition-colors">
+                                        <div className="p-2 rounded bg-[#0D0D0D] border border-[#2D2D2D] text-[#4B5563] group-hover:border-[#FFC107]/20 group-hover:text-[#FFC107] transition-colors">
                                             <HelpCircle className="w-4 h-4" />
                                         </div>
-                                        <span className="font-medium text-gray-700 group-hover:text-trust-900">{topic.label}</span>
-                                    </button>
+                                        <span className="font-mono text-xs text-[#9CA3AF] group-hover:text-[#F5F5F5] transition-colors">{topic}</span>
+                                    </Command.Item>
                                 ))}
-                            </div>
-                        </div>
-                    )}
+                            </Command.Group>
+                        )}
+                    </Command.List>
                 </div>
 
-                <div className="bg-gray-50 px-4 py-3 border-t border-gray-100 text-xs text-gray-500 flex justify-between">
-                    <span>Pro tip: Press <kbd className="font-sans px-1.5 py-0.5 rounded bg-white border border-gray-200">⌘K</kbd> to open</span>
-                    <span>Konastone Motors</span>
+                <div className="bg-[#111111] px-4 py-3 border-t border-[#2D2D2D] text-[10px] font-mono text-[#4B5563] uppercase tracking-widest flex justify-between">
+                    <div className="flex gap-4">
+                        <span><kbd className="font-sans px-1.5 py-0.5 rounded bg-[#0D0D0D] border border-[#2D2D2D] text-[#9CA3AF]">↑↓</kbd> Navigate</span>
+                        <span><kbd className="font-sans px-1.5 py-0.5 rounded bg-[#0D0D0D] border border-[#2D2D2D] text-[#9CA3AF]">Enter</kbd> Select</span>
+                    </div>
+                    <span>Konastone Autos</span>
                 </div>
             </div>
-        </div>
+        </Command.Dialog>
     );
 }

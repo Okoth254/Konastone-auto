@@ -37,7 +37,7 @@ export function Chatbot() {
                     <div className="flex-1 p-4 overflow-y-auto space-y-4 bg-gray-50 h-80">
                         <div className="flex justify-start">
                             <div className="bg-white p-3 rounded-2xl rounded-tl-none shadow-sm text-sm text-gray-700 max-w-[80%] border border-gray-100">
-                                Hi there! 👋 Welcome to Konastone Motors. Are you looking to hire purchase or buy directly today?
+                                Hi there! 👋 Welcome to Konastone Autos. Are you looking to hire purchase or buy directly today?
                             </div>
                         </div>
                     </div>
