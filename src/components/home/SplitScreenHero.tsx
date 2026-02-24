@@ -93,11 +93,6 @@ export function SplitScreenHero() {
             {/* ─── RIGHT — DIRECT PURCHASE (40%) ─────────────────────── */}
             <div className="relative w-full lg:w-[40%] h-[40vh] lg:h-full bg-[#1A1A1A] text-white overflow-hidden group">
 
-                {/* Car visual */}
-                <div className="absolute inset-0 flex items-center justify-center opacity-80 transition-transform duration-700 group-hover:scale-105">
-                    <div className="w-[80%] h-[60%] bg-contain bg-no-repeat bg-center bg-[url('/images/studio-car.svg')] opacity-60 mix-blend-luminosity" />
-                </div>
-
                 {/* Vertical Yellow line accent */}
                 <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-transparent via-[#FFC107]/60 to-transparent" />
 
