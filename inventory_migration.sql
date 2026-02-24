@@ -1,6 +1,12 @@
 -- Konastone Autos - Final Database Schema & Inventory Migration
 -- Run this in the Supabase SQL Editor.
 
+-- Drop existing tables to ensure new schema is applied
+DROP TABLE IF EXISTS car_images CASCADE;
+DROP TABLE IF EXISTS cars CASCADE;
+DROP TABLE IF EXISTS models CASCADE;
+DROP TABLE IF EXISTS brands CASCADE;
+
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 CREATE TABLE IF NOT EXISTS brands (

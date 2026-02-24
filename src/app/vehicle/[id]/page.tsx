@@ -9,9 +9,10 @@ import { BookingForm } from "@/components/forms/BookingForm";
 import { type Metadata } from "next";
 
 export async function generateMetadata(
-    { params }: { params: { id: string } }
+    { params }: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
-    const vehicle = await getVehicleById(params.id);
+    const { id } = await params;
+    const vehicle = await getVehicleById(id);
     if (!vehicle) return { title: "Vehicle Not Found" };
 
     return {
@@ -27,11 +28,14 @@ export default async function VehicleDetailPage({
     params,
     searchParams
 }: {
-    params: { id: string };
-    searchParams: { mode?: string };
+    params: Promise<{ id: string }>;
+    searchParams: Promise<{ mode?: string }>;
 }) {
-    const vehicle = await getVehicleById(params.id);
-    const mode = searchParams.mode === "buy" ? "buy" : "hire";
+    const { id } = await params;
+    const { mode: modeParam } = await searchParams;
+
+    const vehicle = await getVehicleById(id);
+    const mode = modeParam === "buy" ? "buy" : "hire";
 
     if (!vehicle) {
         return (
