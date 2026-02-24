@@ -24,10 +24,15 @@ function InventoryContent() {
     const [minYear, setMinYear] = useState<number>(2010);
 
     const filteredVehicles = vehicles.filter((v) => {
-        const matchesMode = mode === "hire" ? v.hirePurchaseAvailable : true;
+        // Mode filtering
+        const matchesMode = mode === "hire"
+            ? v.hirePurchaseAvailable === true
+            : true; // Everything is available for direct purchase
+
         const matchesPrice = v.price <= maxPrice;
         const matchesMileage = v.mileage <= maxMileage;
         const matchesYear = v.year >= minYear;
+
         return matchesMode && matchesPrice && matchesMileage && matchesYear;
     });
 

@@ -36,9 +36,20 @@ const courierPrime = Courier_Prime({
 });
 
 export const metadata: Metadata = {
-  title: "Konastone Autos — Best Cars for Sale in Mombasa, Kenya",
+  title: "Konastone Autos — Premium Car Dealership in Mombasa, Kenya",
   description: "Buy premium cars in Mombasa at Konastone Autos. Cash, hire purchase & trade-ins available. Wide range of SUV, Sedan, and Hatchbacks in Kenya. Call +254 722 511 803.",
-  keywords: ["cars for sale Mombasa", "car dealership Kenya", "hire purchase cars Mombasa", "used cars Kenya", "Konastone Autos", "Mombasa car showroom"],
+  keywords: [
+    "Konastone Autos",
+    "mombasa cars",
+    "kenya cars",
+    "hire purchase cars",
+    "cars for sale Mombasa",
+    "car dealership Kenya",
+    "used cars Kenya",
+    "Mombasa car showroom",
+    "best car dealer mombasa",
+    "buy cars in kenya"
+  ],
   authors: [{ name: "Konastone Autos" }],
   openGraph: {
     title: "Konastone Autos — Best Cars for Sale in Mombasa, Kenya",
