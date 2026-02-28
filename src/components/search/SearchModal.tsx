@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Command } from "cmdk";
-import { Search, Car, HelpCircle, ArrowRight, X } from "lucide-react";
+import { Search, Car, HelpCircle, ArrowRight, X, Tag } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { getVehicles, type Vehicle } from "@/lib/data";
 
@@ -44,6 +44,12 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
             "Mombasa showroom location"
         ].filter(topic => topic.toLowerCase().includes(searchQuery.toLowerCase()));
 
+    // Derived brand quick-filters
+    const availableBrands = useMemo(
+        () => [...new Set(vehicles.map((v) => v.make))].sort(),
+        [vehicles]
+    );
+
     const handleSelect = (href: string) => {
         router.push(href);
         onClose();
@@ -79,6 +85,25 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                             No matching items found.
                         </Command.Empty>
 
+                        {/* Brand Quick Filters — show when no search text */}
+                        {searchQuery === "" && availableBrands.length > 0 && (
+                            <div className="px-3 py-4">
+                                <p className="font-mono text-[10px] text-[#4B5563] uppercase tracking-widest mb-3 flex items-center gap-2">
+                                    <Tag className="w-3 h-3" /> Browse by Brand
+                                </p>
+                                <div className="flex flex-wrap gap-2">
+                                    {availableBrands.map((brand) => (
+                                        <button
+                                            key={brand}
+                                            onClick={() => handleSelect(`/inventory?brand=${encodeURIComponent(brand)}`)}
+                                            className="px-3 py-1.5 bg-[#1A1A1A] border border-[#2D2D2D] font-mono text-[10px] text-[#9CA3AF] uppercase tracking-widest hover:border-[#FFC107]/40 hover:text-[#FFC107] transition-all"
+                                        >
+                                            {brand}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                         {filteredVehicles.length > 0 && (
                             <Command.Group heading={<span className="px-3 py-2 text-[10px] font-mono font-semibold text-[#4B5563] uppercase tracking-wider block">Vehicles</span>}>
                                 {filteredVehicles.map(v => (
@@ -101,6 +126,7 @@ export function SearchModal({ isOpen, onClose }: { isOpen: boolean; onClose: () 
                                 ))}
                             </Command.Group>
                         )}
+
 
                         {filteredHelp.length > 0 && (
                             <Command.Group heading={<span className="px-3 py-2 text-[10px] font-mono font-semibold text-[#4B5563] uppercase tracking-wider block">Help & Guide</span>}>

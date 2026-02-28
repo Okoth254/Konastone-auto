@@ -1,10 +1,7 @@
 import { getVehicles, getVehicleById } from "@/lib/data";
 import { MediaGallery } from "@/components/vehicle/MediaGallery";
-import { HPCalculator } from "@/components/vehicle/HPCalculator";
-import { Button } from "@/components/ui/Button";
-import { cn } from "@/lib/utils";
-import { Check, Shield, TrendingUp } from "lucide-react";
-import { BookingForm } from "@/components/forms/BookingForm";
+import { PaymentOptions } from "@/components/vehicle/PaymentOptions";
+import { Check } from "lucide-react";
 
 import { type Metadata } from "next";
 
@@ -26,16 +23,12 @@ export async function generateMetadata(
 
 export default async function VehicleDetailPage({
     params,
-    searchParams
 }: {
     params: Promise<{ id: string }>;
-    searchParams: Promise<{ mode?: string }>;
 }) {
     const { id } = await params;
-    const { mode: modeParam } = await searchParams;
 
     const vehicle = await getVehicleById(id);
-    const mode = modeParam === "buy" ? "buy" : "hire";
 
     if (!vehicle) {
         return (
@@ -67,8 +60,6 @@ export default async function VehicleDetailPage({
             }
         }
     };
-
-    const isHire = mode === "hire";
 
     const formatCurrency = (n: number) =>
         new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES", maximumFractionDigits: 0 }).format(n).replace(".00", "");
@@ -146,65 +137,28 @@ export default async function VehicleDetailPage({
                     <div className="lg:col-span-4 space-y-6 relative">
                         <div className="sticky top-24 space-y-6">
 
-                            {/* Mode Switcher */}
-                            <div className="flex bg-[#0D0D0D] border border-[#2D2D2D] p-0.5">
-                                <button className={cn(
-                                    "flex-1 py-2.5 font-heading uppercase text-sm tracking-widest transition-all",
-                                    isHire ? "bg-[#FFC107] text-black" : "text-[#4B5563] hover:text-[#9CA3AF]"
-                                )}>
-                                    Hire Purchase
-                                </button>
-                                <button className={cn(
-                                    "flex-1 py-2.5 font-heading uppercase text-sm tracking-widest transition-all",
-                                    !isHire ? "bg-[#E53935] text-white" : "text-[#4B5563] hover:text-[#9CA3AF]"
-                                )}>
-                                    Direct Buy
-                                </button>
-                            </div>
+                            {/* Payment options — Cash / SACCO / Bank */}
+                            <PaymentOptions vehicle={vehicle} />
 
-                            {isHire ? (
-                                vehicle.hirePurchaseAvailable ? (
-                                    <>
-                                        <HPCalculator vehicle={vehicle} />
-                                        {/* Promise card */}
-                                        <div className="bg-[#111111] border border-[#FFC107]/20 p-5">
-                                            <h4 className="font-mono text-[10px] uppercase tracking-widest text-[#6B7280] mb-4">Konastone Promise</h4>
-                                            <ul className="space-y-3 font-mono text-xs text-[#9CA3AF]">
-                                                <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> Comprehensive Insurance</li>
-                                                <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> Real-time Tracking</li>
-                                                <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> 12-Month Warranty</li>
-                                            </ul>
-                                        </div>
-                                    </>
-                                ) : (
-                                    <div className="bg-[#111111] border border-dashed border-[#2D2D2D] p-8 text-center">
-                                        <p className="font-mono text-sm text-[#4B5563] uppercase tracking-widest mb-4">Finance Unavailable</p>
-                                        <Button variant="outline" className="w-full">View Direct Purchase</Button>
-                                    </div>
-                                )
-                            ) : (
-                                /* Direct Buy */
-                                <div className="bg-[#1E1E1E] border border-[#2D2D2D] p-6 space-y-6">
-                                    <div>
-                                        <p className="font-mono text-[10px] text-[#6B7280] uppercase tracking-widest mb-1">Cash Price</p>
-                                        <p className="font-slab text-4xl font-bold text-[#E53935] tabular-nums tracking-tight">
-                                            {formatCurrency(vehicle.price)}
-                                        </p>
-                                    </div>
-
-                                    <BookingForm
-                                        vehicleName={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
-                                        vehicleId={vehicle.id}
-                                    />
-
-                                    <div className="pt-4 border-t border-[#2D2D2D] space-y-3 font-mono text-xs text-[#6B7280]">
-                                        <div className="flex items-center gap-3">
-                                            <Shield className="w-4 h-4 text-[#26C6DA]" /> Verified Clean Title
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            <TrendingUp className="w-4 h-4 text-[#FFC107]" /> Competitive Market Value
-                                        </div>
-                                    </div>
+                            {/* HP Calculator — available when hire purchase is eligible */}
+                            {vehicle.hirePurchaseAvailable && (
+                                <div className="bg-[#111111] border border-[#FFC107]/20 p-5">
+                                    <p className="font-mono text-[10px] uppercase tracking-widest text-[#6B7280] mb-3">Also Available</p>
+                                    <h4 className="font-heading text-lg uppercase text-[#FFC107] mb-2">Hire Purchase</h4>
+                                    <p className="font-mono text-xs text-[#9CA3AF] mb-4 leading-relaxed">
+                                        Drive today, pay monthly. Flexible deposits and repayment terms tailored to your budget.
+                                    </p>
+                                    <ul className="space-y-3 font-mono text-xs text-[#9CA3AF]">
+                                        <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> Comprehensive Insurance Included</li>
+                                        <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> Real-time GPS Tracking</li>
+                                        <li className="flex gap-3"><Check className="w-4 h-4 text-[#26C6DA] flex-shrink-0" /> 12-Month Warranty</li>
+                                    </ul>
+                                    <a
+                                        href={`/vehicle/${vehicle.id}?tab=hp`}
+                                        className="mt-4 block w-full py-3 text-center font-heading uppercase text-sm tracking-widest border border-[#FFC107]/40 text-[#FFC107] hover:bg-[#FFC107] hover:text-black transition-all"
+                                    >
+                                        View HP Calculator
+                                    </a>
                                 </div>
                             )}
                         </div>

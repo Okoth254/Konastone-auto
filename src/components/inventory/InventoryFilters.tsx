@@ -1,6 +1,14 @@
 "use client";
 
-import { SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal, X } from "lucide-react";
+import { cn } from "@/lib/utils";
+
+const CATEGORIES = [
+    { value: "suv", label: "SUV" },
+    { value: "sedan", label: "Sedan" },
+    { value: "hatchback", label: "Hatchback" },
+    { value: "truck", label: "Truck" },
+] as const;
 
 interface InventoryFiltersProps {
     mode: "hire" | "buy";
@@ -10,6 +18,13 @@ interface InventoryFiltersProps {
     setMaxMileage: (val: number) => void;
     minYear: number;
     setMinYear: (val: number) => void;
+    // Brand filter
+    availableBrands: string[];
+    selectedBrands: string[];
+    setSelectedBrands: (brands: string[]) => void;
+    // Category filter
+    selectedCategories: string[];
+    setSelectedCategories: (cats: string[]) => void;
 }
 
 export function InventoryFilters({
@@ -19,23 +34,113 @@ export function InventoryFilters({
     maxMileage,
     setMaxMileage,
     minYear,
-    setMinYear
+    setMinYear,
+    availableBrands,
+    selectedBrands,
+    setSelectedBrands,
+    selectedCategories,
+    setSelectedCategories,
 }: InventoryFiltersProps) {
     const rangeClass = "w-full h-1 bg-[#2D2D2D] appearance-none cursor-pointer accent-[#FFC107] transition-all";
-    const checkClass = "rounded-none accent-[#FFC107]";
     const labelClass = "font-mono text-[10px] text-[#6B7280] uppercase tracking-widest mb-3 block";
     const subLabelClass = "font-mono text-[9px] text-[#4B5563] uppercase tracking-widest";
 
     const formatPrice = (val: number) =>
         new Intl.NumberFormat("en-KE", { style: "currency", currency: "KES", maximumFractionDigits: 0 }).format(val).replace(".00", "");
 
+    const toggleBrand = (brand: string) => {
+        setSelectedBrands(
+            selectedBrands.includes(brand)
+                ? selectedBrands.filter((b) => b !== brand)
+                : [...selectedBrands, brand]
+        );
+    };
+
+    const toggleCategory = (cat: string) => {
+        setSelectedCategories(
+            selectedCategories.includes(cat)
+                ? selectedCategories.filter((c) => c !== cat)
+                : [...selectedCategories, cat]
+        );
+    };
+
+    const hasActiveFilters =
+        selectedBrands.length > 0 ||
+        selectedCategories.length > 0 ||
+        maxPrice < 10000000 ||
+        maxMileage < 200000 ||
+        minYear > 2010;
+
     return (
         <div className="hidden lg:block w-64 flex-shrink-0 space-y-8 pr-8 border-r border-[#2D2D2D]">
-            <div className="flex items-center gap-2 mb-2">
-                <SlidersHorizontal className="w-4 h-4 text-[#FFC107]" />
-                <h3 className="font-heading text-xl uppercase text-[#F5F5F5]">Filters</h3>
+            {/* Header */}
+            <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                    <SlidersHorizontal className="w-4 h-4 text-[#FFC107]" />
+                    <h3 className="font-heading text-xl uppercase text-[#F5F5F5]">Filters</h3>
+                </div>
+                {hasActiveFilters && (
+                    <button
+                        onClick={() => {
+                            setSelectedBrands([]);
+                            setSelectedCategories([]);
+                            setMaxPrice(10000000);
+                            setMaxMileage(200000);
+                            setMinYear(2010);
+                        }}
+                        className="font-mono text-[9px] text-[#E53935] uppercase tracking-widest hover:text-[#FFC107] transition-colors flex items-center gap-1"
+                    >
+                        <X className="w-3 h-3" />
+                        Clear All
+                    </button>
+                )}
             </div>
 
+            {/* ── CATEGORY CHIPS ── */}
+            <div>
+                <label className={labelClass}>Body Type</label>
+                <div className="flex flex-wrap gap-2">
+                    {CATEGORIES.map(({ value, label }) => (
+                        <button
+                            key={value}
+                            onClick={() => toggleCategory(value)}
+                            className={cn(
+                                "px-3 py-1.5 font-heading text-[10px] uppercase tracking-widest border transition-all",
+                                selectedCategories.includes(value)
+                                    ? "bg-[#FFC107] border-[#FFC107] text-black"
+                                    : "bg-[#1A1A1A] border-[#2D2D2D] text-[#4B5563] hover:border-[#FFC107]/40 hover:text-[#9CA3AF]"
+                            )}
+                        >
+                            {label}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* ── BRAND PILLS ── */}
+            {availableBrands.length > 0 && (
+                <div>
+                    <label className={labelClass}>Brand</label>
+                    <div className="flex flex-wrap gap-2">
+                        {availableBrands.map((brand) => (
+                            <button
+                                key={brand}
+                                onClick={() => toggleBrand(brand)}
+                                className={cn(
+                                    "px-3 py-1.5 font-mono text-[10px] uppercase tracking-widest border transition-all",
+                                    selectedBrands.includes(brand)
+                                        ? "bg-[#E53935] border-[#E53935] text-white"
+                                        : "bg-[#1A1A1A] border-[#2D2D2D] text-[#4B5563] hover:border-[#FFC107]/40 hover:text-[#9CA3AF]"
+                                )}
+                            >
+                                {brand}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* ── PRICE / MILEAGE / YEAR (existing, mode-gated) ── */}
             {mode === "hire" && (
                 <div className="space-y-6">
                     <div>
@@ -51,7 +156,7 @@ export function InventoryFilters({
                         <input type="range" className={rangeClass} />
                     </div>
                     <div className="flex items-center gap-2">
-                        <input type="checkbox" id="hp-insurance" className={checkClass} />
+                        <input type="checkbox" id="hp-insurance" className="rounded-none accent-[#FFC107]" />
                         <label htmlFor="hp-insurance" className="font-mono text-xs text-[#9CA3AF]">Insurance Included</label>
                     </div>
                 </div>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { Facebook, Instagram, Youtube, MessageCircle, Music } from "lucide-react";
+import { Facebook, Instagram, MessageCircle, Music } from "lucide-react";
 
 export function Footer() {
     return (
@@ -16,28 +16,26 @@ export function Footer() {
                             <Logo variant="light" height={32} width={140} linked={false} />
                         </div>
                         <p className="text-sm font-mono text-[#26C6DA] leading-relaxed">
-                            cash · hire purchase · trade-in<br />
-                            bank finance · insurance
+                            cash · sacco financing · bank finance<br />
+                            hire purchase · insurance
                         </p>
                         <p className="text-xs font-mono text-[#6B7280] mt-3 leading-loose">
                             Premier Digital Showroom.<br />
                             Mombasa, Kenya.
                         </p>
+                        {/* Social media — update hrefs with your actual profile URLs */}
                         <div className="flex gap-4 mt-6">
-                            <Link href="https://tiktok.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="TikTok">
-                                <Music className="w-5 h-5" />
-                            </Link>
-                            <Link href="https://instagram.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Instagram">
-                                <Instagram className="w-5 h-5" />
-                            </Link>
-                            <Link href="https://wa.me/254722511803" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="WhatsApp">
-                                <MessageCircle className="w-5 h-5" />
-                            </Link>
-                            <Link href="https://facebook.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Facebook">
+                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Facebook">
                                 <Facebook className="w-5 h-5" />
                             </Link>
-                            <Link href="https://youtube.com" target="_blank" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="YouTube">
-                                <Youtube className="w-5 h-5" />
+                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="WhatsApp">
+                                <MessageCircle className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Instagram">
+                                <Instagram className="w-5 h-5" />
+                            </Link>
+                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="TikTok">
+                                <Music className="w-5 h-5" />
                             </Link>
                         </div>
                     </div>
