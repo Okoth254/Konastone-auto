@@ -36,18 +36,18 @@ export function MobileNav() {
                                 href={link.href}
                                 className={cn(
                                     "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
-                                    isActive ? "text-[#FFC107]" : "text-[#6B7280] hover:text-[#9CA3AF]"
+                                    isActive ? "text-[#FFC107]" : "text-[#9CA3AF] hover:text-[#D1D5DB]"
                                 )}
                             >
                                 <div className="relative">
-                                    <Icon className={cn("w-5 h-5", isActive && "fill-current")} />
+                                    <Icon className={cn("w-6 h-6", isActive && "fill-current")} />
                                     {link.href === "/favorites" && favorites.length > 0 && (
                                         <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 bg-[#FFC107] text-black text-[9px] font-bold flex items-center justify-center rounded-full border border-[#111111]">
                                             {favorites.length}
                                         </span>
                                     )}
                                 </div>
-                                <span className="text-[9px] font-mono uppercase tracking-widest">{link.label}</span>
+                                <span className="text-[10px] font-mono uppercase tracking-widest leading-none">{link.label}</span>
                             </Link>
                         );
                     })}
@@ -58,19 +58,19 @@ export function MobileNav() {
                             href="/account"
                             className={cn(
                                 "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
-                                pathname === "/account" ? "text-[#FFC107]" : "text-[#6B7280] hover:text-[#9CA3AF]"
+                                pathname === "/account" ? "text-[#FFC107]" : "text-[#9CA3AF] hover:text-[#D1D5DB]"
                             )}
                         >
-                            <img src={user.avatar} alt="User" className="w-5 h-5 rounded-full border border-[#FFC107]/40" />
-                            <span className="text-[9px] font-mono uppercase tracking-widest">Me</span>
+                            <img src={user.avatar} alt="User" className="w-6 h-6 rounded-full border border-[#FFC107]/40" />
+                            <span className="text-[10px] font-mono uppercase tracking-widest leading-none">Me</span>
                         </Link>
                     ) : (
                         <button
                             onClick={() => setIsAuthOpen(true)}
-                            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-[#6B7280] hover:text-[#FFC107] transition-colors duration-200"
+                            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-[#9CA3AF] hover:text-[#FFC107] transition-colors duration-200"
                         >
-                            <User className="w-5 h-5" />
-                            <span className="text-[9px] font-mono uppercase tracking-widest">Login</span>
+                            <User className="w-6 h-6" />
+                            <span className="text-[10px] font-mono uppercase tracking-widest leading-none">Login</span>
                         </button>
                     )}
                 </div>

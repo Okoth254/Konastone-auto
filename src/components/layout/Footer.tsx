@@ -25,17 +25,17 @@ export function Footer() {
                         </p>
                         {/* Social media — update hrefs with your actual profile URLs */}
                         <div className="flex gap-4 mt-6">
-                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Facebook">
-                                <Facebook className="w-5 h-5" />
+                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#1877F2] transition-colors" title="Facebook">
+                                <Facebook className="w-6 h-6" />
                             </Link>
-                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="WhatsApp">
-                                <MessageCircle className="w-5 h-5" />
+                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#25D366] transition-colors" title="WhatsApp">
+                                <MessageCircle className="w-6 h-6" />
                             </Link>
-                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="Instagram">
-                                <Instagram className="w-5 h-5" />
+                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#E4405F] transition-colors" title="Instagram">
+                                <Instagram className="w-6 h-6" />
                             </Link>
-                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FFC107] transition-colors" title="TikTok">
-                                <Music className="w-5 h-5" />
+                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FE2C55] transition-colors" title="TikTok">
+                                <Music className="w-6 h-6" />
                             </Link>
                         </div>
                     </div>

@@ -147,7 +147,7 @@ export function PaymentOptions({ vehicle }: PaymentOptionsProps) {
 
                     <Link href={`${whatsappBase}${saccoMessage}`} target="_blank" rel="noopener noreferrer">
                         <Button size="lg" className="w-full bg-[#26C6DA] hover:bg-[#26C6DA]/90 text-black border-none">
-                            <MessageCircle className="w-4 h-4 mr-2" />
+                            <MessageCircle className="w-5 h-5 mr-2 text-[#25D366] fill-[#25D366]/20" />
                             Discuss SACCO Financing on WhatsApp
                         </Button>
                     </Link>
@@ -205,7 +205,7 @@ export function PaymentOptions({ vehicle }: PaymentOptionsProps) {
 
                     <Link href={`${whatsappBase}${bankMessage}`} target="_blank" rel="noopener noreferrer">
                         <Button size="lg" className="w-full">
-                            <MessageCircle className="w-4 h-4 mr-2" />
+                            <MessageCircle className="w-5 h-5 mr-2 text-[#25D366] fill-[#25D366]/20" />
                             Enquire About Bank Financing
                         </Button>
                     </Link>

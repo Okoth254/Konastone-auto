@@ -52,7 +52,7 @@ export function Header() {
                                 key={href}
                                 href={href}
                                 className={cn(
-                                    "text-sm font-mono text-[#D1D5DB] uppercase tracking-widest",
+                                    "text-sm font-mono font-semibold text-[#F5F5F5] uppercase tracking-widest",
                                     "hover:text-[#FFC107] transition-colors duration-200",
                                     "relative after:absolute after:bottom-[-4px] after:left-0 after:h-[2px]",
                                     "after:w-0 after:bg-[#FFC107] after:transition-all after:duration-300",
