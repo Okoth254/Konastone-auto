@@ -38,6 +38,9 @@ const courierPrime = Courier_Prime({
 export const metadata: Metadata = {
   title: "Konastone Autos — Premium Car Dealership in Mombasa, Kenya",
   description: "Buy premium cars in Mombasa at Konastone Autos. Cash, hire purchase & trade-ins available. Wide range of SUV, Sedan, and Hatchbacks in Kenya. Call +254 722 511 803.",
+  alternates: {
+    canonical: "https://konastoneautos.com",
+  },
   keywords: [
     "Konastone Autos",
     "mombasa cars",

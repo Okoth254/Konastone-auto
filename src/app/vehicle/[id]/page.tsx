@@ -15,7 +15,18 @@ export async function generateMetadata(
     return {
         title: `${vehicle.year} ${vehicle.make} ${vehicle.model} for Sale in Mombasa | Konastone Autos`,
         description: `Buy this ${vehicle.year} ${vehicle.make} ${vehicle.model} in Mombasa. Mileage: ${vehicle.mileage.toLocaleString()}km. Cash price: KES ${vehicle.price.toLocaleString()}. Hire purchase available.`,
+        alternates: {
+            canonical: `https://konastoneautos.com/vehicle/${vehicle.id}`,
+        },
         openGraph: {
+            images: [vehicle.images[0]],
+            title: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+            description: `Mileage: ${vehicle.mileage.toLocaleString()}km | Price: KES ${vehicle.price.toLocaleString()}`,
+        },
+        twitter: {
+            card: "summary_large_image",
+            title: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+            description: `Cash price: KES ${vehicle.price.toLocaleString()}`,
             images: [vehicle.images[0]],
         },
     };

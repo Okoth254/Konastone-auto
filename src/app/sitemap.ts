@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
-import { vehicles } from '@/lib/data';
+import { getVehicles } from '@/lib/data';
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://konastoneautos.com';
 
     // Core pages
@@ -12,7 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
         priority: route === '' ? 1 : 0.8,
     }));
 
-    // Vehicle detail pages
+    // Vehicle detail pages from live database
+    const vehicles = await getVehicles();
     const vehicleRoutes = vehicles.map((v) => ({
         url: `${baseUrl}/vehicle/${v.id}`,
         lastModified: new Date(),
