@@ -17,6 +17,9 @@ export interface Vehicle {
     hirePurchaseAvailable: boolean;
     minDeposit?: number;
     allowanceMonthly?: number;
+
+    condition: "New" | "Used";
+    location: string;
 }
 
 // Function to map Supabase relational data to our flat Vehicle interface
@@ -40,6 +43,8 @@ export function mapSupabaseToVehicle(car: any): Vehicle {
         hirePurchaseAvailable: car.hire_purchase_available ?? true,
         minDeposit: Number(car.min_deposit) || 0,
         allowanceMonthly: Number(car.monthly_payment) || 0,
+        condition: car.condition || "Used",
+        location: car.location || "Mombasa",
     };
 }
 
@@ -121,6 +126,8 @@ export const vehicles: Vehicle[] = [
         hirePurchaseAvailable: true,
         minDeposit: 700000,
         allowanceMonthly: 95000,
+        condition: "Used",
+        location: "Mombasa",
     },
     {
         id: "2",
@@ -138,6 +145,8 @@ export const vehicles: Vehicle[] = [
         hirePurchaseAvailable: true,
         minDeposit: 1500000,
         allowanceMonthly: 180000,
+        condition: "Used",
+        location: "Mombasa",
     },
     {
         id: "3",
@@ -155,6 +164,8 @@ export const vehicles: Vehicle[] = [
         hirePurchaseAvailable: true,
         minDeposit: 500000,
         allowanceMonthly: 65000,
+        condition: "Used",
+        location: "Nairobi",
     },
     {
         id: "4",
@@ -172,6 +183,8 @@ export const vehicles: Vehicle[] = [
         hirePurchaseAvailable: true,
         minDeposit: 800000,
         allowanceMonthly: 88000,
+        condition: "Used",
+        location: "Mombasa",
     },
     {
         id: "5",
@@ -187,6 +200,8 @@ export const vehicles: Vehicle[] = [
         features: ["EyeSight Technology", "Symmetrical AWD", "Roof Rack", "Spacious Interior", "Fog Lights"],
         description: "The Subaru Outback is the perfect adventure companion, offering standard AWD and impressive ground clearance for any Kenyan terrain.",
         hirePurchaseAvailable: false,
+        condition: "Used",
+        location: "Kisumu",
     },
     {
         id: "6",
@@ -204,5 +219,7 @@ export const vehicles: Vehicle[] = [
         hirePurchaseAvailable: true,
         minDeposit: 1200000,
         allowanceMonthly: 125000,
+        condition: "New",
+        location: "Mombasa",
     },
 ];

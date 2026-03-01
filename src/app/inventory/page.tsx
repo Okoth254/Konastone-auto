@@ -28,7 +28,15 @@ function InventoryContent() {
     const [selectedBrands, setSelectedBrands] = useState<string[]>(
         initialBrand ? [initialBrand] : []
     );
+    const [selectedModel, setSelectedModel] = useState<string>("");
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+
+    // Advanced & Tertiary Filters
+    const [selectedCondition, setSelectedCondition] = useState<string[]>([]);
+    const [selectedTransmission, setSelectedTransmission] = useState<string[]>([]);
+    const [selectedFuelType, setSelectedFuelType] = useState<string[]>([]);
+    const [selectedLocation, setSelectedLocation] = useState<string[]>([]);
+
     const [searchText, setSearchText] = useState("");
 
     // Derive unique brands from fetched vehicles
@@ -36,6 +44,13 @@ function InventoryContent() {
         () => [...new Set(vehicles.map((v) => v.make))].sort(),
         [vehicles]
     );
+
+    // Derive available models based on selected brand
+    const availableModels = useMemo(() => {
+        if (selectedBrands.length === 0) return [];
+        const filteredByBrand = vehicles.filter(v => selectedBrands.includes(v.make));
+        return [...new Set(filteredByBrand.map(v => v.model))].sort();
+    }, [vehicles, selectedBrands]);
 
     const filteredVehicles = useMemo(() => {
         return vehicles.filter((v) => {
@@ -49,9 +64,24 @@ function InventoryContent() {
             const matchesBrand =
                 selectedBrands.length === 0 || selectedBrands.includes(v.make);
 
+            const matchesModel =
+                selectedModel === "" || selectedModel === v.model;
+
             const matchesCategory =
                 selectedCategories.length === 0 ||
                 selectedCategories.includes(v.category);
+
+            const matchesCondition =
+                selectedCondition.length === 0 || selectedCondition.includes(v.condition);
+
+            const matchesTransmission =
+                selectedTransmission.length === 0 || selectedTransmission.includes(v.transmission);
+
+            const matchesFuelType =
+                selectedFuelType.length === 0 || selectedFuelType.includes(v.fuelType);
+
+            const matchesLocation =
+                selectedLocation.length === 0 || selectedLocation.includes(v.location);
 
             const matchesSearch =
                 searchText.trim() === "" ||
@@ -65,11 +95,21 @@ function InventoryContent() {
                 matchesMileage &&
                 matchesYear &&
                 matchesBrand &&
+                matchesModel &&
                 matchesCategory &&
+                matchesCondition &&
+                matchesTransmission &&
+                matchesFuelType &&
+                matchesLocation &&
                 matchesSearch
             );
         });
-    }, [vehicles, mode, maxPrice, maxMileage, minYear, selectedBrands, selectedCategories, searchText]);
+    }, [
+        vehicles, mode, maxPrice, maxMileage, minYear,
+        selectedBrands, selectedModel, selectedCategories,
+        selectedCondition, selectedTransmission,
+        selectedFuelType, selectedLocation, searchText
+    ]);
 
     return (
         <div className="min-h-screen bg-[#1A1A1A] flex flex-col">
@@ -142,9 +182,23 @@ function InventoryContent() {
                     setMinYear={setMinYear}
                     availableBrands={availableBrands}
                     selectedBrands={selectedBrands}
-                    setSelectedBrands={setSelectedBrands}
+                    setSelectedBrands={(brands) => {
+                        setSelectedBrands(brands);
+                        setSelectedModel(""); // Reset model when brand changes
+                    }}
+                    availableModels={availableModels}
+                    selectedModel={selectedModel}
+                    setSelectedModel={setSelectedModel}
                     selectedCategories={selectedCategories}
                     setSelectedCategories={setSelectedCategories}
+                    selectedCondition={selectedCondition}
+                    setSelectedCondition={setSelectedCondition}
+                    selectedTransmission={selectedTransmission}
+                    setSelectedTransmission={setSelectedTransmission}
+                    selectedFuelType={selectedFuelType}
+                    setSelectedFuelType={setSelectedFuelType}
+                    selectedLocation={selectedLocation}
+                    setSelectedLocation={setSelectedLocation}
                 />
                 <InventoryGrid vehicles={filteredVehicles} mode={mode} />
             </div>
