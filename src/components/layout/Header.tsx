@@ -42,8 +42,8 @@ export function Header() {
                     {/* Desktop Navigation */}
                     <nav className="hidden md:flex items-center gap-7">
                         {[
-                            { href: "/inventory?mode=hire", label: "Hire Purchase" },
-                            { href: "/inventory?mode=buy", label: "Buy" },
+                            { href: "/filter?mode=hire", label: "Hire Purchase" },
+                            { href: "/filter?mode=buy", label: "Buy" },
                             { href: "/sell", label: "Sell / Trade" },
                             { href: "/reviews", label: "Reviews" },
                             { href: "/help", label: "Help" },

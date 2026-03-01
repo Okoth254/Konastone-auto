@@ -15,8 +15,8 @@ export function MobileNav() {
 
     const links = [
         { href: "/", label: "Home", icon: Home },
-        { href: "/inventory?mode=hire", label: "Hire", icon: FileText },
-        { href: "/inventory?mode=buy", label: "Buy", icon: Key },
+        { href: "/filter?mode=hire", label: "Hire", icon: FileText },
+        { href: "/filter?mode=buy", label: "Buy", icon: Key },
         { href: "/favorites", label: "Saved", icon: Heart },
     ];
 

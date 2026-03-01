@@ -27,7 +27,7 @@ export default async function Home() {
               Featured Inventory
             </h2>
           </div>
-          <Link href="/inventory?mode=buy">
+          <Link href="/filter?mode=buy">
             <Button variant="ghost" size="sm">
               View All &rarr;
             </Button>
@@ -50,10 +50,10 @@ export default async function Home() {
             cash · hire purchase · bank finance · trade-in · insurance
           </p>
           <div className="flex flex-wrap gap-4 justify-center pt-4">
-            <Link href="/inventory?mode=hire">
+            <Link href="/filter?mode=hire">
               <Button size="lg">Start Hire Application</Button>
             </Link>
-            <Link href="/inventory?mode=buy">
+            <Link href="/filter?mode=buy">
               <Button variant="outline" size="lg">Browse for Sale</Button>
             </Link>
           </div>

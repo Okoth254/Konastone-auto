@@ -25,16 +25,16 @@ export function Footer() {
                         </p>
                         {/* Social media — update hrefs with your actual profile URLs */}
                         <div className="flex gap-4 mt-6">
-                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#1877F2] transition-colors" title="Facebook">
+                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] hover:opacity-80 transition-opacity" title="Facebook">
                                 <Facebook className="w-6 h-6" />
                             </Link>
-                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#25D366] transition-colors" title="WhatsApp">
+                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:opacity-80 transition-opacity" title="WhatsApp">
                                 <MessageCircle className="w-6 h-6" />
                             </Link>
-                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#E4405F] transition-colors" title="Instagram">
+                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#E4405F] hover:opacity-80 transition-opacity" title="Instagram">
                                 <Instagram className="w-6 h-6" />
                             </Link>
-                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#6B7280] hover:text-[#FE2C55] transition-colors" title="TikTok">
+                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#FE2C55] hover:opacity-80 transition-opacity" title="TikTok">
                                 <Music className="w-6 h-6" />
                             </Link>
                         </div>
@@ -46,8 +46,8 @@ export function Footer() {
                             Shop
                         </h4>
                         <ul className="space-y-2 font-mono text-sm">
-                            <li><Link href="/inventory?mode=hire" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Hire Purchase</Link></li>
-                            <li><Link href="/inventory?mode=buy" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Direct Purchase</Link></li>
+                            <li><Link href="/filter?mode=hire" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Hire Purchase</Link></li>
+                            <li><Link href="/filter?mode=buy" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Direct Purchase</Link></li>
                             <li><Link href="/sell" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Sell Your Car</Link></li>
                         </ul>
                     </div>

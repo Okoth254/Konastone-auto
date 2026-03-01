@@ -13,6 +13,9 @@ function InventoryContent() {
     const searchParams = useSearchParams();
     const initialMode = searchParams.get("mode") === "buy" ? "buy" : "hire";
     const initialBrand = searchParams.get("brand") || "";
+    const initialCategory = searchParams.get("category") || "";
+    const initialMaxPriceStr = searchParams.get("maxPrice");
+    const initialMaxPrice = initialMaxPriceStr ? parseInt(initialMaxPriceStr, 10) : 10000000;
 
     const [mode, setMode] = useState<"hire" | "buy">(initialMode);
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -22,14 +25,16 @@ function InventoryContent() {
     }, []);
 
     // ── Filter states ──
-    const [maxPrice, setMaxPrice] = useState<number>(10000000);
+    const [maxPrice, setMaxPrice] = useState<number>(initialMaxPrice);
     const [maxMileage, setMaxMileage] = useState<number>(200000);
     const [minYear, setMinYear] = useState<number>(2010);
     const [selectedBrands, setSelectedBrands] = useState<string[]>(
         initialBrand ? [initialBrand] : []
     );
     const [selectedModel, setSelectedModel] = useState<string>("");
-    const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+    const [selectedCategories, setSelectedCategories] = useState<string[]>(
+        initialCategory ? [initialCategory] : []
+    );
 
     // Advanced & Tertiary Filters
     const [selectedCondition, setSelectedCondition] = useState<string[]>([]);
