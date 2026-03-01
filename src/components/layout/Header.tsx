@@ -3,27 +3,19 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Logo } from "@/components/ui/Logo";
-import { Search, Heart, User, Menu, LogOut } from "lucide-react";
+import { Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
-import { AuthModal } from "@/components/auth/AuthModal";
-import { toast } from "sonner";
 
 export function Header() {
     const [isScrolled, setIsScrolled] = useState(false);
-    const [isAuthOpen, setIsAuthOpen] = useState(false);
-    const { favorites, user, logout } = useStore();
+    const { favorites } = useStore();
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 10);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
-
-    const handleLogout = () => {
-        logout();
-        toast.success("Logged out successfully");
-    };
 
     return (
         <>
@@ -66,11 +58,6 @@ export function Header() {
 
                     {/* Actions */}
                     <div className="flex items-center gap-4">
-                        {/* Search */}
-                        <button className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">
-                            <Search className="w-5 h-5" />
-                        </button>
-
                         {/* Favourites */}
                         <Link href="/favorites" className="relative text-[#9CA3AF] hover:text-[#FFC107] transition-colors">
                             <Heart className="w-5 h-5" />
@@ -80,34 +67,6 @@ export function Header() {
                                 </span>
                             )}
                         </Link>
-
-                        {/* Auth */}
-                        {user ? (
-                            <div className="flex items-center gap-3">
-                                <Link href="/account" className="flex items-center gap-2 text-[#D1D5DB] hover:text-[#FFC107] transition-colors">
-                                    <div className="w-8 h-8 rounded-full bg-[#252525] border border-[#FFC107]/40 overflow-hidden flex items-center justify-center">
-                                        <img src={user.avatar} alt={user.name} className="w-full h-full object-cover" />
-                                    </div>
-                                    <span className="text-sm font-mono hidden lg:block">{user.name.split(" ")[0]}</span>
-                                </Link>
-                                <button onClick={handleLogout} className="text-[#6B7280] hover:text-[#E53935] transition-colors" title="Logout">
-                                    <LogOut className="w-4 h-4" />
-                                </button>
-                            </div>
-                        ) : (
-                            <button
-                                onClick={() => setIsAuthOpen(true)}
-                                className="flex items-center gap-2 text-[#9CA3AF] hover:text-[#FFC107] transition-colors group"
-                            >
-                                <User className="w-5 h-5" />
-                                <span className="text-xs font-mono uppercase tracking-widest hidden lg:block">Sign In</span>
-                            </button>
-                        )}
-
-                        {/* Mobile Menu Toggle */}
-                        <button className="md:hidden text-[#9CA3AF] hover:text-[#FFC107] transition-colors">
-                            <Menu className="w-6 h-6" />
-                        </button>
                     </div>
                 </div>
 
@@ -117,8 +76,6 @@ export function Header() {
                     isScrolled ? "w-full opacity-100" : "w-0 opacity-0"
                 )} />
             </header>
-
-            <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
         </>
     );
 }

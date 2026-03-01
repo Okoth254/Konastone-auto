@@ -3,15 +3,13 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Key, FileText, Heart, User } from "lucide-react";
+import { Home, Key, FileText, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useStore } from "@/lib/store";
-import { AuthModal } from "@/components/auth/AuthModal";
 
 export function MobileNav() {
     const pathname = usePathname();
-    const { favorites, user } = useStore();
-    const [isAuthOpen, setIsAuthOpen] = useState(false);
+    const { favorites } = useStore();
 
     const links = [
         { href: "/", label: "Home", icon: Home },
@@ -52,31 +50,8 @@ export function MobileNav() {
                         );
                     })}
 
-                    {/* Auth / Account */}
-                    {user ? (
-                        <Link
-                            href="/account"
-                            className={cn(
-                                "flex flex-col items-center justify-center w-full h-full space-y-1 transition-colors duration-200",
-                                pathname === "/account" ? "text-[#FFC107]" : "text-[#9CA3AF] hover:text-[#D1D5DB]"
-                            )}
-                        >
-                            <img src={user.avatar} alt="User" className="w-6 h-6 rounded-full border border-[#FFC107]/40" />
-                            <span className="text-[10px] font-mono uppercase tracking-widest leading-none">Me</span>
-                        </Link>
-                    ) : (
-                        <button
-                            onClick={() => setIsAuthOpen(true)}
-                            className="flex flex-col items-center justify-center w-full h-full space-y-1 text-[#9CA3AF] hover:text-[#FFC107] transition-colors duration-200"
-                        >
-                            <User className="w-6 h-6" />
-                            <span className="text-[10px] font-mono uppercase tracking-widest leading-none">Login</span>
-                        </button>
-                    )}
                 </div>
             </nav>
-
-            <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
         </>
     );
 }
