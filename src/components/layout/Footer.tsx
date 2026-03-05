@@ -1,92 +1,58 @@
 import Link from "next/link";
-import { Logo } from "@/components/ui/Logo";
-import { Facebook, Instagram, MessageCircle, Music } from "lucide-react";
 
-export function Footer() {
+export default function Footer() {
     return (
-        <footer className="bg-[#111111] text-[#9CA3AF]">
-            {/* Yellow top border */}
-            <div className="h-[3px] bg-gradient-to-r from-transparent via-[#FFC107] to-transparent" />
-
-            <div className="container mx-auto px-4 py-14">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-10">
-                    {/* Brand column */}
-                    <div>
-                        <div className="mb-4">
-                            <Logo variant="light" height={32} width={140} linked={false} />
-                        </div>
-                        <p className="text-sm font-mono text-[#26C6DA] leading-relaxed">
-                            cash · sacco financing · bank finance<br />
-                            hire purchase · insurance
-                        </p>
-                        <p className="text-xs font-mono text-[#6B7280] mt-3 leading-loose">
-                            Premier Digital Showroom.<br />
-                            Mombasa, Kenya.
-                        </p>
-                        {/* Social media — update hrefs with your actual profile URLs */}
-                        <div className="flex gap-4 mt-6">
-                            <Link href="https://facebook.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#1877F2] hover:opacity-80 transition-opacity" title="Facebook">
-                                <Facebook className="w-6 h-6" />
+        <footer className="bg-gray-900 dark:bg-header-dark border-t border-gray-800 pt-16 pb-8 transition-colors duration-300">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                    <div className="col-span-1 md:col-span-2">
+                        <span className="font-display text-4xl text-primary tracking-wider mb-6 block">KONASTONE AUTOS</span>
+                        <p className="text-gray-400 mb-6 max-w-md">Premium automotive dealership in Mombasa offering high-quality imported and locally used vehicles with flexible financing options.</p>
+                        <div className="flex space-x-4">
+                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                                <span className="material-icons text-lg">facebook</span>
                             </Link>
-                            <Link href="https://wa.me/254722511803" target="_blank" rel="noopener noreferrer" className="text-[#25D366] hover:opacity-80 transition-opacity" title="WhatsApp">
-                                <MessageCircle className="w-6 h-6" />
+                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                                <span className="material-icons text-lg">camera_alt</span>
                             </Link>
-                            <Link href="https://instagram.com/konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#E4405F] hover:opacity-80 transition-opacity" title="Instagram">
-                                <Instagram className="w-6 h-6" />
-                            </Link>
-                            <Link href="https://tiktok.com/@konastoneautos" target="_blank" rel="noopener noreferrer" className="text-[#FE2C55] hover:opacity-80 transition-opacity" title="TikTok">
-                                <Music className="w-6 h-6" />
+                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                                <span className="material-icons text-lg">music_note</span>
                             </Link>
                         </div>
                     </div>
-
-                    {/* Shop */}
                     <div>
-                        <h4 className="font-heading uppercase tracking-widest text-[#F5F5F5] mb-4 text-lg">
-                            Shop
-                        </h4>
-                        <ul className="space-y-2 font-mono text-sm">
-                            <li><Link href="/filter?mode=hire" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Hire Purchase</Link></li>
-                            <li><Link href="/filter?mode=buy" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Direct Purchase</Link></li>
-                            <li><Link href="/sell" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Sell Your Car</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Support */}
-                    <div>
-                        <h4 className="font-heading uppercase tracking-widest text-[#F5F5F5] mb-4 text-lg">
-                            Support
-                        </h4>
-                        <ul className="space-y-2 font-mono text-sm">
-                            <li><Link href="/help" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Help Center</Link></li>
-                            <li><Link href="/contact" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Contact Us</Link></li>
-                            <li><Link href="/terms" className="text-[#9CA3AF] hover:text-[#FFC107] transition-colors">Terms of Service</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Contact */}
-                    <div>
-                        <h4 className="font-heading uppercase tracking-widest text-[#F5F5F5] mb-4 text-lg">
-                            Contact
-                        </h4>
-                        <Link href="https://wa.me/254722511803" target="_blank" className="group">
-                            <p className="font-slab text-[#E53935] text-xl font-bold tracking-widest mb-3 group-hover:text-[#FFC107] transition-colors">
+                        <h4 className="font-display text-xl text-white tracking-wide mb-6">CONTACT US</h4>
+                        <ul className="space-y-4 text-gray-400 text-sm">
+                            <li className="flex items-start">
+                                <span className="material-icons text-primary mr-3 text-lg">phone</span>
                                 +254 722 511 803
-                            </p>
-                        </Link>
-                        <p className="font-mono text-sm text-[#6B7280] leading-loose">
-                            Mombasa, Kenya<br />
-                            info@konastoneautos.com
-                        </p>
+                            </li>
+                            <li className="flex items-start">
+                                <span className="material-icons text-primary mr-3 text-lg">email</span>
+                                sales@konastoneautos.co.ke
+                            </li>
+                            <li className="flex items-start">
+                                <span className="material-icons text-primary mr-3 text-lg">location_on</span>
+                                <span>Links Road, Nyali<br />Mombasa, Kenya</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-display text-xl text-white tracking-wide mb-6">QUICK LINKS</h4>
+                        <ul className="space-y-2 text-sm text-slate-400 font-display transition-colors">
+                            <li><Link href="/inventory" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Current Inventory</Link></li>
+                            <li><Link href="/reviews" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Customer Reviews</Link></li>
+                            <li><Link href="/about" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">About Us</Link></li>
+                            <li><Link href="/about" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Contact Us</Link></li>
+                        </ul>
                     </div>
                 </div>
-
-                {/* Bottom bar */}
-                <div className="mt-12 pt-6 border-t border-[#2D2D2D] flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p className="font-mono text-xs text-[#4B5563] tracking-widest uppercase">
-                        &copy; {new Date().getFullYear()} Konastone Autos. All rights reserved.
-                    </p>
-                    <div className="h-[2px] w-24 hazard-stripe opacity-60 rounded" />
+                <div className="border-t border-gray-800 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+                    <p>© {new Date().getFullYear()} Konastone Autos. All rights reserved.</p>
+                    <div className="flex space-x-6 mt-4 md:mt-0">
+                        <Link className="hover:text-white transition-colors" href="#">Privacy Policy</Link>
+                        <Link className="hover:text-white transition-colors" href="#">Terms of Service</Link>
+                    </div>
                 </div>
             </div>
         </footer>
