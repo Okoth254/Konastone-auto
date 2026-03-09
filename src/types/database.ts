@@ -33,3 +33,14 @@ export interface Lead {
     vehicle_id: string | null;
     status: 'new' | 'contacted' | 'resolved';
 }
+
+export interface Review {
+    id: string;
+    created_at: string;
+    reviewer_name: string;
+    rating: number;
+    comment: string;
+    is_approved: boolean;
+    vehicle_make: string | null;
+    vehicle_model: string | null;
+}

@@ -1,7 +1,29 @@
 import Link from "next/link";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+import ReviewForm from "@/components/reviews/ReviewForm";
+import { Review } from "@/types/database";
 
-export default function Reviews() {
+export default async function Reviews() {
+    let reviews: Review[] = [];
+    const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (isSupabaseConfigured) {
+        try {
+            const { data } = await supabase
+                .from('customer_reviews')
+                .select('*')
+                .eq('is_approved', true)
+                .order('created_at', { ascending: false });
+
+            if (data) {
+                reviews = data;
+            }
+        } catch (e) {
+            console.error("Error fetching reviews", e);
+        }
+    }
+
     return (
         <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 w-full mx-auto px-4 sm:px-10 py-8 relative z-10">
             {/* Header Section */}
@@ -70,153 +92,51 @@ export default function Reviews() {
 
             {/* Review Grid */}
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 mb-16">
-                {/* Review Card 1 */}
-                <div className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="flex gap-1 text-primary">
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                {reviews.length > 0 ? (
+                    reviews.map((review) => (
+                        <div key={review.id} className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
+                            <div className="flex justify-between items-start mb-4">
+                                <div className="flex gap-1 text-primary">
+                                    {[...Array(5)].map((_, i) => (
+                                        <span key={i} className={`material-symbols-outlined text-lg ${i < review.rating ? '' : 'opacity-30'}`} style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+                                    ))}
+                                </div>
+                                <span className="text-xs text-slate-500 font-mono">
+                                    {new Date(review.created_at).toLocaleDateString()}
+                                </span>
+                            </div>
+                            <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
+                                {review.comment}
+                            </p>
+                            <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
+                                <div className="flex items-center gap-3">
+                                    <div className="bg-primary/20 flex px-2 py-1 items-center justify-center rounded-full size-8 bg-slate-700 font-bold text-primary">
+                                        {review.reviewer_name.charAt(0).toUpperCase()}
+                                    </div>
+                                    <div>
+                                        <p className="text-white font-mono text-sm font-bold uppercase">{review.reviewer_name}</p>
+                                        {(review.vehicle_make || review.vehicle_model) && (
+                                            <p className="text-xs text-slate-400">
+                                                {review.vehicle_make} {review.vehicle_model}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <span className="text-xs text-slate-500 font-mono">2 days ago</span>
+                    ))
+                ) : (
+                    <div className="col-span-1 md:col-span-2 lg:col-span-3 text-center py-12 bg-surface-dark rounded-xl border border-border-subtle">
+                        <span className="material-symbols-outlined text-4xl text-slate-500 mb-2">forum</span>
+                        <h3 className="text-xl font-heading text-slate-300">No Reviews Yet</h3>
+                        <p className="text-slate-500 mt-1 pb-4">Be the first to share your experience with Konastone Autos!</p>
                     </div>
-                    <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
-                        Excellent service and great selection of cars. The import process was handled professionally and I was kept updated at every stage. Highly recommended!
-                    </p>
-                    <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-cover bg-center rounded-full size-8 bg-slate-700" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuBDJ6j7fOmTSqytFp8LHYsAmI2wgjZA8LHSVglf3CWpi9Vg-VWS9GuyEHWyrfd1JgwJ4b6K7iMoggSaylMaEEOtUEvDRi0iGm8oBJHx9E9iM3n88FRdv09pVEys-1uthjZ5xfQq-cLmV7t_xhTTZSDKkoJczJO8Mf5czFyiseMcpQaYQhHj_t5f_S7b0eDLN_plgaatoFdzbtQDh2jEWROkFvBqom1RX8FY55e_hG5RcxZBCtfB6tTkbfXmkCPmqyMYwsEx_pcVRc-t')" }}></div>
-                            <p className="text-white font-mono text-sm font-bold">JOHN D.</p>
-                        </div>
-                        <div className="flex gap-3 text-slate-400">
-                            <button className="flex items-center gap-1 hover:text-primary transition-colors text-xs">
-                                <span className="material-symbols-outlined text-sm">thumb_up</span> 12
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Review Card 2 */}
-                <div className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="flex gap-1 text-primary">
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        </div>
-                        <span className="text-xs text-slate-500 font-mono">1 week ago</span>
-                    </div>
-                    <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
-                        The sales team was very helpful and not pushy at all. Love my new SUV. The paperwork was sorted out faster than I expected.
-                    </p>
-                    <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-cover bg-center rounded-full size-8 bg-slate-700" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuAP9FRDWOGgDPIoIE8Rkgm8MzwGGdG80JLZXW1NO7YMGwPenaxupPj6IEcvF0P312mMceVvvew74Uo7xnC-5Yd1fyfdRg3K_ZOK3hldGVa2TXVlb3tLbp6Wfwk7Q8eXeYY19JUw7rjmALvGzo8_-nZG5W_OHExkVhbYTuxVfDPPC-RdHIhP1ekPCQyJi91pSu4OwEMSLIgGMHsWxd52eLXqcgc0RZ7kHxHabGNPsOwTgChCj6N1fzTNcudBX00j1SW0wf_8kGWn0FJq')" }}></div>
-                            <p className="text-white font-mono text-sm font-bold">SARAH M.</p>
-                        </div>
-                        <div className="flex gap-3 text-slate-400">
-                            <button className="flex items-center gap-1 hover:text-primary transition-colors text-xs">
-                                <span className="material-symbols-outlined text-sm">thumb_up</span> 8
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Review Card 3 */}
-                <div className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="flex gap-1 text-primary">
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        </div>
-                        <span className="text-xs text-slate-500 font-mono">2 weeks ago</span>
-                    </div>
-                    <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
-                        Smooth transaction from start to finish. The transparency is unmatched. I got a full diagnostic report before confirming the purchase, which gave me immense peace of mind. Konastone sets the standard for dealerships in Mombasa.
-                    </p>
-                    <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-cover bg-center rounded-full size-8 bg-slate-700" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuA67LQOSc_qdS1WkbdjeMfHK-PHm9Zg9ZOn8s8sjhDf5d3BSeXn3rr6fHsqorTKL1s36ct4iixK5iSXkyIWH5ymiAMX6p3Lnpy-dr-KGiVYCpBkEasEih1h2n2kB_wQi_xpDX0sKGAdlsRbXhhBwCplC-xT17kkMKRej5EZMOf7Eln3Xrk8MYc8QHF_LxwKNFIi0fuRVc7h_wDoQP0QoNxu_in_NMKqCOfBRGLDIa5TkxFvrT7_LZrhsvIMW5hw3oj3sdu9gusvIebI')" }}></div>
-                            <p className="text-white font-mono text-sm font-bold">PETER K.</p>
-                        </div>
-                        <div className="flex gap-3 text-slate-400">
-                            <button className="flex items-center gap-1 hover:text-primary transition-colors text-xs">
-                                <span className="material-symbols-outlined text-sm">thumb_up</span> 15
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Review Card 4 */}
-                <div className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="flex gap-1 text-primary">
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg opacity-30" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        </div>
-                        <span className="text-xs text-slate-500 font-mono">1 month ago</span>
-                    </div>
-                    <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
-                        Good cars, fair prices. The after-sales service is what sets them apart. Had a minor issue with the AC a week after purchase and they fixed it immediately at no extra cost.
-                    </p>
-                    <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-cover bg-center rounded-full size-8 bg-slate-700" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuARCIrYwU3-hPo_6RTt94nMiRJ56btNS5cG0XUd3TeCT6j1-XNhymyoOtFnBeU3sTLY27BJF_Ntungmezl2ZGF7tSCgvIk7dgXmL0Rwt9NgfT2QIzakk3d2WXb8lohsq1j3ET_R0iooZUf7s95xEB2C1a9YzVkKjsH1JsFmlpBuOzvzom8ARxcQc5YhWKB8lZpyMhm1FA14ShyxUcBZpvQmOD8iQbiyckGe17QFm3s1y0H7DBXrbTFGKOXG1vkksNenuGLk1ryZKiwS')" }}></div>
-                            <p className="text-white font-mono text-sm font-bold">AMINA S.</p>
-                        </div>
-                        <div className="flex gap-3 text-slate-400">
-                            <button className="flex items-center gap-1 hover:text-primary transition-colors text-xs">
-                                <span className="material-symbols-outlined text-sm">thumb_up</span> 5
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Review Card 5 */}
-                <div className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="flex gap-1 text-primary">
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                            <span className="material-symbols-outlined text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
-                        </div>
-                        <span className="text-xs text-slate-500 font-mono">1 month ago</span>
-                    </div>
-                    <p className="text-slate-200 font-body mb-6 text-sm leading-relaxed">
-                        Found exactly what I was looking for. The condition of the car was pristine.
-                    </p>
-                    <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-cover bg-center rounded-full size-8 bg-slate-700" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCmbHTbgIJBX0EZ3NaXeLUf55L6Uhe2q8k-jqskfmCkCZY8jrQtuCwyWxa1jroVBS-eBRR2lP4dcxypyqjaaemGKlJbslLqEsNhXXMYKtg3a0Kuuhe2oJZxdgaUfiHsI3qtlacQifcVyKw1MVsFJ1ygmsnzcBT4oM1hKhNsiYXjkjv_ED5IMLnUuy0QE6iaAM0iYVK8EZHmWHFCyfiESQJyGgJypstwG_GHxp0rbfFDsy7ant4gmp6ZvXm3l0HfAvrL1qHF1Fs5UH6s')" }}></div>
-                            <p className="text-white font-mono text-sm font-bold">DAVID O.</p>
-                        </div>
-                        <div className="flex gap-3 text-slate-400">
-                            <button className="flex items-center gap-1 hover:text-primary transition-colors text-xs">
-                                <span className="material-symbols-outlined text-sm">thumb_up</span> 9
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                )}
             </div>
 
             {/* Call to Action */}
-            <div className="flex justify-center my-12 relative z-20">
-                <button className="relative overflow-hidden bg-primary text-background-dark font-display text-2xl px-12 py-4 tracking-widest uppercase transition-all duration-300 hover:scale-105 group border-2 border-primary">
-                    <span className="relative z-10 font-bold">SHARE YOUR EXPERIENCE</span>
-                    <div className="absolute inset-0 bg-hazard-stripe opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                </button>
+            <div className="my-12 relative z-20">
+                <ReviewForm />
             </div>
         </div>
     );
