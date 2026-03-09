@@ -1,66 +1,51 @@
 import Link from "next/link";
 import Image from "next/image";
+import { supabase } from "@/lib/supabase";
+import { Vehicle } from "@/types/database";
+import HeroSearchForm from "@/components/home/HeroSearchForm";
 
-export default function Home() {
+export default async function Home() {
+    const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    let featuredVehicles: Vehicle[] = [];
+
+    if (isSupabaseConfigured) {
+        const { data } = await supabase
+            .from('vehicles')
+            .select('*')
+            .eq('is_featured', true)
+            .limit(3);
+
+        if (data) {
+            featuredVehicles = data;
+        }
+    }
     return (
         <>
             {/* Hero Section */}
-            <section className="relative bg-white dark:bg-background-dark transition-colors duration-300">
-                <div className="flex flex-col lg:flex-row min-h-[600px]">
-                    <div className="lg:w-[60%] relative overflow-hidden h-[400px] lg:h-auto">
-                        <img
-                            alt="Luxury car at dusk in Mombasa"
-                            className="absolute inset-0 w-full h-full object-cover"
-                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGekMr5-7ufq0mbhw8Rz5pUC4s_zGTAU5B6kLOMtwml1JQHbNGylFtnBk7phUFQilKEWEuvopoH26U7_iIfT0w83Z49NybdApRXTQX_CDJyDNq1cQQdlQyPVUt3PmVrCPUy6ckHebYzftqzF0lAW6w65ltuIR1pNT1gEJNEn0KSO1oKy7VWzS2BVz_OxP2pzFNlPL-av0NGyaFXKED5tj1WIvqYi84RUUH1SAk1Sgw8t5xRP4DulOQXWGaESmKlgmuXOJ9tTUMmNVc"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
-                            <h1 className="font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg">
-                                DRIVE YOUR<br />
-                                <span className="text-primary">DREAM.</span><br />
-                                OWN IT TODAY.
-                            </h1>
-                        </div>
+            <section className="flex flex-col lg:flex-row min-h-[600px]">
+                <div className="lg:w-[60%] relative overflow-hidden h-[400px] lg:h-auto">
+                    <img
+                        alt="Luxury car at dusk in Mombasa"
+                        className="absolute inset-0 w-full h-full object-cover"
+                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGekMr5-7ufq0mbhw8Rz5pUC4s_zGTAU5B6kLOMtwml1JQHbNGylFtnBk7phUFQilKEWEuvopoH26U7_iIfT0w83Z49NybdApRXTQX_CDJyDNq1cQQdlQyPVUt3PmVrCPUy6ckHebYzftqzF0lAW6w65ltuIR1pNT1gEJNEn0KSO1oKy7VWzS2BVz_OxP2pzFNlPL-av0NGyaFXKED5tj1WIvqYi84RUUH1SAk1Sgw8t5xRP4DulOQXWGaESmKlgmuXOJ9tTUMmNVc"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
+                        <h1 className="font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg">
+                            DRIVE YOUR<br />
+                            <span className="text-primary">DREAM.</span><br />
+                            OWN IT TODAY.
+                        </h1>
                     </div>
-                    <div className="lg:w-[40%] bg-gray-100 dark:bg-surface-dark p-8 lg:p-12 flex flex-col justify-center border-l border-gray-200 dark:border-gray-800 transition-colors duration-300">
-                        <h2 className="font-display text-4xl mb-6 text-gray-900 dark:text-white tracking-wide">Find Your Perfect Car</h2>
-                        <form className="space-y-6">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="make">Make</label>
-                                <select className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors" id="make" name="make" defaultValue="All Makes">
-                                    <option>All Makes</option>
-                                    <option>Toyota</option>
-                                    <option>Mercedes-Benz</option>
-                                    <option>BMW</option>
-                                    <option>Nissan</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="model">Model</label>
-                                <select className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors" id="model" name="model" defaultValue="All Models">
-                                    <option>All Models</option>
-                                    <option>Land Cruiser</option>
-                                    <option>Prado</option>
-                                    <option>C-Class</option>
-                                    <option>X5</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label className="flex justify-between block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="price">
-                                    <span>Max Price</span>
-                                    <span className="text-primary font-bold">Ksh 15M+</span>
-                                </label>
-                                <input className="w-full h-2 bg-gray-300 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer accent-primary" id="price" max="15000000" min="0" name="price" type="range" defaultValue="15000000" />
-                            </div>
-                            <button className="w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-lg font-display tracking-widest text-gray-900 bg-primary hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors" type="button">
-                                SEARCH INVENTORY
-                            </button>
-                        </form>
-                    </div>
+                </div>
+                <div className="lg:w-[40%] bg-gray-100 dark:bg-surface-dark p-8 lg:p-12 flex flex-col justify-center border-l border-gray-200 dark:border-gray-800 transition-colors duration-300">
+                    <h2 className="font-display text-4xl mb-6 text-gray-900 dark:text-white tracking-wide">Find Your Perfect Car</h2>
+                    <HeroSearchForm />
                 </div>
             </section>
 
             {/* Browse By Brand section */}
-            <section className="relative bg-[#1A1A1A] py-16 overflow-hidden">
+            <section className="relative bg-[#1A1A1A] py-16 overflow-hidden" >
                 <div className="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-12">
@@ -85,7 +70,7 @@ export default function Home() {
             </section>
 
             {/* Stats Section */}
-            <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300">
+            <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                         <div className="flex flex-col items-center">
@@ -118,7 +103,7 @@ export default function Home() {
             </section>
 
             {/* Featured Listings Section */}
-            <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300">
+            <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-end mb-10">
                         <div>
@@ -131,37 +116,58 @@ export default function Home() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {[
-                            { title: "2021 Toyota Land Cruiser V8 ZX", price: "Ksh 18,500,000", mileage: "35,000 km", fuel: "Petrol", trans: "Automatic", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuC8h8ySbJUJuNC0xVZwUnzhamzqpVRxaOf68UzHReQYv9BUAHSIa61NuB0BgITCTJkLA4T1AYU-mqmbiLrIWczTcbNDy3NDr9ywPHjawj1zFOhw2BCsiK5NqAG0DQ4hzl7y15ZAosE3JkcnsIkcuXnS8_h0bwR6PFPjrPdYeXAlOUJ1byvV-jKY9SdRO7zSa7coh0ALwGZkZfVl_kUbk6nZmg0xG7_4QQNkE9pna0c-odrM8gkMnptBp4xL_MO1RuUU-BcBpFj9aowm" },
-                            { title: "2020 BMW X5 xDrive40i", price: "Ksh 11,200,000", mileage: "42,000 km", fuel: "Petrol", trans: "Automatic", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuCVQwQzJ0yWAVhW0uUdNa6YZSxThhM7i8einC2J8ORDooCEEsOHCnq_TZKY44nEYrzr89aNdMQj_UDU7yDYFSXKfQnMwrmYrsbvhJgkPNm4nqxc_7SeOacBDOJr_TSBVm7l-t8Yh6dhMvQrTtQB2Kr3EGL65cwoSykxLcw7kwzN0InPP5r8vPDLdIQArFHlEbkoF0MapP0jU_yIE06plDuic7eMN7SeLUEVx3ckoO9uBvOMqFn4zE0GnE-DVfns-n30JhSKF2Wz4TD1" },
-                            { title: "2019 Mercedes-Benz C200 AMG Line", price: "Ksh 5,800,000", mileage: "55,000 km", fuel: "Petrol", trans: "Automatic", img: "https://lh3.googleusercontent.com/aida-public/AB6AXuAo0PCmX-0PveGbfT3HckgglXVhI8aNPWcOySYo-zIS87o6dOpGV4TdeOR6WI1oY6_RYezDvBT6G_Tg5yMb6USLqa7t4C-8D8UzbphfbZY35f4PLuIVYBg_eT3F_xz7qgzIQHpsGb2gkYYc3aciAI5BP8sJbp2ebFD74OFeJHX6QEqQMDoIZ8Yjr-Z7iH8TieGgMxkGX0zZUXmirbOs9th-2sbQqZFFIFlMiOwR6IkLejy_kykP8JlnCVmDOjSkXtS0jmGiL1155MuS" }
-                        ].map((car, idx) => (
-                            <div key={idx} className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
-                                <div className="relative h-64 overflow-hidden">
-                                    <img alt={car.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={car.img} />
-                                    <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
-                                        Excellent
-                                    </div>
-                                </div>
-                                <div className="p-6">
-                                    <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2 line-clamp-1">{car.title}</h3>
-                                    <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
-                                        <div className="flex items-center"><span className="material-icons text-[18px] mr-1">speed</span> {car.mileage}</div>
-                                        <div className="flex items-center"><span className="material-icons text-[18px] mr-1">local_gas_station</span> {car.fuel}</div>
-                                        <div className="flex items-center"><span className="material-icons text-[18px] mr-1">settings</span> {car.trans}</div>
-                                    </div>
-                                    <div className="flex items-end justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
-                                        <div>
-                                            <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Price</p>
-                                            <p className="font-display text-3xl text-primary">{car.price}</p>
-                                        </div>
-                                    </div>
-                                    <Link className="mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href="#">
-                                        <span className="material-icons mr-2">whatsapp</span> Inquire on WhatsApp
-                                    </Link>
-                                </div>
+                        {!isSupabaseConfigured && (
+                            <div className="col-span-full border border-yellow-500/50 bg-yellow-500/10 p-6 rounded-lg text-yellow-500 text-center flex flex-col items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-4xl">warning</span>
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wider">Database Not Configured</h3>
+                                <p className="text-sm">Please provide Supabase credentials in <code>.env.local</code> to fetch live featured vehicles.</p>
                             </div>
-                        ))}
+                        )}
+
+                        {isSupabaseConfigured && featuredVehicles.length === 0 && (
+                            <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
+                                No featured vehicles found at the moment.
+                            </div>
+                        )}
+
+                        {featuredVehicles.map((car) => {
+                            const imagePath = `/images/inventory/${car.folder_name}/1.jpeg`;
+
+                            return (
+                                <div key={car.id} className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
+                                    <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+                                        <img alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={imagePath} onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400/1e1e1e/333333?text=Found' }} />
+                                        {car.status === 'available' && (
+                                            <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+                                                Excellent
+                                            </div>
+                                        )}
+                                        {car.status === 'in_transit' && (
+                                            <div className="absolute top-4 left-4 bg-accent text-background-dark text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+                                                In Transit
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="p-6 flex flex-col h-full">
+                                        <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2 line-clamp-1">{car.year} {car.make} {car.model}</h3>
+                                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">speed</span> {car.mileage.toLocaleString()} km</div>
+                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">local_gas_station</span> {car.fuel_type}</div>
+                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">settings</span> {car.transmission}</div>
+                                        </div>
+                                        <div className="flex items-end justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mt-auto">
+                                            <div>
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Price</p>
+                                                <p className="font-display text-3xl text-primary">KES {car.price.toLocaleString()}</p>
+                                            </div>
+                                        </div>
+                                        <Link className="mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href="#">
+                                            <span className="material-icons mr-2">whatsapp</span> Inquire on WhatsApp
+                                        </Link>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
 
                     <div className="mt-10 text-center md:hidden">
@@ -173,7 +179,7 @@ export default function Home() {
             </section>
 
             {/* Why Choose Konastone */}
-            <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300">
+            <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">WHY CHOOSE KONASTONE</h2>
