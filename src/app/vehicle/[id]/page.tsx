@@ -6,6 +6,7 @@ import FinanceCalculator from "@/components/vehicle/FinanceCalculator";
 import LeadForm from "@/components/vehicle/LeadForm";
 import fs from "fs";
 import path from "path";
+import { siteConfig } from "@/config/site";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;
@@ -68,7 +69,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
     };
 
     const whatsappMessage = encodeURIComponent(`Hi Konastone! I'm interested in the ${vehicle.year} ${vehicle.make} ${vehicle.model} going for ${formatPrice(vehicle.price)}. Is it still available?`);
-    const whatsappLink = `https://wa.me/254722511803?text=${whatsappMessage}`;
+    const whatsappLink = `https://wa.me/${siteConfig.contact.phoneFormatted}?text=${whatsappMessage}`;
 
     return (
         <div className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 gap-8 relative z-10 scanline">
@@ -125,7 +126,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
                         </div>
                     </div>
                     <div className="flex flex-col gap-3 mt-auto pt-4">
-                        <a href="tel:+254722511803" className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-accent-red text-white font-bold shadow-lg hover:bg-opacity-80 transition-colors">
+                        <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-accent-red text-white font-bold shadow-lg hover:bg-opacity-80 transition-colors">
                             <span className="material-symbols-outlined text-white">call</span>
                             Call Now
                         </a>
@@ -150,27 +151,15 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
                 <div className="lg:col-span-2 flex flex-col gap-8">
                     <div className="bg-[#1E1E1E] rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 border border-border-subtle">
-                        <div className="flex flex-col items-center text-center gap-2">
-                            <div className="w-12 h-12 rounded-full bg-surface-dark flex items-center justify-center text-primary mb-2 border border-border-subtle">
-                                <span className="material-symbols-outlined text-primary">oil_barrel</span>
+                        {siteConfig.promises.map((promise, index) => (
+                            <div key={promise.id} className={`flex flex-col items-center text-center gap-2 ${index > 0 ? "border-t md:border-t-0 md:border-l border-border-subtle pt-4 md:pt-0" : ""}`}>
+                                <div className="w-12 h-12 rounded-full bg-surface-dark flex items-center justify-center text-primary mb-2 border border-border-subtle">
+                                    <span className="material-symbols-outlined text-primary">{promise.icon}</span>
+                                </div>
+                                <h4 className="font-bold text-sm text-slate-200">{promise.title}</h4>
+                                <p className="text-xs text-slate-400">{promise.description}</p>
                             </div>
-                            <h4 className="font-bold text-sm text-slate-200">Free Oil Change</h4>
-                            <p className="text-xs text-slate-400">First service on us</p>
-                        </div>
-                        <div className="flex flex-col items-center text-center gap-2 border-t md:border-t-0 md:border-l border-border-subtle pt-4 md:pt-0">
-                            <div className="w-12 h-12 rounded-full bg-surface-dark flex items-center justify-center text-primary mb-2 border border-border-subtle">
-                                <span className="material-symbols-outlined text-primary">verified_user</span>
-                            </div>
-                            <h4 className="font-bold text-sm text-slate-200">2 Months Warranty</h4>
-                            <p className="text-xs text-slate-400">Peace of mind guaranteed</p>
-                        </div>
-                        <div className="flex flex-col items-center text-center gap-2 border-t md:border-t-0 md:border-l border-border-subtle pt-4 md:pt-0">
-                            <div className="w-12 h-12 rounded-full bg-surface-dark flex items-center justify-center text-primary mb-2 border border-border-subtle">
-                                <span className="material-symbols-outlined text-primary">assignment</span>
-                            </div>
-                            <h4 className="font-bold text-sm text-slate-200">Free Transfers</h4>
-                            <p className="text-xs text-slate-400">Logbook transfer included</p>
-                        </div>
+                        ))}
                     </div>
                     <div>
                         <h3 className="text-2xl font-heading tracking-wide mb-4 flex items-center gap-2 text-slate-100">

@@ -1,14 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { siteConfig } from "@/config/site";
 
 export default function FinanceCalculator({ price }: { price: number }) {
-    const [depositPercent, setDepositPercent] = useState(30);
-    const [tenure, setTenure] = useState(24);
+    const [depositPercent, setDepositPercent] = useState(siteConfig.finance.defaultDepositPercent);
+    const [tenure, setTenure] = useState(siteConfig.finance.tenureOptions[1]);
 
     const depositAmount = (price * depositPercent) / 100;
     const loanAmount = price - depositAmount;
-    const interestRate = 0.14; // 14% flat rate for simplicity
+    const interestRate = siteConfig.finance.interestRate;
     const totalInterest = loanAmount * interestRate * (tenure / 12);
     const totalLoan = loanAmount + totalInterest;
     const monthlyPayment = totalLoan / tenure;
@@ -33,8 +34,8 @@ export default function FinanceCalculator({ price }: { price: number }) {
                     </div>
                     <input
                         className="w-full accent-primary"
-                        max="80"
-                        min="10"
+                        max={siteConfig.finance.maxDepositPercent}
+                        min={siteConfig.finance.minDepositPercent}
                         step="5"
                         type="range"
                         value={depositPercent}
@@ -44,13 +45,13 @@ export default function FinanceCalculator({ price }: { price: number }) {
                 <div>
                     <label className="text-sm text-slate-400 block mb-2">Tenure</label>
                     <div className="grid grid-cols-3 gap-2">
-                        {[12, 24, 36].map((months) => (
+                        {siteConfig.finance.tenureOptions.map((months) => (
                             <button
                                 key={months}
                                 onClick={() => setTenure(months)}
                                 className={`py-2 rounded-lg text-sm transition-colors ${tenure === months
-                                        ? "border border-primary bg-primary/20 font-bold text-primary"
-                                        : "border border-border-subtle hover:bg-background-dark text-slate-300"
+                                    ? "border border-primary bg-primary/20 font-bold text-primary"
+                                    : "border border-border-subtle hover:bg-background-dark text-slate-300"
                                     }`}
                             >
                                 {months} Mo

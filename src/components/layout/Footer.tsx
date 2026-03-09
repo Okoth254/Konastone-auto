@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { siteConfig } from "@/config/site";
 
 export default function Footer() {
     return (
@@ -25,15 +26,15 @@ export default function Footer() {
                         <ul className="space-y-4 text-gray-400 text-sm">
                             <li className="flex items-start">
                                 <span className="material-icons text-primary mr-3 text-lg">phone</span>
-                                +254 722 511 803
+                                {siteConfig.contact.phone}
                             </li>
                             <li className="flex items-start">
                                 <span className="material-icons text-primary mr-3 text-lg">email</span>
-                                sales@konastoneautos.co.ke
+                                {siteConfig.contact.email}
                             </li>
                             <li className="flex items-start">
                                 <span className="material-icons text-primary mr-3 text-lg">location_on</span>
-                                <span>Links Road, Nyali<br />Mombasa, Kenya</span>
+                                <span>{siteConfig.contact.address}<br />{siteConfig.contact.city}</span>
                             </li>
                         </ul>
                     </div>

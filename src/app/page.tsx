@@ -3,6 +3,7 @@ import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Vehicle } from "@/types/database";
 import HeroSearchForm from "@/components/home/HeroSearchForm";
+import { siteConfig } from "@/config/site";
 
 export default async function Home() {
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -73,31 +74,13 @@ export default async function Home() {
             <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
-                        <div className="flex flex-col items-center">
-                            <span className="material-icons text-secondary text-5xl mb-3">directions_car</span>
-                            <h3 className="font-display text-2xl text-gray-900 dark:text-white">500+</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Vehicles Sold</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <span className="material-icons text-secondary text-5xl mb-3">verified</span>
-                            <h3 className="font-display text-2xl text-gray-900 dark:text-white">12+ Years</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Experience</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <span className="material-icons text-secondary text-5xl mb-3">payments</span>
-                            <h3 className="font-display text-2xl text-gray-900 dark:text-white">Hire Purchase</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Available</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <span className="material-icons text-secondary text-5xl mb-3">account_balance</span>
-                            <h3 className="font-display text-2xl text-gray-900 dark:text-white">Bank Finance</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Arranged</p>
-                        </div>
-                        <div className="flex flex-col items-center col-span-2 md:col-span-1">
-                            <span className="material-icons text-secondary text-5xl mb-3">build</span>
-                            <h3 className="font-display text-2xl text-gray-900 dark:text-white">Free</h3>
-                            <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">Diagnostics</p>
-                        </div>
+                        {siteConfig.stats.map((stat, idx) => (
+                            <div key={idx} className={`flex flex-col items-center ${idx === 4 ? "col-span-2 md:col-span-1" : ""}`}>
+                                <span className="material-icons text-secondary text-5xl mb-3">{stat.icon}</span>
+                                <h3 className="font-display text-2xl text-gray-900 dark:text-white">{stat.value}</h3>
+                                <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">{stat.label}</p>
+                            </div>
+                        ))}
                     </div>
                 </div>
             </section>

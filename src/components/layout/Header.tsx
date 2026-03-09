@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
+import { siteConfig } from "@/config/site";
 
 export default function Header() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -81,13 +82,13 @@ export default function Header() {
                         </Link>
 
                         <div className="mt-6 flex flex-col gap-3 text-sm text-gray-500 dark:text-gray-400">
-                            <a href="tel:+254722511803" className="flex items-center gap-3 hover:text-primary transition-colors">
+                            <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="flex items-center gap-3 hover:text-primary transition-colors">
                                 <span className="material-symbols-outlined text-primary">call</span>
-                                +254 722 511803
+                                {siteConfig.contact.phone}
                             </a>
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-primary">location_on</span>
-                                Kiambu Road, Nairobi
+                                {siteConfig.contact.address}, {siteConfig.contact.city}
                             </div>
                         </div>
                     </div>
