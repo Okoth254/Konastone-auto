@@ -1,13 +1,45 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function HeroSearchForm() {
     const router = useRouter();
     const [make, setMake] = useState("all");
     const [model, setModel] = useState("all");
     const [maxPrice, setMaxPrice] = useState("15000000");
+
+    // Dynamic Lists from DB
+    const [availableMakes, setAvailableMakes] = useState<string[]>([]);
+    const [availableModels, setAvailableModels] = useState<string[]>([]);
+
+    useEffect(() => {
+        const fetchFilters = async () => {
+            const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+            if (!isSupabaseConfigured) return;
+
+            const { data, error } = await supabase.from('vehicles').select('make, model');
+
+            if (data && !error) {
+                const uniqueMakes = Array.from(new Set(data.map(v => v.make))).sort();
+                setAvailableMakes(uniqueMakes);
+
+                // Filter models based on the selected make, if any
+                const filteredData = make === 'all' ? data : data.filter(v => v.make === make);
+                const uniqueModels = Array.from(new Set(filteredData.map(v => v.model))).sort();
+                setAvailableModels(uniqueModels);
+            }
+        };
+
+        fetchFilters();
+    }, [make]);
+
+    useEffect(() => {
+        if (make !== 'all' && availableModels.length > 0 && model !== 'all' && !availableModels.includes(model)) {
+            setModel('all');
+        }
+    }, [make, availableModels, model]);
 
     const formatPrice = (price: string) => {
         const val = parseInt(price);
@@ -37,12 +69,9 @@ export default function HeroSearchForm() {
                     id="make"
                 >
                     <option value="all">All Makes</option>
-                    <option value="Toyota">Toyota</option>
-                    <option value="Mercedes-Benz">Mercedes-Benz</option>
-                    <option value="BMW">BMW</option>
-                    <option value="Nissan">Nissan</option>
-                    <option value="Mazda">Mazda</option>
-                    <option value="Subaru">Subaru</option>
+                    {availableMakes.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                    ))}
                 </select>
             </div>
             <div>
@@ -54,12 +83,9 @@ export default function HeroSearchForm() {
                     id="model"
                 >
                     <option value="all">All Models</option>
-                    <option value="Land Cruiser">Land Cruiser</option>
-                    <option value="Prado">Prado</option>
-                    <option value="C-Class">C-Class</option>
-                    <option value="X5">X5</option>
-                    <option value="Harrier">Harrier</option>
-                    <option value="CX-5">CX-5</option>
+                    {availableModels.map((m) => (
+                        <option key={m} value={m}>{m}</option>
+                    ))}
                 </select>
             </div>
             <div>

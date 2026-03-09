@@ -2,10 +2,15 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export default function InventorySidebar() {
     const router = useRouter();
     const searchParams = useSearchParams();
+
+    // Dynamic Lists from DB
+    const [availableMakes, setAvailableMakes] = useState<string[]>([]);
+    const [availableModels, setAvailableModels] = useState<string[]>([]);
 
     // Local state for instant UI feedback before navigation
     const [status, setStatus] = useState(searchParams.get("status") || "all");
@@ -43,19 +48,41 @@ export default function InventorySidebar() {
         router.push(`/inventory?${params.toString()}`);
     };
 
-    // Auto-apply filters when simple select changes (optional, but good for UX)
+    // Fetch distinct makes and models from Supabase
     useEffect(() => {
-        // Debounce or apply immediately based on preference.
-        // For sliders, it's better to wait for the user to lift their finger,
-        // so we keep the "Apply Filters" button, or we can auto apply.
-    }, [status, make, model]);
+        const fetchFilters = async () => {
+            const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+            if (!isSupabaseConfigured) return;
 
+            const { data, error } = await supabase.from('vehicles').select('make, model');
+
+            if (data && !error) {
+                const uniqueMakes = Array.from(new Set(data.map(v => v.make))).sort();
+                setAvailableMakes(uniqueMakes);
+
+                // Filter models based on the selected make, if any
+                const filteredData = make === 'all' ? data : data.filter(v => v.make === make);
+                const uniqueModels = Array.from(new Set(filteredData.map(v => v.model))).sort();
+                setAvailableModels(uniqueModels);
+            }
+        };
+
+        fetchFilters();
+    }, [make]); // Re-fetch when make changes to update models
 
     const formatPrice = (price: string) => {
         const val = parseInt(price);
         if (val >= 1000000) return `${(val / 1000000).toFixed(1)}M`;
         return `${(val / 1000).toFixed(0)}K`;
     };
+
+    // Auto-apply if a dependency changes?
+    useEffect(() => {
+        // If the selected make changes and the current model is not applicable, reset model
+        if (make !== 'all' && availableModels.length > 0 && model !== 'all' && !availableModels.includes(model)) {
+            setModel('all');
+        }
+    }, [make, availableModels, model]);
 
     return (
         <aside className="w-full lg:w-[280px] shrink-0 flex flex-col gap-6">
@@ -102,24 +129,23 @@ export default function InventorySidebar() {
                             className="form-input flex w-full resize-none overflow-hidden rounded text-white focus:outline-0 focus:ring-1 border border-border-color bg-card-bg-hover focus:border-primary focus:ring-primary h-12 p-3 text-sm font-medium"
                         >
                             <option className="text-black" value="all">All Makes</option>
-                            <option className="text-black" value="Toyota">Toyota</option>
-                            <option className="text-black" value="Honda">Honda</option>
-                            <option className="text-black" value="Mercedes-Benz">Mercedes-Benz</option>
-                            <option className="text-black" value="BMW">BMW</option>
-                            <option className="text-black" value="Mazda">Mazda</option>
-                            <option className="text-black" value="Subaru">Subaru</option>
-                            <option className="text-black" value="Volvo">Volvo</option>
+                            {availableMakes.map((m) => (
+                                <option key={m} className="text-black" value={m}>{m}</option>
+                            ))}
                         </select>
                     </label>
                     <label className="flex flex-col gap-2">
                         <span className="text-slate-400 text-xs font-bold uppercase tracking-widest">Model</span>
-                        <input
-                            type="text"
-                            placeholder="e.g. Prado, CX-5"
-                            value={model === 'all' ? '' : model}
-                            onChange={(e) => setModel(e.target.value || 'all')}
-                            className="form-input flex w-full resize-none overflow-hidden rounded text-white focus:outline-0 focus:ring-1 border border-border-color bg-card-bg-hover focus:border-primary focus:ring-primary h-12 p-3 text-sm font-medium placeholder:text-slate-600"
-                        />
+                        <select
+                            value={model}
+                            onChange={(e) => setModel(e.target.value)}
+                            className="form-input flex w-full resize-none overflow-hidden rounded text-white focus:outline-0 focus:ring-1 border border-border-color bg-card-bg-hover focus:border-primary focus:ring-primary h-12 p-3 text-sm font-medium"
+                        >
+                            <option className="text-black" value="all">All Models</option>
+                            {availableModels.map((m) => (
+                                <option key={m} className="text-black" value={m}>{m}</option>
+                            ))}
+                        </select>
                     </label>
                 </div>
 
