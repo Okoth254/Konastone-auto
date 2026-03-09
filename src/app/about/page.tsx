@@ -43,7 +43,7 @@ export default function About() {
                 <div className="w-full h-[400px] overflow-hidden scanline relative border border-white/10 bg-surface grayscale">
                     <div className="absolute inset-0 bg-background-dark flex items-center justify-center">
                         <div className="absolute inset-0 opacity-20" style={{ backgroundImage: "radial-gradient(circle at center, #26C6DA 1px, transparent 1px)", backgroundSize: "20px 20px" }}></div>
-                        <img alt="Mombasa Map" className="w-full h-full object-cover opacity-40 mix-blend-luminosity" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6LI6RYWzu6dDCwPq_yPjYC8DLAM6jyZD1Wq0qSoOutm59vjQyedPwfA2PgNBtR0-Nqwfhf_opgCm22trIcgOpajrl6TFD5BHUhkb8eTLKN8iLiZBo11my1jZNASbnKAajyaw5-4Lofn1mlgC0-yazpTBWe2B4ODZXcxTJF8AhE4UlhG2FdbIkzOVhOq0ZTubV7IHzeMV-0fuRXzcMhKYZ61YqcFvVVTYN3K_6OCWOwCotIUtXW7vHiAmoo57W8MwxsI9gnAG09GTf" />
+                        <div className="absolute inset-0 opacity-40 mix-blend-luminosity bg-center bg-cover" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuC6LI6RYWzu6dDCwPq_yPjYC8DLAM6jyZD1Wq0qSoOutm59vjQyedPwfA2PgNBtR0-Nqwfhf_opgCm22trIcgOpajrl6TFD5BHUhkb8eTLKN8iLiZBo11my1jZNASbnKAajyaw5-4Lofn1mlgC0-yazpTBWe2B4ODZXcxTJF8AhE4UlhG2FdbIkzOVhOq0ZTubV7IHzeMV-0fuRXzcMhKYZ61YqcFvVVTYN3K_6OCWOwCotIUtXW7vHiAmoo57W8MwxsI9gnAG09GTf')" }} />
                         <div className="absolute z-10 flex flex-col items-center">
                             <div className="w-12 h-12 bg-primary/20 rounded flex items-center justify-center border border-primary/50">
                                 <span className="material-symbols-outlined text-primary text-3xl">location_on</span>
