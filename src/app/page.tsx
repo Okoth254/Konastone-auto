@@ -4,6 +4,7 @@ import { supabase } from "@/lib/supabase";
 import { Vehicle } from "@/types/database";
 import HeroSearchForm from "@/components/home/HeroSearchForm";
 import { siteConfig } from "@/config/site";
+import VehicleImage from "@/components/inventory/VehicleImage";
 
 export default async function Home() {
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -119,7 +120,7 @@ export default async function Home() {
                             return (
                                 <div key={car.id} className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
                                     <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                                        <img alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" src={imagePath} onError={(e) => { e.currentTarget.src = 'https://placehold.co/600x400/1e1e1e/333333?text=Found' }} />
+                                        <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                         {car.status === 'available' && (
                                             <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
                                                 Excellent

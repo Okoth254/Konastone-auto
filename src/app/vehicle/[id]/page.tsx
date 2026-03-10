@@ -7,6 +7,7 @@ import LeadForm from "@/components/vehicle/LeadForm";
 import fs from "fs";
 import path from "path";
 import { siteConfig } from "@/config/site";
+import VehicleImage from "@/components/inventory/VehicleImage";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;
@@ -227,11 +228,10 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
                         {similarVehicles.map(sim => (
                             <Link href={`/vehicle/${sim.id}`} key={sim.id} className="bg-surface-dark rounded-xl overflow-hidden group cursor-pointer border border-border-subtle hover:border-primary/50 transition-all">
                                 <div className="aspect-[3/2] overflow-hidden relative">
-                                    <img
+                                    <VehicleImage
                                         alt={`${sim.make} ${sim.model}`}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                                         src={`/images/inventory/${sim.folder_name}/1.jpeg`}
-                                        onError={(e) => { e.currentTarget.src = "/placeholder.jpg" }}
                                     />
                                     <div className="absolute top-2 right-2 px-2 py-1 bg-surface-dark/90 backdrop-blur rounded text-xs font-bold text-primary border border-border-subtle">
                                         {formatPrice(sim.price)}
