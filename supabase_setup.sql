@@ -11,43 +11,43 @@ CREATE TABLE IF NOT EXISTS public.vehicles (
     year INTEGER NOT NULL,
     price NUMERIC NOT NULL,
     body_type TEXT,
-    condition TEXT,
+    description TEXT,
     mileage INTEGER NOT NULL,
     transmission TEXT NOT NULL,
     fuel_type TEXT NOT NULL,
     color TEXT,
     drive_type TEXT,
-    status TEXT NOT NULL DEFAULT 'available', -- e.g., 'available', 'sold', 'in_transit'
+    status TEXT NOT NULL DEFAULT 'available', -- e.g., 'available', 'reserved', 'sold', 'in_transit'
     folder_name TEXT NOT NULL,
     is_featured BOOLEAN NOT NULL DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 2. Create the `vehicle_features` table
 CREATE TABLE IF NOT EXISTS public.vehicle_features (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID NOT NULL REFERENCES public.vehicles(id) ON DELETE CASCADE,
-    feature_name TEXT NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    feature_name TEXT NOT NULL
 );
 
 -- 3. Create the `leads` table for inquiries
 CREATE TABLE IF NOT EXISTS public.leads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     vehicle_id UUID REFERENCES public.vehicles(id) ON DELETE SET NULL,
-    name TEXT NOT NULL,
-    phone TEXT NOT NULL,
-    email TEXT,
-    message TEXT,
-    status TEXT NOT NULL DEFAULT 'new', -- e.g., 'new', 'contacted', 'closed'
+    client_name TEXT NOT NULL,
+    client_phone TEXT NOT NULL,
+    client_message TEXT,
+    status TEXT NOT NULL DEFAULT 'new', -- e.g., 'new', 'contacted', 'resolved'
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
 -- 4. Create the `customer_reviews` table
 CREATE TABLE IF NOT EXISTS public.customer_reviews (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    customer_name TEXT NOT NULL,
-    vehicle_purchased TEXT,
+    reviewer_name TEXT NOT NULL,
+    vehicle_make TEXT,
+    vehicle_model TEXT,
     rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
     comment TEXT NOT NULL,
     is_approved BOOLEAN NOT NULL DEFAULT false,
@@ -143,6 +143,6 @@ INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, 'Sunroof' FROM public.vehicles WHERE model = 'X5 xDrive40i' LIMIT 1;
 
 -- Add a sample approved review
-INSERT INTO public.customer_reviews (customer_name, vehicle_purchased, rating, comment, is_approved)
-VALUES ('John Kibet', 'Toyota Land Cruiser', 5, 'Exceptional service and quick turnaround.', true);
+INSERT INTO public.customer_reviews (reviewer_name, vehicle_make, vehicle_model, rating, comment, is_approved)
+VALUES ('John Kibet', 'Toyota', 'Land Cruiser', 5, 'Exceptional service and quick turnaround.', true);
 */
