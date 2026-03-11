@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { notFound } from "next/navigation";
@@ -11,6 +12,33 @@ import VehicleImage from "@/components/inventory/VehicleImage";
 
 // Revalidate every 60 seconds
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const resolvedParams = await params;
+    const { data: vehicle } = await supabase
+        .from('vehicles')
+        .select('*')
+        .eq('id', resolvedParams.id)
+        .single();
+        
+    if (!vehicle) return { title: 'Vehicle Not Found' };
+
+    const title = `${vehicle.year} ${vehicle.make} ${vehicle.model} — KES ${(vehicle.price / 1000000).toFixed(2)}M`;
+    const description = vehicle.description || `Buy this ${vehicle.year} ${vehicle.make} ${vehicle.model} in Mombasa. ${vehicle.mileage.toLocaleString()} km, ${vehicle.fuel_type}, ${vehicle.transmission}. Finance available.`;
+    const image = `https://konastoneautos.com/images/inventory/${vehicle.folder_name}/1.jpeg`;
+
+    return {
+        title,
+        description,
+        alternates: { canonical: `https://konastoneautos.com/vehicle/${resolvedParams.id}` },
+        openGraph: {
+            title,
+            description,
+            images: [{ url: image, width: 1200, height: 800, alt: `${vehicle.year} ${vehicle.make} ${vehicle.model}` }],
+        },
+        twitter: { card: 'summary_large_image', title, description, images: [image] },
+    };
+}
 
 export default async function VehicleDetail({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = await params;
@@ -74,6 +102,21 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
 
     return (
         <div className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 gap-8 relative z-10 scanline">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Product',
+                name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+                description: vehicle.description,
+                image: [`https://konastoneautos.com/images/inventory/${vehicle.folder_name}/1.jpeg`],
+                offers: {
+                    '@type': 'Offer',
+                    price: vehicle.price,
+                    priceCurrency: 'KES',
+                    availability: vehicle.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+                    seller: { '@type': 'Organization', name: 'Konastone Autos' },
+                },
+            }) }} />
+            
             <nav className="flex flex-wrap gap-2 text-sm text-slate-500">
                 <Link className="hover:text-primary transition-colors" href="/">Home</Link>
                 <span>/</span>

@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
@@ -5,6 +6,12 @@ import { Vehicle } from "@/types/database";
 import HeroSearchForm from "@/components/home/HeroSearchForm";
 import { siteConfig } from "@/config/site";
 import VehicleImage from "@/components/inventory/VehicleImage";
+
+export const metadata: Metadata = {
+  title: 'Premium Car Dealership in Mombasa, Kenya',
+  description: 'Konastone Autos — Mombasa\'s premier car showroom. Shop quality SUVs, sedans & hybrids. Hire purchase & bank finance available.',
+  alternates: { canonical: 'https://konastoneautos.com' },
+};
 
 export default async function Home() {
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;

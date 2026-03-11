@@ -1,8 +1,15 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import ReviewForm from "@/components/reviews/ReviewForm";
 import { Review } from "@/types/database";
+
+export const metadata: Metadata = {
+  title: 'Customer Reviews — Trusted Dealership',
+  description: 'Read genuine customer reviews for Konastone Autos. Hundreds of satisfied clients across Mombasa, Nairobi & Kenya. Share your own experience.',
+  alternates: { canonical: 'https://konastoneautos.com/reviews' },
+};
 
 export default async function Reviews() {
     let reviews: Review[] = [];

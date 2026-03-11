@@ -1,5 +1,5 @@
 -- ==============================================================
--- KONASTONE AUTOS — SEED DATA
+-- KONASTONE AUTOS — SEED DATA (REAL INVENTORY)
 -- ==============================================================
 -- Run this in your Supabase SQL Editor AFTER running supabase_setup.sql
 -- Go to: https://supabase.com/dashboard/project/dqfpvbyolyzbpoklrgdp/sql/new
@@ -7,247 +7,315 @@
 
 
 -- ==============================================================
--- VEHICLES
+-- STEP 1: CLEAR EXISTING DATA
+-- (vehicle_features deletes automatically via ON DELETE CASCADE)
+-- ==============================================================
+
+DELETE FROM public.vehicle_features;
+DELETE FROM public.vehicles;
+
+
+-- ==============================================================
+-- STEP 2: INSERT REAL VEHICLES
 -- ==============================================================
 
 INSERT INTO public.vehicles
     (make, model, year, price, mileage, transmission, fuel_type, body_type, color, drive_type, description, folder_name, is_featured, status)
 VALUES
 
--- ---- AVAILABLE (NEW ARRIVALS — is_featured = true) ----
-
+-- ---- 1. Honda Vezel Hybrid ----
 (
-    'Toyota', 'Land Cruiser Prado', 2022,
-    8500000, 24500, 'Automatic', 'Petrol', 'SUV', 'Pearl White', '4WD',
-    'Pristine condition 2022 Prado TX-L. Full leather interior, sunroof, 7-seater. Single owner, full service history. Nairobi registered.',
-    'prado-2022', true, 'available'
-),
-(
-    'Toyota', 'Fortuner', 2021,
-    5800000, 38000, 'Automatic', 'Diesel', 'SUV', 'Granite Grey', '4WD',
-    'Powerful 2.8L diesel Fortuner. Well maintained with all service records intact. Comes with bull bar and roof rack.',
-    'fortuner-2021', true, 'available'
-),
-(
-    'Mercedes-Benz', 'GLE 350', 2020,
-    9800000, 41200, 'Automatic', 'Petrol', 'SUV', 'Obsidian Black', 'AWD',
-    'Stunning GLE 350 with AMG Sport package. Panoramic roof, Burmester sound system, 360° camera, and air suspension.',
-    'gle350-2020', true, 'available'
-),
-(
-    'BMW', '3 Series 320i', 2021,
-    5200000, 29800, 'Automatic', 'Petrol', 'Sedan', 'Alpine White', '2WD',
-    'Sporty 2.0L turbo 320i M-Sport with adaptive headlights, park assist, wireless charging, and digital cockpit.',
-    'bmw-320i-2021', true, 'available'
-),
-(
-    'Toyota', 'Harrier', 2022,
-    5500000, 18700, 'Automatic', 'Petrol', 'SUV', 'Platinum White Pearl', '2WD',
-    'Brand new shape Harrier with panoramic sunroof, JBL premium sound, leather seats, and digital rear-view mirror.',
-    'harrier-2022', true, 'available'
-),
-(
-    'Lexus', 'LX 570', 2019,
-    14500000, 55000, 'Automatic', 'Petrol', 'SUV', 'Sonic Titanium', '4WD',
-    'Flagship Lexus LX570 Supersport. Mark Levinson sound, 7-seater leather, 4-zone climate, Crawl Control.',
-    'lexus-lx570-2019', true, 'available'
+    'Honda', 'Vezel Hybrid', 2019,
+    2550000, 76000, 'Automatic', 'Hybrid', 'SUV', 'Modern Steel', '2WD',
+    'Stylish 2018/19 Honda Vezel Hybrid in excellent condition. Features 1500cc hybrid engine with leather seats, push start ignition, paddle shift, reverse camera, parking sensors, xenon headlights, and alloy rims. Fuel-efficient compact SUV perfect for Nairobi roads.',
+    'honda-vezel', true, 'available'
 ),
 
--- ---- AVAILABLE (FOREIGN USED — is_featured = false) ----
-
+-- ---- 2. Toyota Landcruiser Prado TX.L ----
 (
-    'Honda', 'Fit Hybrid', 2020,
-    1750000, 42000, 'Automatic', 'Hybrid', 'Hatchback', 'Modern Steel', '2WD',
-    'Fuel-efficient Fit Hybrid in clean condition. Honda SENSING suite, Apple CarPlay, reverse camera.',
-    'honda-fit-2020', false, 'available'
+    'Toyota', 'Land Cruiser Prado TX.L', 2019,
+    8000000, 72000, 'Automatic', 'Petrol', 'SUV', 'Pearl White', '4WD',
+    'Commanding 2019 Landcruiser Prado TX.L with 2800cc engine. Features 7 leather seats, panoramic sunroof, 360° surround camera, body kit, LED headlights, daylight running lights, fog lights, alloy rims, and multifunctional steering control.',
+    'toyota-prado-txl', true, 'available'
 ),
+
+-- ---- 3. Mazda 3 Petrol ----
+(
+    'Mazda', '3 Petrol', 2019,
+    2400000, 74000, 'Automatic', 'Petrol', 'Sedan', 'Machine Grey', '2WD',
+    'Sharp 2019 Mazda 3 with 1500cc engine. Equipped with multifunctional steering control, reverse camera, parking sensors, lane assist, daylight running lights, xenon headlights, fog lights, and alloy rims. Price is negotiable.',
+    'mazda-3', false, 'available'
+),
+
+-- ---- 4. Mazda Atenza XDL ----
+(
+    'Mazda', 'Atenza XDL', 2019,
+    2600000, 55000, 'Automatic', 'Petrol', 'Sedan', 'Soul Red Crystal', '2WD',
+    'Executive 2019 Mazda Atenza XDL with 2200cc engine. Loaded with electric leather memory seats, push start ignition, 360° surround camera, Bose premium sound system, multifunctional steering, lane assist, xenon headlights, daylight running lights, fog lights, and alloy rims. Negotiable.',
+    'mazda-atenza', false, 'available'
+),
+
+-- ---- 5. Mazda CX-5 XD L Package ----
+(
+    'Mazda', 'CX-5 XD L Package', 2019,
+    3100000, 68000, 'Automatic', 'Diesel', 'SUV', 'Soul Red Crystal', '4WD',
+    'Flagship 2019 Mazda CX-5 XD L Package with 2200cc diesel engine. Loaded with keyless entry & start, full leather upholstery, Bose premium audio, power boot, Apple CarPlay/Android Auto, adaptive LED headlights, heads-up display, adaptive cruise control, lane-keep assist, blind spot monitoring, 360° bird''s eye camera, dual-zone climate, heated front seats, heated steering wheel, navigation, and rain-sensing wipers. Deposit KES 1.5M, balance over 36 months.',
+    'mazda-cx5', true, 'available'
+),
+
+-- ---- 6. Mercedes-Benz GLC 220d ----
+(
+    'Mercedes-Benz', 'GLC 220d', 2019,
+    5800000, 83000, 'Automatic', 'Diesel', 'SUV', 'Obsidian Black', 'AWD',
+    'Premium 2019 Mercedes-Benz GLC 220d with 2200cc diesel engine. Features panoramic sunroof, full leather interior, and new Nairobi registration. A refined luxury SUV at an exceptional price.',
+    'mercedez-glc', true, 'available'
+),
+
+-- ---- 7. Subaru Forester ----
 (
     'Subaru', 'Forester', 2019,
-    3200000, 68000, 'Automatic', 'Petrol', 'SUV', 'Crystal White', 'AWD',
-    'Reliable Forester with EyeSight driver assist system. Heated seats, leather trim, and 8-inch touchscreen.',
-    'subaru-forester-2019', false, 'available'
-),
-(
-    'Nissan', 'X-Trail', 2018,
-    2800000, 72000, 'Automatic', 'Petrol', 'SUV', 'Blade Silver', '4WD',
-    'Spacious 7-seat X-Trail with 360-degree Around View Monitor, ProPilot assist, and dual-zone climate.',
-    'xtrail-2018', false, 'available'
-),
-(
-    'Mazda', 'CX-5', 2020,
-    3500000, 51000, 'Automatic', 'Petrol', 'SUV', 'Soul Red Crystal', 'AWD',
-    'Stunning CX-5 in signature Soul Red Crystal. Bose premium audio, leather seats, i-Activsense safety suite.',
-    'cx5-2020', false, 'available'
-),
-(
-    'Volkswagen', 'Tiguan', 2019,
-    3900000, 58000, 'Automatic', 'Petrol', 'SUV', 'Deep Black Pearl', '4WD',
-    'Feature-packed Tiguan Highline 4MOTION. Digital cockpit, panoramic sunroof, DCC adaptive chassis.',
-    'tiguan-2019', false, 'available'
-),
-(
-    'Toyota', 'Crown Hybrid', 2020,
-    3800000, 44000, 'Automatic', 'Hybrid', 'Sedan', 'Precious Black Pearl', '2WD',
-    'Executive Crown Hybrid with exceptional fuel economy. JBL sound, radar cruise control, leather upholstery.',
-    'crown-2020', false, 'available'
+    3400000, 70000, 'Automatic', 'Petrol', 'SUV', 'Crystal White', 'AWD',
+    'Reliable 2019 Subaru Forester with 2500cc engine. Features electric leather seats, multifunctional steering control, 360° surround camera, alloy rims, fog lights, and parking sensors. A trusted all-wheel-drive family SUV.',
+    'subaru-forester', false, 'available'
 ),
 
--- ---- IN TRANSIT ----
+-- ---- 8. Toyota Fielder WXB Hybrid ----
+(
+    'Toyota', 'Fielder WXB Hybrid', 2019,
+    2100000, 60000, 'Automatic', 'Hybrid', 'Wagon', 'Silver Metallic', '2WD',
+    'Economical 2019 Toyota Fielder WXB Hybrid with 1500cc engine. Features full leather seats, alloy wheels, fog lights, and low running costs. An ideal family wagon with excellent fuel economy.',
+    'toyota-fielder-hybrid', false, 'available'
+),
 
+-- ---- 9. Toyota Harrier Hybrid Premium ----
 (
-    'BMW', 'X5 xDrive40i', 2021,
-    10500000, 32000, 'Automatic', 'Petrol', 'SUV', 'Mineral White', 'AWD',
-    'Stunning X5 40i M-Sport. Panoramic sky lounge roof, Harman Kardon sound, air suspension, M-Sport brakes. Arriving in 14 days.',
-    'bmw-x5-2021', false, 'in_transit'
+    'Toyota', 'Harrier Hybrid Premium', 2019,
+    4200000, 76000, 'Automatic', 'Hybrid', 'SUV', 'Platinum White Pearl', '2WD',
+    'Sophisticated 2019 Toyota Harrier Hybrid Premium. Powered leather seats, powered boot, JBL premium sound system, multifunctional cruise control, daylight running lights, LED headlights, and fog lights. Negotiable.',
+    'toyota-harrier', true, 'available'
 ),
+
+-- ---- 10. Toyota Land Cruiser Prado (older) ----
 (
-    'Land Rover', 'Range Rover Sport', 2020,
-    12800000, 48000, 'Automatic', 'Diesel', 'SUV', 'Santorini Black', 'AWD',
-    'Premium Range Rover Sport HSE Dynamic with meridian surround sound, sliding panoramic roof, and adaptive dynamics.',
-    'rr-sport-2020', false, 'in_transit'
+    'Toyota', 'Land Cruiser Prado', 2019,
+    4000000, 90000, 'Automatic', 'Petrol', 'SUV', 'Granite Grey', '4WD',
+    'Well-maintained 2019 Toyota Land Cruiser Prado with 2800cc petrol engine. Features leather seats, alloy wheels, and a sturdy 4WD drivetrain. A dependable off-road SUV with a proven track record.',
+    'toyota-prado', false, 'available'
 ),
+
+-- ---- 11. Volvo XC90 T5 ----
 (
-    'Mercedes-Benz', 'GLC 300', 2021,
-    7900000, 27000, 'Automatic', 'Petrol', 'SUV', 'Iridium Silver', 'AWD',
-    'GLC 300 4MATIC AMG Line. 64-colour ambient lighting, Burmester soundsystem, memory seats. ETA 14 days.',
-    'glc300-2021', false, 'in_transit'
+    'Volvo', 'XC90 T5', 2019,
+    6500000, 65000, 'Automatic', 'Petrol', 'SUV', 'Crystal White', 'AWD',
+    'Stunning 2019 Volvo XC90 T5 with 2.0L inline-4 turbocharged petrol engine. All-wheel drive with driving modes: Comfort, Eco, Dynamic Sport, Off-Road. Features 7 electric leather seats, memory seats, Scandinavian interior with wood accents, Harman Kardon premium audio, 9-inch Sensus touchscreen, Apple CarPlay, heads-up display, 360° surround camera, lane keeping aid, BLIS blind spot system, adaptive LED headlights, automatic tailgate, and multi-zone climate control. Negotiable.',
+    'volvo-xc90-2019', true, 'available'
+),
+
+-- ---- 12. Volvo XC90 B6 ----
+(
+    'Volvo', 'XC90 B6', 2022,
+    11500000, 53530, 'Automatic', 'Petrol', 'SUV', 'Crystal White', 'AWD',
+    'Prestigious 2022 Volvo XC90 B6 in pristine condition. 7-seater AWD with sunroof, roof rail, leather seats, cruise control, push start, multi-function steering, smart key, TV/navigation system, privacy glass, rear spoiler, anti-lock brakes, auto air conditioning, power windows, power steering, alloy wheels, fog lights, and airbags.',
+    'volvo-xc90-2022', true, 'available'
 );
 
 
 -- ==============================================================
--- VEHICLE FEATURES
+-- STEP 3: VEHICLE FEATURES
 -- ==============================================================
 
--- Prado 2022
+-- Honda Vezel Hybrid
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'Sunroof / Moonroof',
-    'Full Leather Seats',
-    'Adaptive Cruise Control',
-    '360° Surround Camera',
-    'Heated & Ventilated Seats',
-    'Power Tailgate',
-    '7-Seater Configuration',
-    'Blind Spot Monitor',
-    'Apple CarPlay & Android Auto'
-])
-FROM public.vehicles WHERE make = 'Toyota' AND model = 'Land Cruiser Prado' LIMIT 1;
-
--- Fortuner 2021
-INSERT INTO public.vehicle_features (vehicle_id, feature_name)
-SELECT id, unnest(ARRAY[
-    'Bull Bar & Underbody Protection',
-    'Roof Rack',
     'Leather Seats',
+    'Push Start Ignition',
+    'Paddle Shift Transmission',
     'Reverse Camera',
-    'Hill Descent Control',
-    'Terrain Management System',
-    'Toyota Safety Sense'
+    'Parking Sensors',
+    'Xenon Headlights',
+    'Fog Lights',
+    'Alloy Wheels',
+    'Multifunctional Steering Control',
+    'Hybrid Powertrain'
 ])
-FROM public.vehicles WHERE make = 'Toyota' AND model = 'Fortuner' LIMIT 1;
+FROM public.vehicles WHERE make = 'Honda' AND model = 'Vezel Hybrid' LIMIT 1;
 
--- GLE 350
+-- Toyota Landcruiser Prado TX.L
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'AMG Sport Package',
-    'Panoramic Sliding Sunroof',
-    'Burmester 3D Surround Sound',
-    '360° Camera with Parking Assist',
-    'Air Body Control Suspension',
-    'Ambient Lighting (64 Colors)',
-    'Heated & Massaging Front Seats',
-    'Head-Up Display'
+    '7-Seater Leather Interior',
+    'Panoramic Sunroof',
+    '360° Surround Camera',
+    'Body Kit',
+    'LED Headlights',
+    'Daylight Running Lights',
+    'Fog Lights',
+    'Alloy Wheels',
+    'Multifunctional Steering Control',
+    '4WD Drivetrain'
 ])
-FROM public.vehicles WHERE make = 'Mercedes-Benz' AND model = 'GLE 350' LIMIT 1;
+FROM public.vehicles WHERE make = 'Toyota' AND model = 'Land Cruiser Prado TX.L' LIMIT 1;
 
--- BMW 320i
+-- Mazda 3 Petrol
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'M-Sport Exterior Package',
-    'Digital Cockpit Pro',
-    'Wireless Apple CarPlay',
-    'Wireless Charging Pad',
-    'Park Distance Control',
+    'Reverse Camera',
+    'Parking Sensors',
+    'Lane Assist',
+    'Xenon Headlights',
+    'Daylight Running Lights',
+    'Fog Lights',
+    'Alloy Wheels',
+    'Multifunctional Steering Control'
+])
+FROM public.vehicles WHERE make = 'Mazda' AND model = '3 Petrol' LIMIT 1;
+
+-- Mazda Atenza XDL
+INSERT INTO public.vehicle_features (vehicle_id, feature_name)
+SELECT id, unnest(ARRAY[
+    'Electric Leather Memory Seats',
+    'Push Start Ignition',
+    '360° Surround Camera',
+    'Bose Premium Sound System',
+    'Multifunctional Steering Control',
+    'Lane Assist',
+    'Xenon Headlights',
+    'Daylight Running Lights',
+    'Fog Lights',
+    'Alloy Wheels'
+])
+FROM public.vehicles WHERE make = 'Mazda' AND model = 'Atenza XDL' LIMIT 1;
+
+-- Mazda CX-5 XD L Package
+INSERT INTO public.vehicle_features (vehicle_id, feature_name)
+SELECT id, unnest(ARRAY[
+    'Keyless Entry & Push Start',
+    'Full Leather Upholstery',
+    'Bose Premium Sound System',
+    'Power Boot',
+    'Apple CarPlay & Android Auto',
     'Adaptive LED Headlights',
-    'Live Cockpit Navigation'
+    'Heads-Up Display',
+    'Adaptive Cruise Control',
+    'Lane-Keep Assist & Lane Departure Warning',
+    'Blind Spot Monitoring',
+    '360° Bird''s Eye Camera',
+    'Dual-Zone Climate Control',
+    'Heated Front Seats',
+    'Heated Steering Wheel',
+    'Navigation System',
+    'Rain-Sensing Wipers',
+    'Electric Parking Brake',
+    'Smart Brake Support'
 ])
-FROM public.vehicles WHERE make = 'BMW' AND model = '3 Series 320i' LIMIT 1;
+FROM public.vehicles WHERE make = 'Mazda' AND model = 'CX-5 XD L Package' LIMIT 1;
 
--- Harrier 2022
+-- Mercedes-Benz GLC 220d
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
     'Panoramic Sunroof',
-    'JBL Premium Audio System',
     'Full Leather Interior',
-    'Digital Rear-View Mirror',
-    'Toyota Safety Sense 2.0',
-    'Blind Spot Monitor with Rear Cross Traffic Alert',
-    'Power Liftgate',
-    'Apple CarPlay & Android Auto'
+    '2200cc Diesel Engine',
+    'New Nairobi Registration',
+    'AWD Drivetrain'
 ])
-FROM public.vehicles WHERE make = 'Toyota' AND model = 'Harrier' LIMIT 1;
+FROM public.vehicles WHERE make = 'Mercedes-Benz' AND model = 'GLC 220d' LIMIT 1;
 
--- Lexus LX570
+-- Subaru Forester
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'Mark Levinson Premium Audio',
-    '7-Seater Leather Interior',
-    '4-Zone Climate Control',
-    'Crawl Control System',
-    'Multi-Terrain Select',
-    'Blind Spot Monitor',
-    'Pre-Collision System',
-    'Power Running Boards',
-    'Rear Entertainment System'
+    'Electric Leather Seats',
+    '360° Surround Camera',
+    'Multifunctional Steering Control',
+    'Alloy Wheels',
+    'Fog Lights',
+    'Parking Sensors',
+    'AWD Drivetrain'
 ])
-FROM public.vehicles WHERE make = 'Lexus' AND model = 'LX 570' LIMIT 1;
+FROM public.vehicles WHERE make = 'Subaru' AND model = 'Forester' LIMIT 1;
 
--- BMW X5 (In Transit)
+-- Toyota Fielder WXB Hybrid
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'M-Sport Package',
-    'Sky Lounge Panoramic Roof',
-    'Harman Kardon Sound System',
-    'Air Suspension',
-    'M-Sport Brakes',
-    'Gesture Control Infotainment',
-    'Wireless Charging',
-    'Active Park Distance Control',
-    'Adaptive LED Headlights'
+    'Leather Seats',
+    'Alloy Wheels',
+    'Fog Lights',
+    'Hybrid Powertrain',
+    'Automatic Transmission'
 ])
-FROM public.vehicles WHERE make = 'BMW' AND model = 'X5 xDrive40i' LIMIT 1;
+FROM public.vehicles WHERE make = 'Toyota' AND model = 'Fielder WXB Hybrid' LIMIT 1;
 
--- Range Rover Sport (In Transit)
+-- Toyota Harrier Hybrid Premium
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'Meridian Surround Sound System',
-    'Sliding Panoramic Sunroof',
-    'Adaptive Dynamics',
-    'Terrain Response 2',
-    'Heated & Cooled Front Seats',
-    'Head-Up Display',
-    'Blind Spot Assist',
-    '360° Parking Aid'
+    'Powered Leather Seats',
+    'Power Boot / Tailgate',
+    'JBL Premium Sound System',
+    'Multifunctional Cruise Control',
+    'Daylight Running Lights',
+    'LED Headlights',
+    'Fog Lights',
+    'Hybrid Powertrain'
 ])
-FROM public.vehicles WHERE make = 'Land Rover' AND model = 'Range Rover Sport' LIMIT 1;
+FROM public.vehicles WHERE make = 'Toyota' AND model = 'Harrier Hybrid Premium' LIMIT 1;
 
--- GLC 300 (In Transit)
+-- Toyota Land Cruiser Prado (older)
 INSERT INTO public.vehicle_features (vehicle_id, feature_name)
 SELECT id, unnest(ARRAY[
-    'AMG Line Exterior',
-    'Burmester Surround Sound',
-    '64-Color Ambient Lighting',
-    'Memory Pilot Seat',
-    'Active Parking Assist',
-    'Traffic Sign Assist',
-    'THERMATIC Dual-Zone Climate',
-    'Keyless Go'
+    'Leather Seats',
+    'Alloy Wheels',
+    '4WD Drivetrain',
+    'Automatic Transmission',
+    'Power Windows'
 ])
-FROM public.vehicles WHERE make = 'Mercedes-Benz' AND model = 'GLC 300' LIMIT 1;
+FROM public.vehicles WHERE make = 'Toyota' AND model = 'Land Cruiser Prado' LIMIT 1;
+
+-- Volvo XC90 T5
+INSERT INTO public.vehicle_features (vehicle_id, feature_name)
+SELECT id, unnest(ARRAY[
+    '7 Electric Leather Seats',
+    'Memory Seats',
+    'Harman Kardon Premium Sound System',
+    '9-inch Sensus Touchscreen',
+    'Apple CarPlay & Android Auto',
+    'Heads-Up Display',
+    '360° Surround Camera & Park Assist',
+    'Lane Keeping Aid & BLIS Blind Spot System',
+    'Adaptive LED Headlights',
+    'Automatic Tailgate',
+    'Multi-Zone Climate Control',
+    'Scandinavian Wood Accent Interior',
+    'Ambient Lighting',
+    'AWD with Driving Modes (Comfort / Eco / Sport / Off-Road)'
+])
+FROM public.vehicles WHERE make = 'Volvo' AND model = 'XC90 T5' LIMIT 1;
+
+-- Volvo XC90 B6
+INSERT INTO public.vehicle_features (vehicle_id, feature_name)
+SELECT id, unnest(ARRAY[
+    '7-Seater Configuration',
+    'Panoramic Sunroof',
+    'Roof Rails',
+    'Leather Seats',
+    'Cruise Control',
+    'Push Start Ignition',
+    'Smart Key',
+    'Multi-Function Steering',
+    'TV & Navigation System',
+    'Privacy Glass',
+    'Auto Air Conditioning',
+    'Power Windows & Steering',
+    'Alloy Wheels',
+    'Fog Lights',
+    'Anti-Lock Brakes',
+    'Airbag System',
+    'AWD Drivetrain'
+])
+FROM public.vehicles WHERE make = 'Volvo' AND model = 'XC90 B6' LIMIT 1;
 
 
 -- ==============================================================
--- SAMPLE APPROVED REVIEWS
+-- STEP 4: SAMPLE APPROVED REVIEWS (kept from previous seed)
 -- ==============================================================
 
 INSERT INTO public.customer_reviews
@@ -259,8 +327,8 @@ VALUES
     true
 ),
 (
-    'Sarah Njoroge', 'BMW', '3 Series', 5,
-    'Exceptional service from start to finish. The team was transparent about the condition of the car and there were no hidden costs. My 320i is a dream to drive!',
+    'Sarah Njoroge', 'Mazda', 'CX-5', 5,
+    'Exceptional service from start to finish. The team was transparent about the condition of the car and there were no hidden costs. My CX-5 is a dream to drive!',
     true
 ),
 (
@@ -269,7 +337,7 @@ VALUES
     true
 ),
 (
-    'Alice Wanjiru', 'Mercedes-Benz', 'GLE 350', 5,
+    'Alice Wanjiru', 'Volvo', 'XC90', 5,
     'I was nervous buying such a high-end vehicle but Konastone made me feel very confident. Full disclosure on the car history and a thorough pre-delivery inspection. 10/10.',
     true
 ),
@@ -279,7 +347,7 @@ VALUES
     true
 ),
 (
-    'Grace Achieng', 'Honda', 'Fit Hybrid', 5,
-    'As a first-time car buyer I was unsure what to expect but the team walked me through everything patiently. My Fit Hybrid is giving me 20+ km/l! Very happy.',
+    'Grace Achieng', 'Honda', 'Vezel Hybrid', 5,
+    'As a first-time car buyer I was unsure what to expect but the team walked me through everything patiently. My Vezel Hybrid is giving me great fuel economy! Very happy.',
     true
 );

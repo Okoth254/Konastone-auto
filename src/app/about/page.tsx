@@ -1,5 +1,12 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
+
+export const metadata: Metadata = {
+  title: 'About Us — Mombasa Car Dealer',
+  description: 'Learn about Konastone Autos — 12+ years of trusted car sales in Mombasa. Located on Moi avenue Mombasa kenya. Cash, hire purchase & trade-ins welcome.',
+  alternates: { canonical: 'https://konastoneautos.com/about' },
+};
 
 export default function About() {
     return (

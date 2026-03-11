@@ -1,8 +1,15 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { Vehicle } from "@/types/database";
 import InventorySidebar from "@/components/inventory/InventorySidebar";
 import VehicleImage from "@/components/inventory/VehicleImage";
+
+export const metadata: Metadata = {
+  title: 'Car Inventory — Browse All Vehicles',
+  description: 'Browse our full inventory of quality used cars in Mombasa, Kenya. Filter by make, model, price & fuel type. Toyota, Mazda, Volvo, Subaru & more.',
+  alternates: { canonical: 'https://konastoneautos.com/inventory' },
+};
 
 export default async function Inventory({
     searchParams,
