@@ -1,28 +1,21 @@
 import type { Metadata } from "next";
-import { Inter, Bebas_Neue, Roboto_Slab } from "next/font/google";
+import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
-const inter = Inter({
+const playfair = Playfair_Display({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-playfair",
   display: "swap",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "500", "600", "700", "800", "900"],
 });
 
-const bebasNeue = Bebas_Neue({
-  weight: "400",
+const lato = Lato({
   subsets: ["latin"],
-  variable: "--font-bebas",
+  variable: "--font-lato",
   display: "swap",
-});
-
-const robotoSlab = Roboto_Slab({
-  subsets: ["latin"],
-  variable: "--font-roboto-slab",
-  display: "swap",
-  weight: ["400", "700"],
+  weight: ["100", "300", "400", "700", "900"],
 });
 
 export const metadata: Metadata = {
@@ -75,7 +68,7 @@ export default function RootLayout({
               email: 'sales@konastoneautos.co.ke',
               address: {
                 '@type': 'PostalAddress',
-                streetAddress: 'Moi avenue Mombasa kenya',
+                streetAddress: 'Moi Avenue',
                 addressLocality: 'Mombasa',
                 addressCountry: 'KE',
               },
@@ -86,7 +79,7 @@ export default function RootLayout({
         />
       </head>
       <body className={`
-        ${inter.variable} ${bebasNeue.variable} ${robotoSlab.variable} 
+        ${playfair.variable} ${lato.variable} 
         bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-body antialiased
       `}>
         <Header />

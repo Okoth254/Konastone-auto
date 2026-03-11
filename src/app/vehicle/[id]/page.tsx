@@ -101,29 +101,30 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
     const whatsappLink = `https://wa.me/${siteConfig.contact.phoneFormatted}?text=${whatsappMessage}`;
 
     return (
-        <div className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 gap-8 relative z-10 scanline">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
-                '@context': 'https://schema.org',
-                '@type': 'Product',
-                name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
-                description: vehicle.description,
-                image: [`https://konastoneautos.com/images/inventory/${vehicle.folder_name}/1.jpeg`],
-                offers: {
-                    '@type': 'Offer',
-                    price: vehicle.price,
-                    priceCurrency: 'KES',
-                    availability: vehicle.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
-                    seller: { '@type': 'Organization', name: 'Konastone Autos' },
-                },
-            }) }} />
-            
-            <nav className="flex flex-wrap gap-2 text-sm text-slate-500">
-                <Link className="hover:text-primary transition-colors" href="/">Home</Link>
-                <span>/</span>
-                <Link className="hover:text-primary transition-colors" href="/inventory">Listings</Link>
-                <span>/</span>
-                <span className="text-slate-300">{vehicle.make} {vehicle.model}</span>
-            </nav>
+        <div className="bg-gray-50 dark:bg-[#151515] transition-colors duration-300 min-h-screen">
+            <div className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 gap-8 relative z-10 scanline">
+                <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+                    '@context': 'https://schema.org',
+                    '@type': 'Product',
+                    name: `${vehicle.year} ${vehicle.make} ${vehicle.model}`,
+                    description: vehicle.description,
+                    image: [`https://konastoneautos.com/images/inventory/${vehicle.folder_name}/1.jpeg`],
+                    offers: {
+                        '@type': 'Offer',
+                        price: vehicle.price,
+                        priceCurrency: 'KES',
+                        availability: vehicle.status === 'available' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+                        seller: { '@type': 'Organization', name: 'Konastone Autos' },
+                    },
+                }) }} />
+                
+                <nav className="flex flex-wrap gap-2 text-sm text-slate-500">
+                    <Link className="hover:text-primary transition-colors" href="/">Home</Link>
+                    <span>/</span>
+                    <Link className="hover:text-primary transition-colors" href="/inventory">Listings</Link>
+                    <span>/</span>
+                    <span className="text-slate-300">{vehicle.make} {vehicle.model}</span>
+                </nav>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                 <ImageGallery images={images} />
@@ -289,6 +290,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
                     </div>
                 </div>
             )}
+            </div>
         </div>
     );
 }

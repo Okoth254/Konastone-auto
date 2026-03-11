@@ -18,9 +18,8 @@
   --color-surface: #252525;
   --color-card-dark: #252525;
 
-  --font-display: var(--font-bebas), "Bebas Neue", "sans-serif";
-  --font-body: var(--font-inter), "Inter", "sans-serif";
-  --font-quote: var(--font-roboto-slab), "Roboto Slab", "serif";
+  --font-display: var(--font-playfair), "Playfair Display", "serif";
+  --font-body: var(--font-lato), "Lato", "sans-serif";
 
   --radius-DEFAULT: 0.5rem;
 }

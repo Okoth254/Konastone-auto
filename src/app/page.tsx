@@ -17,18 +17,41 @@ export default async function Home() {
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     let featuredVehicles: Vehicle[] = [];
+    let uniqueMakes: string[] = [];
 
     if (isSupabaseConfigured) {
-        const { data } = await supabase
+        const { data: featuredData } = await supabase
             .from('vehicles')
             .select('*')
             .eq('is_featured', true)
             .limit(3);
 
-        if (data) {
-            featuredVehicles = data;
+        if (featuredData) {
+            featuredVehicles = featuredData;
+        }
+
+        const { data: makesData } = await supabase
+            .from('vehicles')
+            .select('make');
+            
+        if (makesData) {
+            uniqueMakes = Array.from(new Set(makesData.map(v => v.make)));
         }
     }
+
+    const brandLogoMap: Record<string, { src: string, alt: string }> = {
+        'Toyota': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBGpTKbyXqBzl0SB48a3IH0iNAoIkWfq9sIVLdYi9RNibYLVMY37wnln8t3rXyOuQB5vgcmn5HRu5LxNQNBEOqlvGzL_w-Qoi1Ct59S99MSxf63k-xiGV7bSCqoQsLxInMcXiMleoGuyD6RlPlV8yhxgcK5Md6qHh57CKAbZp9LnnlH7oLs3189mr0x441O29LDgnN6QV5OIgE1AQcFHeQC8_l7iRH6Hd-01oKtnvAAxjgvj9NIq80-3bXUy9E-ubyGRME8WfBc9L1J", alt: "Toyota Logo" },
+        'Mercedes-Benz': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCezIzC19kOmVXh8npGlGJNKOT8KFSKfajyNv84p0WiHBmRA2dFSO43tnlb3-GQHI2Q90M3ldwW2_mcMOaldKbmspZnnwiy2E51R_W-BynIRKZd4LJIfK4Fn_YzmBKxF77bufaEfdu6W8Nj-PU9cmZRsGENswyDTNY1k-T6YaiYqjWE0mEiVjZC2c9BYTB6ZTJLCcNMjRLFUtIPfOG7Kw4xYmPtHBjddEfY7CI6qWyCRaFksvKJuVt5yKhtfDRJh5962yaokrpDu2_j", alt: "Mercedes Logo" },
+        'BMW': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCLpcy6TAJPd2wBSHgYYL6fGrluLt-_6fenSsIRgsBTfP2PrRK1ehSInNcfIv98QrVH_CKjiZ-5DIB2Gz0iVupyR71jafLGcZ125OsWFVujqjiHXQ_8_0bwPDDIqQAJUN4mf4M57lHd0-RFCzrCjsHJ2IuaP_O2s9P2hYKyRoxndkiTv-bb0r0hYlm3y6RYxEUtKgkW9Y2j16IOXL_vTQyI871LsmjYBXHTPdYugux2oo54KiXKoDcg8WBmZbTO6XqaTLYZWtPB6TUL", alt: "BMW Logo" },
+        'Porsche': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGLa0fOWGtgB_0SrSgNHwQjWPXG9YPYdHPVtJRhlpF3uQz-8SVpQ2lD-2tA9YQHybjup6uSBFImvQbXdilCSBcCBT4FOOOvNU_cW3AIzTSvHYOjEl8sBStS84ZK8es2KVw6ZB6FISIja05gw8skEVkvx-Yv488niA6G8GGaXkwymugUXnEO5sxBN9c5kv6gbuYppNKJ0Tt6mv9vmlRP6qvVxCk3EGsIqBnNaBsYYp8jAwS1An784_t-YXu8KP8k_gFzyTrqYEaXeER", alt: "Porsche Logo" },
+        'Nissan': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuB5GwE16yAsgMuAU1pIgBg6TxMXzDekEfkF6tbwg5IEWi7ceppWwjBt_h8b5HhIsbhij8om9Oy-xWTMDaWAdAtiJeDuUeteg6uUL6v-XxfkHxKHjHhGXWZ4Kq4qRon-YnGrwRXukpVzahtNkGSBSU3bvlDPS_BvSHuq72xO4hq9T-dAkgPTUOuWRxVoMoxffLu4ZLe-ecdP9pRNCVxwEfP2r_60vI0c_j79RLKp8XZcHMRmCyZVxglhAu2OKpIfAmlBKIEGGjEjso1B", alt: "Nissan Logo" },
+        'Audi': { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdZRuFtldngvCH5NwY_zvAoAD1_AFnmHb2RVsqUdVF6tneuOStJkAaKs5iOIyL-WMWsUEwSXdVhiOhzeoX-cDEEVbqKRo7XcmYUg0mT-wBUsC1ncV_Dw--u2mo1bMOFXctGj9PixHcBhfuimrjyQBr_fma-TRrvJtcq1xG7GulaUMzv0iYtqQ1Gv29tuhQIaJevGO1Eaxwrqo0H_MmjV_Of7TWi_UQmVCX9iT2a0XGuDo-Im1rkw1twqf3oZ9zF1iYu_i9kwCUla3Q", alt: "Audi Logo" },
+        'Mazda': { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Mazda_logo_with_emblem.svg/1024px-Mazda_logo_with_emblem.svg.png", alt: "Mazda Logo" },
+        'Subaru': { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Subaru_logo.svg/1200px-Subaru_logo.svg.png", alt: "Subaru Logo" },
+        'Honda': { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Honda_Logo.svg/1024px-Honda_Logo.svg.png", alt: "Honda Logo" },
+        'Land Rover': { src: "https://upload.wikimedia.org/wikipedia/en/thumb/8/8c/Land_Rover_logo.svg/1024px-Land_Rover_logo.svg.png", alt: "Land Rover Logo" },
+        'Volvo': { src: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3d/Volvo_logo_2021.svg/1200px-Volvo_logo_2021.svg.png", alt: "Volvo Logo" },
+    };
     return (
         <>
             {/* Hero Section */}
@@ -62,18 +85,20 @@ export default async function Home() {
                         <p className="text-gray-400 font-body text-lg">Select from our curated collection of premium automotive brands</p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
-                        {[
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuBGpTKbyXqBzl0SB48a3IH0iNAoIkWfq9sIVLdYi9RNibYLVMY37wnln8t3rXyOuQB5vgcmn5HRu5LxNQNBEOqlvGzL_w-Qoi1Ct59S99MSxf63k-xiGV7bSCqoQsLxInMcXiMleoGuyD6RlPlV8yhxgcK5Md6qHh57CKAbZp9LnnlH7oLs3189mr0x441O29LDgnN6QV5OIgE1AQcFHeQC8_l7iRH6Hd-01oKtnvAAxjgvj9NIq80-3bXUy9E-ubyGRME8WfBc9L1J", alt: "Toyota Logo" },
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCezIzC19kOmVXh8npGlGJNKOT8KFSKfajyNv84p0WiHBmRA2dFSO43tnlb3-GQHI2Q90M3ldwW2_mcMOaldKbmspZnnwiy2E51R_W-BynIRKZd4LJIfK4Fn_YzmBKxF77bufaEfdu6W8Nj-PU9cmZRsGENswyDTNY1k-T6YaiYqjWE0mEiVjZC2c9BYTB6ZTJLCcNMjRLFUtIPfOG7Kw4xYmPtHBjddEfY7CI6qWyCRaFksvKJuVt5yKhtfDRJh5962yaokrpDu2_j", alt: "Mercedes Logo" },
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuCLpcy6TAJPd2wBSHgYYL6fGrluLt-_6fenSsIRgsBTfP2PrRK1ehSInNcfIv98QrVH_CKjiZ-5DIB2Gz0iVupyR71jafLGcZ125OsWFVujqjiHXQ_8_0bwPDDIqQAJUN4mf4M57lHd0-RFCzrCjsHJ2IuaP_O2s9P2hYKyRoxndkiTv-bb0r0hYlm3y6RYxEUtKgkW9Y2j16IOXL_vTQyI871LsmjYBXHTPdYugux2oo54KiXKoDcg8WBmZbTO6XqaTLYZWtPB6TUL", alt: "BMW Logo" },
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuDGLa0fOWGtgB_0SrSgNHwQjWPXG9YPYdHPVtJRhlpF3uQz-8SVpQ2lD-2tA9YQHybjup6uSBFImvQbXdilCSBcCBT4FOOOvNU_cW3AIzTSvHYOjEl8sBStS84ZK8es2KVw6ZB6FISIja05gw8skEVkvx-Yv488niA6G8GGaXkwymugUXnEO5sxBN9c5kv6gbuYppNKJ0Tt6mv9vmlRP6qvVxCk3EGsIqBnNaBsYYp8jAwS1An784_t-YXu8KP8k_gFzyTrqYEaXeER", alt: "Porsche Logo" },
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuB5GwE16yAsgMuAU1pIgBg6TxMXzDekEfkF6tbwg5IEWi7ceppWwjBt_h8b5HhIsbhij8om9Oy-xWTMDaWAdAtiJeDuUeteg6uUL6v-XxfkHxKHjHhGXWZ4Kq4qRon-YnGrwRXukpVzahtNkGSBSU3bvlDPS_BvSHuq72xO4hq9T-dAkgPTUOuWRxVoMoxffLu4ZLe-ecdP9pRNCVxwEfP2r_60vI0c_j79RLKp8XZcHMRmCyZVxglhAu2OKpIfAmlBKIEGGjEjso1B", alt: "Nissan Logo" },
-                            { src: "https://lh3.googleusercontent.com/aida-public/AB6AXuAdZRuFtldngvCH5NwY_zvAoAD1_AFnmHb2RVsqUdVF6tneuOStJkAaKs5iOIyL-WMWsUEwSXdVhiOhzeoX-cDEEVbqKRo7XcmYUg0mT-wBUsC1ncV_Dw--u2mo1bMOFXctGj9PixHcBhfuimrjyQBr_fma-TRrvJtcq1xG7GulaUMzv0iYtqQ1Gv29tuhQIaJevGO1Eaxwrqo0H_MmjV_Of7TWi_UQmVCX9iT2a0XGuDo-Im1rkw1twqf3oZ9zF1iYu_i9kwCUla3Q", alt: "Audi Logo" }
-                        ].map((brand, idx) => (
-                            <Link key={idx} className="group glass-dark rounded-2xl w-32 h-32 flex items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href="#">
-                                <img alt={brand.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brand.src} />
-                            </Link>
-                        ))}
+                        {uniqueMakes.length > 0 ? uniqueMakes.map((make, idx) => {
+                            const brandInfo = brandLogoMap[make];
+                            return (
+                                <Link key={idx} className="group glass-dark rounded-2xl w-32 h-32 flex flex-col items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href={`/inventory?make=${make.toLowerCase()}`}>
+                                    {brandInfo ? (
+                                        <img alt={brandInfo.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brandInfo.src} />
+                                    ) : (
+                                        <span className="text-white font-display text-xl uppercase opacity-60 group-hover:opacity-100 transition-opacity">{make}</span>
+                                    )}
+                                </Link>
+                            );
+                        }) : (
+                            <div className="col-span-full text-gray-500">No brands available at the moment.</div>
+                        )}
                     </div>
                 </div>
             </section>

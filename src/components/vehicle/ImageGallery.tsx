@@ -24,22 +24,18 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             </div>
 
             {images.length > 1 && (
-                <div className="grid grid-cols-5 md:grid-cols-6 gap-2 h-20 md:h-24">
-                    {images.slice(0, 5).map((img, idx) => (
+                <div className="flex flex-nowrap gap-2 h-20 md:h-24 overflow-x-auto pb-2 custom-scrollbar scroll-smooth">
+                    {images.map((img, idx) => (
                         <div
                             key={idx}
                             onClick={() => setMainImage(img)}
-                            className={`w-full h-full rounded overflow-hidden cursor-pointer transition-all border-2 ${mainImage === img ? "border-primary" : "border-border-subtle hover:border-primary/50 opacity-70 hover:opacity-100"
-                                }`}
+                            className={`flex-none w-32 h-full rounded overflow-hidden cursor-pointer transition-all border-2 ${
+                                mainImage === img ? "border-primary" : "border-border-subtle hover:border-primary/50 opacity-70 hover:opacity-100"
+                            }`}
                         >
                             <img alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" src={img} onError={(e) => { e.currentTarget.src = "/placeholder.jpg" }} />
                         </div>
                     ))}
-                    {images.length > 5 && (
-                        <div className="relative w-full h-full rounded border border-border-subtle bg-surface-dark flex items-center justify-center cursor-pointer hover:bg-border-subtle transition-colors">
-                            <span className="text-sm font-medium text-slate-300">+{images.length - 5} Photos</span>
-                        </div>
-                    )}
                 </div>
             )}
         </div>

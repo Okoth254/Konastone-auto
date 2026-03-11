@@ -3,7 +3,7 @@ export const siteConfig = {
         phone: "+254 722 511 803",
         phoneFormatted: "+254722511803",
         email: "sales@konastoneautos.co.ke",
-        address: "Moi avenue Mombasa kenya, Mombasa, Kenya",
+        address: "Moi Avenue",
         city: "Mombasa, Kenya",
         workingHours: "Mon-Sat: 8am - 6pm",
     },
