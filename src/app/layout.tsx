@@ -19,7 +19,7 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://konastoneautos.com'),
+  metadataBase: new URL('https://konastoneautos.co.ke'),
   title: {
     default: 'Konastone Autos | Premium Car Dealership in Mombasa, Kenya',
     template: '%s | Konastone Autos',
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_KE',
-    url: 'https://konastoneautos.com',
+    url: 'https://konastoneautos.co.ke',
     siteName: 'Konastone Autos',
     title: 'Konastone Autos | Premium Car Dealership in Mombasa',
     description: 'Browse quality used & new cars in Mombasa, Kenya. Hire purchase & bank finance available.',
