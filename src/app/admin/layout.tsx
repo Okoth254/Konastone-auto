@@ -62,7 +62,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                 </main>
                 
                 <footer className="w-full px-10 py-8 border-t border-zinc-900 bg-[#131313] flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-zinc-500 font-headline text-[10px] uppercase tracking-widest">©2024 OVERDRIVE INDUSTRIAL. ALL SYSTEMS OPERATIONAL.</p>
+                    <p className="text-zinc-500 font-headline text-[10px] uppercase tracking-widest">©{new Date().getFullYear()} KONASTONE AUTOS. ALL SYSTEMS OPERATIONAL.</p>
                     <div className="flex gap-8 mt-4 md:mt-0">
                         <a className="text-zinc-600 font-headline text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Privacy Policy</a>
                         <a className="text-zinc-600 font-headline text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Terms of Service</a>

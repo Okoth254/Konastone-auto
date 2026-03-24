@@ -15,8 +15,8 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
     const availableCount = allVehicles?.filter(v => v.status === 'available').length || 0;
     const inTransitCount = allVehicles?.filter(v => v.status === 'in_transit').length || 0;
 
-    // 2. Fetch filtered paginated data
-    let query = supabase.from('vehicles').select('*', { count: 'exact' });
+    // 2. Fetch filtered paginated vehicles with their first gallery image
+    let query = supabase.from('vehicles').select('*, vehicle_images(public_url, is_main, sort_order)', { count: 'exact' });
     
     if (currentStatus) {
         query = query.eq('status', currentStatus);
@@ -138,7 +138,19 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                         {vehicles?.map((vehicle) => (
                             <div key={vehicle.id} className="bg-surface-container-high flex flex-col group border-t-2 border-transparent hover:border-admin-secondary transition-all">
                                 <div className="relative h-64 overflow-hidden">
-                                    <Image fill alt={vehicle.model} className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" src={vehicle.main_image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuBnXmNPbq6JQzkZR5_Mv2BuOClRsi7z3uaRDTc1PgAU9dJvxJVVg1zBtkWYp9fSu5WCsg1fo7ToKv1_atfqLag6P2Cx3-ngBKwkrG_Ny8o6Jt66P1a0n-8wJ3wQwQvzSevWNx5SG1AyHve5qWxRKXvTtRaTgUjvBZ83EUa3_ccoUjLyTEAeKhmjXjTonS-12IP2IIKhkRGsxWccrCIFQtVVf0gtU-VrogRZCmYC8NG5Sus2xuLcgNOdMIIQWWmuVMixf0RarhwPmFfi"} />
+                                    {(() => {
+                                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                                         const imgs = (vehicle as any).vehicle_images as { public_url: string; is_main: boolean; sort_order: number }[] | undefined;
+                                         const galleryUrl = imgs && imgs.length > 0
+                                             ? (imgs.find((i: { is_main: boolean; public_url: string }) => i.is_main)?.public_url
+                                                 || [...imgs].sort((a, b) => a.sort_order - b.sort_order)[0]?.public_url)
+                                             : null;
+                                         const imgSrc = galleryUrl
+                                             || vehicle.main_image_url
+                                             || (vehicle.folder_name ? `/images/inventory/${vehicle.folder_name}/1.jpeg` : null)
+                                             || 'https://placehold.co/800x600/1a1a1a/444444?text=No+Image';
+                                         return <Image fill alt={vehicle.model} className="object-cover grayscale group-hover:grayscale-0 transition-all duration-500 group-hover:scale-105" src={imgSrc} />;
+                                     })()}
                                     <div className="absolute top-4 left-4 flex gap-2">
                                         <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest ${
                                             vehicle.status === 'in_transit' ? 'bg-error-container text-on-error-container' : 
@@ -160,7 +172,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                             <span className="text-admin-secondary font-mono text-[10px] tracking-widest">VIN: {vehicle.vin || 'PENDING'}</span>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            <span className="block text-primary-container font-headline font-black text-xl">${Intl.NumberFormat('en-US').format(vehicle.price || 0)}</span>
+                                            <span className="block text-primary-container font-headline font-black text-xl">KSH {Intl.NumberFormat('en-KE').format(vehicle.price || 0)}</span>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-zinc-800">
