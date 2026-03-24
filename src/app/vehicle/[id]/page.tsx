@@ -5,8 +5,6 @@ import { notFound } from "next/navigation";
 import ImageGallery from "@/components/vehicle/ImageGallery";
 import FinanceCalculator from "@/components/vehicle/FinanceCalculator";
 import LeadForm from "@/components/vehicle/LeadForm";
-import fs from "fs";
-import path from "path";
 import { siteConfig } from "@/config/site";
 import VehicleImage from "@/components/inventory/VehicleImage";
 
@@ -54,41 +52,28 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
         notFound();
     }
 
-    // Fetch features
-    const { data: features } = await supabase
-        .from('vehicle_features')
-        .select('*')
-        .eq('vehicle_id', resolvedParams.id);
+    // Fetch features, similar vehicles, and gallery images in parallel
+    const [featuresResult, similarResult, imagesResult] = await Promise.all([
+        supabase.from('vehicle_features').select('*').eq('vehicle_id', resolvedParams.id),
+        supabase.from('vehicles').select('*').eq('body_type', vehicle.body_type).neq('id', vehicle.id).limit(3),
+        supabase.from('vehicle_images').select('public_url').eq('vehicle_id', resolvedParams.id).order('sort_order', { ascending: true }),
+    ]);
 
-    // Fetch similar vehicles
-    const { data: similarVehicles } = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('body_type', vehicle.body_type)
-        .neq('id', vehicle.id)
-        .limit(3);
+    const features = featuresResult.data;
+    const similarVehicles = similarResult.data;
 
-    // Get images from public folder
+    // Build gallery image array:
+    // 1. Prefer images from the vehicle_images table (uploaded via admin)
+    // 2. Fall back to main_image_url if no gallery images
+    // 3. Fall back to local folder_name path for legacy vehicles
     let images: string[] = [];
-    try {
-        const directoryPath = path.join(process.cwd(), 'public', 'images', 'inventory', vehicle.folder_name);
-        if (fs.existsSync(directoryPath)) {
-            const files = fs.readdirSync(directoryPath);
-            // Sort to ensure 1.jpeg is first
-            const sortedFiles = files.sort((a, b) => {
-                const numA = parseInt(a.split('.')[0]);
-                const numB = parseInt(b.split('.')[0]);
-                if (!isNaN(numA) && !isNaN(numB)) {
-                    return numA - numB;
-                }
-                return a.localeCompare(b);
-            });
-            images = sortedFiles.map(file => `/images/inventory/${vehicle.folder_name}/${file}`);
-        } else {
-            images = ['/placeholder.jpg'];
-        }
-    } catch (e) {
-        console.error("Error reading image directory:", e);
+    if (imagesResult.data && imagesResult.data.length > 0) {
+        images = imagesResult.data.map(img => img.public_url);
+    } else if (vehicle.main_image_url) {
+        images = [vehicle.main_image_url];
+    } else if (vehicle.folder_name) {
+        images = [`/images/inventory/${vehicle.folder_name}/1.jpeg`];
+    } else {
         images = ['/placeholder.jpg'];
     }
 

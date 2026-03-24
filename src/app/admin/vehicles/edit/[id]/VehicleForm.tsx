@@ -2,21 +2,64 @@
 
 import Link from "next/link";
 import { saveVehicle, deleteVehicle } from "../../actions";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
 
+interface ExistingImage {
+    id: string;
+    public_url: string;
+    is_main: boolean;
+    sort_order: number;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehicleId: string }) {
+export default function VehicleForm({ vehicle, vehicleId, existingImages }: { vehicle: any, vehicleId: string, existingImages: ExistingImage[] }) {
     const isNew = vehicleId === 'new';
     const [status, setStatus] = useState(vehicle?.status || 'available');
     
+    // Image state management
+    const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
+    const [keepImages, setKeepImages] = useState<ExistingImage[]>(existingImages);
+    const [deletedIds, setDeletedIds] = useState<string[]>([]);
+    const [mainImageUrl, setMainImageUrl] = useState<string>(vehicle?.main_image_url || '');
+    const [mainImageIndex, setMainImageIndex] = useState(0); // index in new previews for main
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    
     const deleteAction = deleteVehicle.bind(null, vehicleId);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const files = Array.from(e.target.files || []);
+        const newPreviews = files.map(file => ({ file, url: URL.createObjectURL(file) }));
+        setPreviews(prev => [...prev, ...newPreviews]);
+    };
+
+    const removeNewImage = (idx: number) => {
+        URL.revokeObjectURL(previews[idx].url);
+        setPreviews(prev => prev.filter((_, i) => i !== idx));
+    };
+
+    const removeExistingImage = (imgId: string) => {
+        setKeepImages(prev => prev.filter(img => img.id !== imgId));
+        setDeletedIds(prev => [...prev, imgId]);
+        if (keepImages.find(img => img.id === imgId)?.public_url === mainImageUrl) {
+            setMainImageUrl('');
+        }
+    };
+
+    const setExistingAsMain = (url: string) => {
+        setMainImageUrl(url);
+    };
     
     return (
         <form action={saveVehicle} className="flex flex-col min-h-full">
             <input type="hidden" name="id" value={vehicleId} />
             <input type="hidden" name="status" value={status} />
+            <input type="hidden" name="main_image_url" value={mainImageUrl} />
+            <input type="hidden" name="main_image_index" value={mainImageIndex.toString()} />
+            <input type="hidden" name="deleted_image_ids" value={deletedIds.join(',')} />
             
+            {/* Hidden multi-file input is handled by the ref below */}
+
             {/* TopAppBar */}
             <header className="bg-admin-surface/80 backdrop-blur-xl border-b border-primary-container/20 flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50">
                 <div className="flex items-center gap-4">
@@ -81,15 +124,11 @@ export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehi
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <div className="bg-surface-container-low p-4 space-y-2">
                                 <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Engine Details</label>
-                                <div className="flex items-baseline gap-2">
-                                    <input name="engine_type" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.engine_type || ''} placeholder="e.g. 4.0L V8" />
-                                </div>
+                                <input name="engine_type" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.engine_type || ''} placeholder="e.g. 4.0L V8" />
                             </div>
                             <div className="bg-surface-container-low p-4 space-y-2">
                                 <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Power</label>
-                                <div className="flex items-baseline gap-2">
-                                    <input name="power" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.power || ''} placeholder="e.g. 500 HP" />
-                                </div>
+                                <input name="power" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.power || ''} placeholder="e.g. 500 HP" />
                             </div>
                             <div className="bg-surface-container-low p-4 space-y-2">
                                 <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Transmission</label>
@@ -111,25 +150,86 @@ export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehi
                         </div>
                     </section>
                     
-                    {/* Section: Assets */}
+                    {/* Section: Image Gallery Manager */}
                     <section className="bg-surface-container p-6 border-l-2 border-admin-secondary">
-                        <h3 className="font-headline text-lg font-bold tracking-widest text-admin-secondary mb-8 uppercase">03. Assets & Media</h3>
-                        <div className="flex flex-col gap-1 mb-4">
-                            <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Main Image Upload</label>
-                            <input name="image_file" type="file" accept="image/*" className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all text-white outline-none w-full file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-primary-container file:text-on-primary-container hover:file:bg-amber-400 cursor-pointer" />
-                            <input type="hidden" name="main_image_url" value={vehicle?.main_image_url || ''} />
+                        <div className="flex justify-between items-start mb-8">
+                            <div>
+                                <h3 className="font-headline text-lg font-bold tracking-widest text-admin-secondary uppercase">03. Assets & Media</h3>
+                                <p className="text-[10px] text-zinc-500 mt-1">Click any image to set as the main cover image. Use the &times; to remove.</p>
+                            </div>
+                            <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 bg-admin-secondary/10 border border-admin-secondary text-admin-secondary text-[10px] font-bold tracking-widest uppercase px-4 py-2 hover:bg-admin-secondary/20 transition-colors cursor-pointer">
+                                <span className="material-symbols-outlined text-sm">add_photo_alternate</span>
+                                Add Images
+                            </button>
                         </div>
-                        {vehicle?.main_image_url && (
-                            <div className="aspect-video w-64 bg-surface-container-low group relative overflow-hidden mb-4 border border-zinc-800">
-                                <Image fill className="object-cover" src={vehicle.main_image_url} alt="Vehicle image preview" />
+
+                        {/* Hidden multi-file input */}
+                        <input
+                            ref={fileInputRef}
+                            name="gallery_images"
+                            type="file"
+                            accept="image/*"
+                            multiple
+                            onChange={handleFileChange}
+                            className="hidden"
+                        />
+
+                        {/* Gallery Grid */}
+                        {(keepImages.length > 0 || previews.length > 0) ? (
+                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                {/* Existing images from DB */}
+                                {keepImages.map((img) => (
+                                    <div
+                                        key={img.id}
+                                        onClick={() => setExistingAsMain(img.public_url)}
+                                        className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${mainImageUrl === img.public_url ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-700 hover:border-zinc-500'}`}
+                                    >
+                                        <Image fill src={img.public_url} alt="Vehicle image" className="object-cover" />
+                                        {mainImageUrl === img.public_url && (
+                                            <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={(e) => { e.stopPropagation(); removeExistingImage(img.id); }}
+                                            className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                        >
+                                            <span className="material-symbols-outlined text-xs">close</span>
+                                        </button>
+                                    </div>
+                                ))}
+
+                                {/* New preview images */}
+                                {previews.map((preview, idx) => (
+                                    <div
+                                        key={preview.url}
+                                        onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
+                                        className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${!mainImageUrl && mainImageIndex === idx ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-600 hover:border-zinc-400 border-dashed'}`}
+                                    >
+                                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                                        <img src={preview.url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                        <div className="absolute bottom-1 left-1 bg-zinc-900/80 text-[8px] font-bold text-admin-secondary px-1.5 py-0.5 uppercase tracking-widest">NEW</div>
+                                        {!mainImageUrl && mainImageIndex === idx && (
+                                            <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
+                                        )}
+                                        <button
+                                            type="button"
+                                            onClick={(e) => { e.stopPropagation(); removeNewImage(idx); }}
+                                            className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                        >
+                                            <span className="material-symbols-outlined text-xs">close</span>
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                className="border-2 border-dashed border-zinc-700 hover:border-admin-secondary transition-colors p-12 flex flex-col items-center justify-center gap-4 cursor-pointer group"
+                            >
+                                <span className="material-symbols-outlined text-4xl text-zinc-600 group-hover:text-admin-secondary transition-colors">cloud_upload</span>
+                                <p className="text-xs text-zinc-500 font-medium text-center">Click to upload vehicle images<br/><span className="text-[10px] text-zinc-600">Supports JPG, PNG, WEBP. Multiple files allowed.</span></p>
                             </div>
                         )}
-                        <div className="bg-surface-container-low border border-zinc-800 p-4 flex items-center justify-between">
-                            <div className="flex items-center gap-4">
-                                <span className="material-symbols-outlined text-amber-400">cloud_upload</span>
-                                <p className="text-[11px] text-zinc-400 font-medium">Upload a high-quality image of the vehicle. It will be stored securely and optimized.</p>
-                            </div>
-                        </div>
                     </section>
                 </div>
                 
@@ -139,7 +239,6 @@ export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehi
                     <div className="bg-surface-container p-6 space-y-6">
                         <h4 className="font-headline font-bold text-xs tracking-widest text-zinc-500 uppercase">Publishing Status</h4>
                         <div className="space-y-4">
-                            {/* Sold Toggle */}
                             <div className="flex items-center justify-between group cursor-pointer" onClick={() => setStatus(status === 'sold' ? 'available' : 'sold')}>
                                 <span className="text-xs font-headline font-bold tracking-widest uppercase text-white group-hover:text-amber-400 transition-colors">Mark as Sold</span>
                                 <div className={`w-12 h-6 relative transition-colors ${status === 'sold' ? 'bg-primary-container' : 'bg-zinc-800 border border-zinc-700'}`}>
@@ -166,10 +265,33 @@ export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehi
                         </div>
                     </div>
                     
+                    {/* Image count indicator */}
+                    {(keepImages.length > 0 || previews.length > 0) && (
+                        <div className="bg-surface-container p-4 border border-zinc-800">
+                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">Gallery Summary</p>
+                            <div className="space-y-1 text-xs">
+                                <div className="flex justify-between text-zinc-400">
+                                    <span>Saved images</span>
+                                    <span className="text-admin-secondary font-bold">{keepImages.length}</span>
+                                </div>
+                                <div className="flex justify-between text-zinc-400">
+                                    <span>New uploads</span>
+                                    <span className="text-amber-400 font-bold">{previews.length}</span>
+                                </div>
+                                {deletedIds.length > 0 && (
+                                    <div className="flex justify-between text-zinc-400">
+                                        <span>Pending deletion</span>
+                                        <span className="text-red-500 font-bold">{deletedIds.length}</span>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                    
                     {!isNew && (
                         <div className="bg-surface-container p-6 space-y-4 border-l-4 border-red-500/50">
                             <h4 className="font-headline font-bold text-xs tracking-widest text-red-500 uppercase">Danger Zone</h4>
-                            <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">Permanently delete this vehicle and remove it from all inventory views.</p>
+                            <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">Permanently delete this vehicle and all its images.</p>
                             <button formAction={deleteAction} className="w-full bg-red-500/10 text-red-500 border border-red-500/20 py-3 text-xs font-bold font-headline tracking-widest hover:bg-red-500/20 transition-colors uppercase cursor-pointer">
                                 Delete Vehicle
                             </button>
