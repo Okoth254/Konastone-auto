@@ -195,7 +195,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-4">
                 <div className="lg:col-span-2 flex flex-col gap-8">
-                    <div className="bg-[#1E1E1E] rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 border border-border-subtle">
+                    <div className="bg-background-dark rounded-xl p-6 grid grid-cols-1 md:grid-cols-3 gap-6 border border-border-subtle">
                         {siteConfig.promises.map((promise, index) => (
                             <div key={promise.id} className={`flex flex-col items-center text-center gap-2 ${index > 0 ? "border-t md:border-t-0 md:border-l border-border-subtle pt-4 md:pt-0" : ""}`}>
                                 <div className="w-12 h-12 rounded-full bg-surface-dark flex items-center justify-center text-primary mb-2 border border-border-subtle">
@@ -271,7 +271,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {similarVehicles.map(sim => (
                             <Link href={`/vehicle/${sim.id}`} key={sim.id} className="bg-surface-dark rounded-xl overflow-hidden group cursor-pointer border border-border-subtle hover:border-primary/50 transition-all">
-                                <div className="aspect-[3/2] overflow-hidden relative">
+                                <div className="aspect-3/2 overflow-hidden relative">
                                     <VehicleImage
                                         alt={`${sim.make} ${sim.model}`}
                                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

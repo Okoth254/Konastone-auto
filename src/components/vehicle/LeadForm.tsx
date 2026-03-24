@@ -37,7 +37,7 @@ export default function LeadForm({ vehicleId }: { vehicleId: string }) {
             setName("");
             setPhone("");
             setMessage("");
-        } catch (err: any) {
+        } catch (err) {
             console.error("Error submitting lead:", err);
             setError("Failed to submit. Please try again or contact us directly on WhatsApp.");
         } finally {

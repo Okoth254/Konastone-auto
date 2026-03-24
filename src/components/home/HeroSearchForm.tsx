@@ -1,8 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+
+interface VehicleOption {
+    make: string;
+    model: string;
+}
 
 export default function HeroSearchForm() {
     const router = useRouter();
@@ -10,36 +15,76 @@ export default function HeroSearchForm() {
     const [model, setModel] = useState("all");
     const [maxPrice, setMaxPrice] = useState("15000000");
 
+    // Autocomplete states
+    const [makeSearch, setMakeSearch] = useState("");
+    const [modelSearch, setModelSearch] = useState("");
+    const [showMakeDropdown, setShowMakeDropdown] = useState(false);
+    const [showModelDropdown, setShowModelDropdown] = useState(false);
+
     // Dynamic Lists from DB
-    const [availableMakes, setAvailableMakes] = useState<string[]>([]);
-    const [availableModels, setAvailableModels] = useState<string[]>([]);
+    const [availableVehicles, setAvailableVehicles] = useState<VehicleOption[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchFilters = async () => {
+            setIsLoading(true);
+            setError(null);
+
             const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-            if (!isSupabaseConfigured) return;
+            if (!isSupabaseConfigured) {
+                setError("Database not configured");
+                setIsLoading(false);
+                return;
+            }
 
-            const { data, error } = await supabase.from('vehicles').select('make, model');
+            try {
+                const { data, error: fetchError } = await supabase
+                    .from('vehicles')
+                    .select('make, model')
+                    .order('make')
+                    .order('model');
 
-            if (data && !error) {
-                const uniqueMakes = Array.from(new Set(data.map(v => v.make))).sort();
-                setAvailableMakes(uniqueMakes);
-
-                // Filter models based on the selected make, if any
-                const filteredData = make === 'all' ? data : data.filter(v => v.make === make);
-                const uniqueModels = Array.from(new Set(filteredData.map(v => v.model))).sort();
-                setAvailableModels(uniqueModels);
+                if (fetchError) {
+                    setError("Failed to load vehicle data");
+                    console.error('Vehicles fetch error:', fetchError);
+                } else if (data) {
+                    setAvailableVehicles(data);
+                }
+            } catch (err) {
+                setError("Network error loading vehicles");
+                console.error('Vehicles fetch error:', err);
+            } finally {
+                setIsLoading(false);
             }
         };
 
         fetchFilters();
-    }, [make]);
+    }, []);
+
+    // Computed filtered options
+    const filteredMakes = useMemo(() => {
+        if (!availableVehicles.length) return [];
+        const makes = Array.from(new Set(availableVehicles.map(v => v.make)));
+        return makes.filter(m => m.toLowerCase().includes(makeSearch.toLowerCase())).sort();
+    }, [availableVehicles, makeSearch]);
+
+    const filteredModels = useMemo(() => {
+        if (!availableVehicles.length) return [];
+        const models = Array.from(new Set(
+            availableVehicles
+                .filter(v => make === 'all' || v.make === make)
+                .map(v => v.model)
+        ));
+        return models.filter(m => m.toLowerCase().includes(modelSearch.toLowerCase())).sort();
+    }, [availableVehicles, make, modelSearch]);
 
     useEffect(() => {
-        if (make !== 'all' && availableModels.length > 0 && model !== 'all' && !availableModels.includes(model)) {
+        if (make !== 'all' && filteredModels.length > 0 && model !== 'all' && !filteredModels.includes(model)) {
             setModel('all');
+            setModelSearch('');
         }
-    }, [make, availableModels, model]);
+    }, [make, filteredModels, model]);
 
     const formatPrice = (price: string) => {
         const val = parseInt(price);
@@ -50,7 +95,7 @@ export default function HeroSearchForm() {
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        let params = new URLSearchParams();
+        const params = new URLSearchParams();
         if (make !== 'all') params.set('make', make);
         if (model !== 'all') params.set('model', model);
         if (maxPrice !== '15000000') params.set('maxPrice', maxPrice);
@@ -60,36 +105,122 @@ export default function HeroSearchForm() {
 
     return (
         <form onSubmit={handleSearch} className="space-y-6">
-            <div>
+            <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="make">Make</label>
-                <select
-                    value={make}
-                    onChange={(e) => setMake(e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors"
-                    id="make"
-                >
-                    <option value="all">All Makes</option>
-                    {availableMakes.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                    ))}
-                </select>
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={make === 'all' ? makeSearch : make}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (make !== 'all') {
+                                setMake('all');
+                                setModel('all');
+                                setModelSearch('');
+                            }
+                            setMakeSearch(value);
+                            setShowMakeDropdown(true);
+                        }}
+                        onFocus={() => setShowMakeDropdown(true)}
+                        onBlur={() => setTimeout(() => setShowMakeDropdown(false), 200)}
+                        className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors"
+                        placeholder="Search makes..."
+                        id="make"
+                        disabled={isLoading}
+                    />
+                    {isLoading && (
+                        <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                        </div>
+                    )}
+                    {showMakeDropdown && filteredMakes.length > 0 && (
+                        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                            <div
+                                className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                onClick={() => {
+                                    setMake('all');
+                                    setMakeSearch('');
+                                    setModel('all');
+                                    setModelSearch('');
+                                    setShowMakeDropdown(false);
+                                }}
+                            >
+                                All Makes
+                            </div>
+                            {filteredMakes.map((m) => (
+                                <div
+                                    key={m}
+                                    className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                    onClick={() => {
+                                        setMake(m);
+                                        setMakeSearch(m);
+                                        setModel('all');
+                                        setModelSearch('');
+                                        setShowMakeDropdown(false);
+                                    }}
+                                >
+                                    {m}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+                {error && (
+                    <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
+                )}
             </div>
-            <div>
+            <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="model">Model</label>
-                <select
-                    value={model}
-                    onChange={(e) => setModel(e.target.value)}
-                    className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors"
-                    id="model"
-                >
-                    <option value="all">All Models</option>
-                    {availableModels.map((m) => (
-                        <option key={m} value={m}>{m}</option>
-                    ))}
-                </select>
+                <div className="relative">
+                    <input
+                        type="text"
+                        value={model === 'all' ? modelSearch : model}
+                        onChange={(e) => {
+                            const value = e.target.value;
+                            if (model !== 'all') {
+                                setModel('all');
+                            }
+                            setModelSearch(value);
+                            setShowModelDropdown(true);
+                        }}
+                        onFocus={() => setShowModelDropdown(true)}
+                        onBlur={() => setTimeout(() => setShowModelDropdown(false), 200)}
+                        className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors disabled:opacity-50"
+                        placeholder="Search models..."
+                        id="model"
+                        disabled={isLoading || (make !== 'all' && filteredModels.length === 0)}
+                    />
+                    {showModelDropdown && filteredModels.length > 0 && (
+                        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                            <div
+                                className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                onClick={() => {
+                                    setModel('all');
+                                    setModelSearch('');
+                                    setShowModelDropdown(false);
+                                }}
+                            >
+                                All Models
+                            </div>
+                            {filteredModels.map((m) => (
+                                <div
+                                    key={m}
+                                    className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
+                                    onClick={() => {
+                                        setModel(m);
+                                        setModelSearch(m);
+                                        setShowModelDropdown(false);
+                                    }}
+                                >
+                                    {m}
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
             </div>
             <div>
-                <label className="flex justify-between block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="price">
+                <label className="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1" htmlFor="price">
                     <span>Max Price</span>
                     <span className="text-primary font-bold">Ksh {formatPrice(maxPrice)}</span>
                 </label>
@@ -106,9 +237,17 @@ export default function HeroSearchForm() {
             </div>
             <button
                 type="submit"
-                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-lg font-display tracking-widest text-gray-900 bg-primary hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors"
+                disabled={isLoading}
+                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-lg font-display tracking-widest text-gray-900 bg-primary hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
-                SEARCH INVENTORY
+                {isLoading ? (
+                    <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
+                        LOADING...
+                    </>
+                ) : (
+                    'SEARCH INVENTORY'
+                )}
             </button>
         </form>
     );

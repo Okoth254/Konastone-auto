@@ -49,7 +49,7 @@ export default function ReviewForm() {
                 setComment("");
             }, 3000);
 
-        } catch (err: any) {
+        } catch (err) {
             console.error("Error submitting review:", err);
             setError("Failed to submit review. Please try again.");
         } finally {

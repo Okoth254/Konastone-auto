@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OVERDRIVE INDUSTRIAL | VEHICLE DETAIL</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#690005",
+                        "on-primary-container": "#6d5100",
+                        "on-primary-fixed-variant": "#5b4300",
+                        "tertiary": "#ffe0dd",
+                        "secondary-fixed-dim": "#45d8ed",
+                        "secondary": "#45d8ed",
+                        "outline-variant": "#4f4632",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#353535",
+                        "on-tertiary-fixed-variant": "#93000d",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container": "#20201f",
+                        "surface": "#131313",
+                        "surface-tint": "#fabd00",
+                        "surface-container-high": "#2a2a2a",
+                        "secondary-fixed": "#98f0ff",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#ae0714",
+                        "background": "#131313",
+                        "inverse-primary": "#785900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed": "#ffdf9e",
+                        "tertiary-container": "#ffbab3",
+                        "on-secondary": "#00363d",
+                        "primary": "#ffe4af",
+                        "secondary-container": "#00bacd",
+                        "on-secondary-container": "#00444d",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-primary": "#3f2e00",
+                        "on-surface-variant": "#d4c5ab",
+                        "on-primary-fixed": "#261a00",
+                        "surface-variant": "#353535",
+                        "outline": "#9c8f78",
+                        "on-tertiary-fixed": "#410002",
+                        "surface-container-low": "#1c1b1b",
+                        "primary-container": "#ffc107",
+                        "on-secondary-fixed": "#001f24",
+                        "on-background": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "surface-dim": "#131313",
+                        "tertiary-fixed-dim": "#ffb4ac",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary": "#690006",
+                        "on-surface": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#fabd00",
+                        "on-secondary-fixed-variant": "#004f58"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0rem", "lg": "0rem", "xl": "0rem", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-dark {
+            background: rgba(20, 20, 20, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation -->
+<nav class="bg-[#131313]/80 backdrop-blur-xl border-b border-amber-400/20 docked full-width top-0 z-50 flex justify-between items-center w-full px-6 h-16 sticky">
+<div class="text-2xl font-black tracking-tighter text-amber-400 font-headline">OVERDRIVE</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-amber-400 border-b-2 border-amber-400 pb-1 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-sm" href="#">Inventory</a>
+<a class="text-zinc-400 hover:text-amber-400 transition-colors duration-150 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-sm" href="#">Finance</a>
+<a class="text-zinc-400 hover:text-amber-400 transition-colors duration-150 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-sm" href="#">Sell</a>
+<a class="text-zinc-400 hover:text-amber-400 transition-colors duration-150 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-sm" href="#">Reviews</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-zinc-400 hover:text-amber-400">search</button>
+<button class="bg-primary-container text-on-primary-container px-4 py-1.5 font-headline font-bold uppercase tracking-wider text-xs">Login</button>
+</div>
+</nav>
+<main class="max-w-[1440px] mx-auto px-6 py-8">
+<!-- Breadcrumb / System Status -->
+<div class="flex items-center gap-2 mb-8 text-[10px] uppercase tracking-widest text-secondary font-headline">
+<span class="material-symbols-outlined text-[14px]">terminal</span>
+<span>Inventory</span>
+<span class="text-zinc-600">/</span>
+<span>Industrial Haulers</span>
+<span class="text-zinc-600">/</span>
+<span class="text-on-surface">Unit #4429-X</span>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+<!-- Left: Technical Media Gallery -->
+<div class="lg:col-span-8 space-y-6">
+<div class="relative group aspect-video bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover grayscale-[0.2] hover:grayscale-0 transition-all duration-700" data-alt="Modern heavy-duty industrial prime mover truck in a dark hangar with dramatic overhead safety yellow lighting and metallic textures" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVqZFVLmw4yybuuerPoezzaELHxyvylZmhHhyFQT9JTmB3J_sszdPBNZbdBJMCuIfD43Oy9m2-gvJ_dRunnxp0W198rnh78tqjrJStd41mjg3xTwwqT2yDQQLjd7tNRVeiBIOUHm7t6Pj1iwaVQnTxhtrLIsjzO5MV-jiQAsSnV62ybyAZVJvroOlwdqLsC5L-oXnlyyM7dvg4gUbRtZZUvQJARKLBW-8rRgtNE27N5W-5vPTiCKYs08ECykZ6CgvnhDbFV3CHgTCW"/>
+<div class="absolute bottom-6 left-6 flex gap-2">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 text-[10px] font-black font-headline tracking-tighter uppercase">HIGH PERFORMANCE</span>
+<span class="bg-surface/80 backdrop-blur-md border border-zinc-700 text-on-surface px-3 py-1 text-[10px] font-bold font-headline uppercase tracking-widest">1/12 VIEWPORTS</span>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-4">
+<div class="aspect-square bg-surface-container-high border-b-2 border-secondary overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" data-alt="Close up of a powerful diesel engine block with chrome detailing and industrial hoses in a clean workshop" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCJWxcNSqccYDkFCVuCy3KmMVQ_1mmeh2eIgLm2d0qPrhCTfVSae4A_hsYKvUvkC_1hyJw-vz3itKqJsDjU_0eJaMxtQNzPIss-LySPskbP0HbkMpZAzfzYh8obM6fIa-BYkBcXzufHUTRhFoTQuYTz_bCQqUDE_xzQtoixOej5QHYNExVuWBOcYDyqeXMLIk_O7JZEm1lCMWqrR4Nq-wyOQKfLG9Lc0GqWk3tkwqLxOLU-RO0yjJm8kp34R0tDtmARPVrlOuq1_EwS"/>
+</div>
+<div class="aspect-square bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" data-alt="Interior of a modern truck cockpit with digital telemetry screens and mechanical switches illuminated in teal" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAZ0_fWwSTGxlB5lMt2baWV736cotGqkf-xDKVuFEFirtI80y4oTGjFXO5EfqQH3W3mqlr3YsAK-3V50seMJ6BFVYwpNmxTJe7KbWpimlMfRSujxAIBS8Uhf6hAGwp_PMbaO4WcDzAsXkbogXj3RiGgRIIJUhYB3LUayXhHd-qSJY13FH9bj3Xl4nPuqc9y1_2iqmtFbrPgyJTh-YTVHctFxEN59CZlbSNpaDucGNO-H8vIYo4XMOhWtgGN2cZDVHx0lfEmYqDjWi_G"/>
+</div>
+<div class="aspect-square bg-surface-container-high overflow-hidden">
+<img class="w-full h-full object-cover opacity-60 hover:opacity-100 transition-opacity" data-alt="Industrial truck tire and alloy wheel assembly on a dark asphalt surface with dramatic side lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNeq-k4DiVJdlya_rJcOTpC6cvZZzk2QBiuVwT0DyPSixuvykiJ91F55ZZszBT9Gz3F6CF89JjnzeA9EGGZl7H333WD9apVSZyjLHCkjBiUm6bbmu7TyDcTDiygMhoKFb75RoGJbNYxIOOb6VanKjPlTdoZVNAVP3GYHQz2g6ciBVUcFz3IK8onkwJij6rA4l2_0hlXU5B_e793Ofrj5A2iJLDFsHb4oJOCLNWSt52OF-OANeGDkIf4EudsB53Ez_7XnM0DBp4OMfj"/>
+</div>
+<div class="aspect-square bg-surface-container-high relative flex items-center justify-center border border-zinc-800 hover:border-zinc-600 transition-colors cursor-pointer group">
+<div class="text-center">
+<span class="material-symbols-outlined text-secondary text-3xl mb-1 group-hover:scale-110 transition-transform">grid_view</span>
+<div class="text-[10px] font-headline uppercase tracking-widest text-zinc-500">+8 ASSETS</div>
+</div>
+</div>
+</div>
+<!-- Key Specs Grid -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-px bg-zinc-800 border border-zinc-800">
+<div class="bg-surface-container p-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="settings_input_component">settings_input_component</span>
+<span class="text-[10px] font-headline tracking-widest text-zinc-500 uppercase">Engine</span>
+</div>
+<div class="text-xl font-headline font-bold text-on-surface">V12 HYBRID</div>
+</div>
+<div class="bg-surface-container p-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="speed">speed</span>
+<span class="text-[10px] font-headline tracking-widest text-zinc-500 uppercase">Power</span>
+</div>
+<div class="text-xl font-headline font-bold text-on-surface">750 HP</div>
+</div>
+<div class="bg-surface-container p-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="history">history</span>
+<span class="text-[10px] font-headline tracking-widest text-zinc-500 uppercase">Runtime</span>
+</div>
+<div class="text-xl font-headline font-bold text-on-surface">1,240 HRS</div>
+</div>
+<div class="bg-surface-container p-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary text-xl" data-icon="calendar_today">calendar_today</span>
+<span class="text-[10px] font-headline tracking-widest text-zinc-500 uppercase">Year</span>
+</div>
+<div class="text-xl font-headline font-bold text-on-surface">2024 REV.2</div>
+</div>
+</div>
+<!-- Technical Details -->
+<div class="space-y-4">
+<h2 class="text-2xl font-headline font-black uppercase tracking-tighter border-l-4 border-primary-container pl-4">ENGINEERING SPECIFICATIONS</h2>
+<p class="text-on-surface-variant leading-relaxed max-w-3xl">
+                        Built for high-torque logistics and extreme endurance. This unit features the updated Gen-4 drivetrain with integrated telemetry syncing. Condition: Grade A+. All service logs verified.
+                    </p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<div class="bg-surface-container-high p-4 flex justify-between items-center">
+<span class="text-xs uppercase tracking-widest text-zinc-500">Chassis ID</span>
+<span class="font-mono text-secondary text-sm">OV-IND-992-KLD</span>
+</div>
+<div class="bg-surface-container-high p-4 flex justify-between items-center">
+<span class="text-xs uppercase tracking-widest text-zinc-500">Fuel System</span>
+<span class="text-on-surface text-sm font-bold uppercase">Direct Injection Diesel</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Price & Tools -->
+<div class="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
+<!-- Price Panel -->
+<div class="bg-surface-container-high p-8 border-t-4 border-primary-container">
+<div class="flex justify-between items-start mb-6">
+<div>
+<h1 class="text-3xl font-headline font-black uppercase tracking-tighter leading-none mb-1">TITAN-X 2024</h1>
+<p class="text-secondary text-[10px] font-headline tracking-[0.2em] uppercase font-medium">Model Code: 4429-X-PREMIUM</p>
+</div>
+<div class="bg-primary-container px-2 py-1">
+<span class="material-symbols-outlined text-on-primary-container text-lg">verified</span>
+</div>
+</div>
+<div class="mb-8">
+<div class="text-[10px] uppercase tracking-widest text-zinc-500 font-headline mb-1">Current Valuation</div>
+<div class="text-5xl font-headline font-black text-primary-container">$184,500<span class="text-xl font-medium text-zinc-600 ml-1">USD</span></div>
+</div>
+<button class="w-full bg-primary-container text-on-primary-container py-4 font-headline font-black uppercase tracking-widest text-sm flex items-center justify-center gap-3 hover:bg-primary-fixed-dim transition-colors group">
+                        ACQUIRE UNIT
+                        <span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+<button class="w-full mt-3 border border-secondary text-secondary py-4 font-headline font-bold uppercase tracking-widest text-xs hover:bg-secondary/10 transition-colors">
+                        REQUEST INSPECTION
+                    </button>
+</div>
+<!-- HP Calculator -->
+<div class="bg-surface-container p-6 space-y-6">
+<div class="flex items-center gap-2 mb-2">
+<span class="material-symbols-outlined text-secondary" data-icon="calculate">calculate</span>
+<h3 class="text-sm font-headline font-black uppercase tracking-widest">FINANCE CALCULATOR</h3>
+</div>
+<div class="space-y-4">
+<div class="space-y-2">
+<div class="flex justify-between text-[10px] uppercase tracking-widest text-zinc-500">
+<span>TERM LENGTH</span>
+<span class="text-secondary">24 MONTHS</span>
+</div>
+<input class="w-full h-1 bg-surface-container-highest appearance-none cursor-pointer accent-primary-container" max="36" min="12" type="range" value="24"/>
+<div class="flex justify-between text-[8px] font-headline text-zinc-600">
+<span>12M</span>
+<span>36M</span>
+</div>
+</div>
+<div class="pt-4 border-t border-zinc-800">
+<div class="flex justify-between items-center">
+<span class="text-[10px] uppercase tracking-widest text-zinc-400">EST. MONTHLY</span>
+<span class="text-2xl font-headline font-black text-on-surface">$7,420</span>
+</div>
+<p class="text-[8px] text-zinc-600 mt-2 italic leading-tight">Rate subject to credit approval. 5% APR estimated.</p>
+</div>
+</div>
+</div>
+<!-- Value-Add Cards -->
+<div class="grid grid-cols-1 gap-3">
+<div class="bg-surface-container-high p-4 flex items-center gap-4 hover:bg-surface-container-highest transition-colors cursor-pointer border-l-2 border-secondary">
+<div class="bg-secondary/20 p-2">
+<span class="material-symbols-outlined text-secondary" data-icon="shield">shield</span>
+</div>
+<div>
+<div class="text-[10px] font-headline font-black uppercase tracking-widest text-on-surface">Platinum Warranty</div>
+<div class="text-[9px] uppercase tracking-tighter text-zinc-500">36 MO / 5000 HR FULL COVERAGE</div>
+</div>
+</div>
+<div class="bg-surface-container-high p-4 flex items-center gap-4 hover:bg-surface-container-highest transition-colors cursor-pointer border-l-2 border-zinc-700">
+<div class="bg-zinc-800 p-2">
+<span class="material-symbols-outlined text-zinc-400" data-icon="local_shipping">local_shipping</span>
+</div>
+<div>
+<div class="text-[10px] font-headline font-black uppercase tracking-widest text-on-surface">Global Transfer</div>
+<div class="text-[9px] uppercase tracking-tighter text-zinc-500">PRIORITY SHIPPING TO 42 HUBS</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Content Section -->
+<div class="mt-20 space-y-12">
+<!-- Reviews Section - Glass Dark -->
+<section class="glass-dark p-8 border-l-4 border-secondary">
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="text-2xl font-headline font-black uppercase tracking-tighter">OPERATOR FEEDBACK</h2>
+<div class="flex gap-1 mt-1">
+<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-primary-container text-xs" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-[10px] font-headline uppercase tracking-widest text-secondary ml-2">4.9 AVERAGE</span>
+</div>
+</div>
+<button class="text-xs font-headline font-bold uppercase tracking-widest text-secondary border-b border-secondary pb-1">VIEW ALL REVIEWS</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-zinc-800 flex items-center justify-center text-[10px] font-headline font-bold">MK</div>
+<div>
+<div class="text-[10px] font-headline font-bold uppercase tracking-widest">MARCUS K.</div>
+<div class="text-[9px] text-zinc-600 uppercase">FLEET MANAGER, OSLO</div>
+</div>
+</div>
+<p class="text-sm italic text-zinc-400">"The torque profile on the Titan-X is unparalleled. We've seen a 12% increase in fuel efficiency over the previous gen."</p>
+</div>
+<div class="space-y-3">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 bg-zinc-800 flex items-center justify-center text-[10px] font-headline font-bold">SD</div>
+<div>
+<div class="text-[10px] font-headline font-bold uppercase tracking-widest">SARAH D.</div>
+<div class="text-[9px] text-zinc-600 uppercase">LOGISTICS TECH, BERLIN</div>
+</div>
+</div>
+<p class="text-sm italic text-zinc-400">"Maintenance intervals are actually matching the telemetry predictions. Highly reliable engineering."</p>
+</div>
+</div>
+</section>
+<!-- Similar Vehicles - Glass Dark -->
+<section class="space-y-6">
+<h2 class="text-sm font-headline font-black uppercase tracking-widest flex items-center gap-2">
+<span class="w-8 h-[2px] bg-primary-container"></span>
+                    SIMILAR OPERATIONAL UNITS
+                </h2>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+<!-- Similar Card 1 -->
+<div class="glass-dark group cursor-pointer overflow-hidden border border-zinc-900 hover:border-zinc-700 transition-all">
+<div class="h-48 overflow-hidden">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Industrial semi-trailer truck parked at a modern loading dock with blue twilight lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAqlfuNpHcHk4WK590DlwFoAC8VKoITMoLOdW1PzKwS-Y1eANRuO_NY1b2o-99J24lvFvJYMSzeqSWuY726NyZzaPV7hBkhaeib26PtpLwDZ15BWVU4LoLhK44cN9lQ7frOscLmagHt0KPOs4UTPKc7WAnVXoEUDkGKGdCTY20-Etqx1wrPC79Ns-Q1080sxOMXpqt_8RDHkg6doM23Bq7MOtwYZEWsLzAFYxlcxeCD8zWF4IV-4JJspfnOYyXJLmBT3nmCmdabdkO-"/>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-headline font-black uppercase tracking-widest text-on-surface">TITAN-X 2023</span>
+<span class="text-xs font-bold text-primary-container">$165,000</span>
+</div>
+<div class="flex gap-4 text-[9px] uppercase tracking-tighter text-zinc-500">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">history</span> 2.4K HRS</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">location_on</span> MUNICH</span>
+</div>
+</div>
+</div>
+<!-- Similar Card 2 -->
+<div class="glass-dark group cursor-pointer overflow-hidden border border-zinc-900 hover:border-zinc-700 transition-all">
+<div class="h-48 overflow-hidden">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Front view of a rugged industrial construction vehicle with large yellow crane arm at sunset" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUvukVti6kc28avqCRVNz7lYogchff2Kkn-orXXyRjI9Vzw-EWDC3_2VtSEni3X4RCcd3zwKWtoY9wWwdg5mNB5s1jTaX1SGkYh26yDANDb_rzKvuYLaEjoAu6-y2HbjbZfx876GLHyMtKpjWEnI2mntAVy3_et4KQzVqOuubfkJrbPhZLsgyja7PvwRE7IIlp7akFdYwAN3nFDq_VhIRCZypxVKj4fr3AD0TPIb7IXpE7N3X_7W53RBrOpnVpoXg_ZA6s_4gyf8Hx"/>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-headline font-black uppercase tracking-widest text-on-surface">TITAN-PRO 2024</span>
+<span class="text-xs font-bold text-primary-container">$210,000</span>
+</div>
+<div class="flex gap-4 text-[9px] uppercase tracking-tighter text-zinc-500">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">history</span> 450 HRS</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">location_on</span> CHICAGO</span>
+</div>
+</div>
+</div>
+<!-- Similar Card 3 -->
+<div class="glass-dark group cursor-pointer overflow-hidden border border-zinc-900 hover:border-zinc-700 transition-all">
+<div class="h-48 overflow-hidden">
+<img class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500 scale-105 group-hover:scale-100" data-alt="Line of industrial logistics trucks in a warehouse terminal with high contrast lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCPEhLFgGCKfckr687AAYsmIAhGzviOVsmSdW-hB8jCUTP6GyWf0WTK3MezEITr9EiM_NXTKcfX__vLkQVIW4W2zgru2k4cH-_PgYa1llR976a4C1uHx181bbfMud5-eHvGxBEg8gTxobLvKJRmvoKLLOGCGPqDCVqrxA9_Iy-Am9FcuUYBapDutCnmsOmdX24Ry2xhtZ38yWDSAGRoDuPwG4_cjTrG3Qi4WpRwZOe_mZGLhx6D2sZGyTSMbbFZ8IYFExft137At3vb"/>
+</div>
+<div class="p-4">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-headline font-black uppercase tracking-widest text-on-surface">CORE-S 2024</span>
+<span class="text-xs font-bold text-primary-container">$142,500</span>
+</div>
+<div class="flex gap-4 text-[9px] uppercase tracking-tighter text-zinc-500">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">history</span> 1.1K HRS</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[12px] text-secondary">location_on</span> LONDON</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-[#131313] border-t border-zinc-900 w-full px-10 flex flex-col md:flex-row justify-between items-center py-8 mt-20">
+<div class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-500 mb-4 md:mb-0">
+            ©2024 OVERDRIVE INDUSTRIAL. ALL SYSTEMS OPERATIONAL.
+        </div>
+<div class="flex gap-8">
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300 transition-colors" href="#">Privacy Policy</a>
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300 transition-colors" href="#">Terms of Service</a>
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300 transition-colors" href="#">Dealer Portal</a>
+</div>
+</footer>
+</body></html>

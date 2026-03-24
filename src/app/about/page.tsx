@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 
 export const metadata: Metadata = {
   title: 'About Us — Mombasa Car Dealer',
@@ -20,7 +19,7 @@ export default function About() {
                     ABOUT KONASTONE
                 </h2>
                 <p className="text-lg text-slate-400 leading-relaxed font-body">
-                    Welcome to Konastone Autos, Mombasa's premier destination for high-quality vehicles. We pride ourselves on offering a seamless car buying experience, combining a modern digital showroom with exceptional customer service. Whether you're looking for cash purchases, flexible finance options, or fair trade-in evaluations, our dedicated team is here to guide you every step of the way.
+                    Welcome to Konastone Autos, Mombasa&apos;s premier destination for high-quality vehicles. We pride ourselves on offering a seamless car buying experience, combining a modern digital showroom with exceptional customer service. Whether you&apos;re looking for cash purchases, flexible finance options, or fair trade-in evaluations, our dedicated team is here to guide you every step of the way.
                 </p>
                 <div className="flex flex-wrap justify-center gap-4 mt-4">
                     <div className="bg-surface px-6 py-3 rounded border border-white/5 flex items-center gap-2 hover:border-accent/50 transition-colors">
@@ -44,7 +43,7 @@ export default function About() {
                         <span className="material-symbols-outlined text-primary">location_on</span> OUR LOCATION
                     </h3>
                     <div className="font-mono text-sm text-slate-400 bg-surface px-4 py-2 border border-white/5">
-                        <span className="text-accent mr-2">COORD:</span>4°02'58.2"S 39°40'09.1"E
+                        <span className="text-accent mr-2">COORD:</span>4°02&apos;58.2&quot;S 39°40&apos;09.1&quot;E
                     </div>
                 </div>
                 <div className="w-full h-[400px] overflow-hidden scanline relative border border-white/10 bg-surface grayscale">

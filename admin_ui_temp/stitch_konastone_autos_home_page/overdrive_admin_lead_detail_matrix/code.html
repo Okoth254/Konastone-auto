@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>OVERDRIVE INDUSTRIAL | Lead Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "on-error": "#690005",
+                        "on-primary-container": "#6d5100",
+                        "on-primary-fixed-variant": "#5b4300",
+                        "tertiary": "#ffe0dd",
+                        "secondary-fixed-dim": "#45d8ed",
+                        "secondary": "#45d8ed",
+                        "outline-variant": "#4f4632",
+                        "error": "#ffb4ab",
+                        "surface-container-highest": "#353535",
+                        "on-tertiary-fixed-variant": "#93000d",
+                        "inverse-surface": "#e5e2e1",
+                        "surface-container": "#20201f",
+                        "surface": "#131313",
+                        "surface-tint": "#fabd00",
+                        "surface-container-high": "#2a2a2a",
+                        "secondary-fixed": "#98f0ff",
+                        "error-container": "#93000a",
+                        "on-tertiary-container": "#ae0714",
+                        "background": "#131313",
+                        "inverse-primary": "#785900",
+                        "surface-container-lowest": "#0e0e0e",
+                        "primary-fixed": "#ffdf9e",
+                        "tertiary-container": "#ffbab3",
+                        "on-secondary": "#00363d",
+                        "primary": "#ffe4af",
+                        "secondary-container": "#00bacd",
+                        "on-secondary-container": "#00444d",
+                        "tertiary-fixed": "#ffdad6",
+                        "on-primary": "#3f2e00",
+                        "on-surface-variant": "#d4c5ab",
+                        "on-primary-fixed": "#261a00",
+                        "surface-variant": "#353535",
+                        "outline": "#9c8f78",
+                        "on-tertiary-fixed": "#410002",
+                        "surface-container-low": "#1c1b1b",
+                        "primary-container": "#ffc107",
+                        "on-secondary-fixed": "#001f24",
+                        "on-background": "#e5e2e1",
+                        "surface-bright": "#393939",
+                        "surface-dim": "#131313",
+                        "tertiary-fixed-dim": "#ffb4ac",
+                        "inverse-on-surface": "#313030",
+                        "on-tertiary": "#690006",
+                        "on-surface": "#e5e2e1",
+                        "on-error-container": "#ffdad6",
+                        "primary-fixed-dim": "#fabd00",
+                        "on-secondary-fixed-variant": "#004f58"
+                    },
+                    fontFamily: {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    },
+                    borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-dark {
+            background: rgba(20, 20, 19, 0.8);
+            backdrop-filter: blur(20px);
+        }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #131313; }
+        ::-webkit-scrollbar-thumb { background: #353535; }
+        ::-webkit-scrollbar-thumb:hover { background: #45d8ed; }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- TopNavBar -->
+<nav class="bg-[#131313]/80 backdrop-blur-xl border-b border-amber-400/20 docked full-width top-0 z-50 flex justify-between items-center w-full px-6 h-16 fixed">
+<div class="text-2xl font-black tracking-tighter text-amber-400 font-headline">OVERDRIVE</div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-zinc-400 hover:text-amber-400 transition-colors duration-150" href="#">Inventory</a>
+<a class="font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-zinc-400 hover:text-amber-400 transition-colors duration-150" href="#">Finance</a>
+<a class="font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-zinc-400 hover:text-amber-400 transition-colors duration-150" href="#">Sell</a>
+<a class="font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold text-zinc-400 hover:text-amber-400 transition-colors duration-150" href="#">Reviews</a>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500 text-sm">search</span>
+<input class="bg-surface-container border-none focus:ring-1 focus:ring-primary-container text-xs font-headline tracking-widest pl-10 pr-4 py-2 w-48 transition-all" placeholder="SYSTEM SEARCH..." type="text"/>
+</div>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 font-headline font-bold uppercase text-sm hover:bg-primary-fixed-dim active:scale-95 transition-all">Login</button>
+</div>
+</nav>
+<!-- SideNavBar -->
+<aside class="bg-[#131313] border-r border-zinc-800 flex flex-col h-screen fixed left-0 top-0 z-40 w-64 hidden lg:flex">
+<div class="p-6 pt-20">
+<div class="text-amber-400 font-bold tracking-widest font-headline mb-1">COMMAND CENTER</div>
+<div class="text-[10px] text-secondary font-mono tracking-[0.2em] mb-8 flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-secondary animate-pulse"></span> SYSTEM ACTIVE
+            </div>
+<button class="w-full bg-secondary text-on-secondary px-4 py-3 font-headline font-bold text-xs tracking-widest mb-8 hover:bg-secondary-fixed transition-colors">NEW LISTING</button>
+<nav class="space-y-1">
+<a class="flex items-center gap-4 text-zinc-500 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest hover:bg-zinc-800/50 hover:text-zinc-200 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span> Dashboard
+                </a>
+<a class="flex items-center gap-4 text-zinc-500 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest hover:bg-zinc-800/50 hover:text-zinc-200 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="directions_car">directions_car</span> Inventory
+                </a>
+<a class="flex items-center gap-4 bg-zinc-800 text-cyan-400 border-l-4 border-cyan-400 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest" href="#">
+<span class="material-symbols-outlined" data-icon="leaderboard">leaderboard</span> Leads
+                </a>
+<a class="flex items-center gap-4 text-zinc-500 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest hover:bg-zinc-800/50 hover:text-zinc-200 transition-all duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span> Moderation
+                </a>
+</nav>
+</div>
+<div class="mt-auto p-6 border-t border-zinc-900">
+<nav class="space-y-1">
+<a class="flex items-center gap-4 text-zinc-500 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span> Settings
+                </a>
+<a class="flex items-center gap-4 text-zinc-500 px-4 py-3 font-['Space_Grotesk'] text-xs font-medium tracking-widest hover:text-zinc-200" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span> Support
+                </a>
+</nav>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="lg:ml-64 pt-24 pb-32 px-6 min-h-screen">
+<header class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+<div>
+<nav class="flex items-center gap-2 text-[10px] font-headline tracking-[0.2em] text-zinc-500 uppercase mb-2">
+<a class="hover:text-secondary" href="#">CRM</a>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<a class="hover:text-secondary" href="#">Active Leads</a>
+<span class="material-symbols-outlined text-[12px]">chevron_right</span>
+<span class="text-secondary">LD-99203</span>
+</nav>
+<h1 class="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface uppercase leading-none">Marcus Thorne</h1>
+<p class="text-zinc-500 font-mono text-xs mt-2 tracking-widest">UID: 0x99203-AF1-2024</p>
+</div>
+<div class="flex gap-4">
+<button class="border border-secondary text-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-secondary/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="mail">mail</span> EMAIL CUSTOMER
+                </button>
+<button class="border border-secondary text-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-secondary/10 transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="call">call</span> INITIATE CALL
+                </button>
+</div>
+</header>
+<!-- Technical Layout Grid -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6">
+<!-- Left Column: Customer Profile & Vehicle -->
+<div class="xl:col-span-8 space-y-6">
+<!-- Customer Info Card -->
+<section class="bg-surface-container-high border-l-2 border-secondary p-6">
+<div class="flex justify-between items-start mb-8">
+<h2 class="font-headline font-bold text-xs tracking-[0.2em] text-secondary uppercase">Lead Parameters</h2>
+<span class="bg-secondary/10 text-secondary text-[10px] font-mono px-2 py-1 tracking-widest">VERIFIED IDENTITY</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<div>
+<p class="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Contact Point</p>
+<p class="text-lg font-headline font-medium">m.thorne@industrial.com</p>
+</div>
+<div>
+<p class="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Direct Line</p>
+<p class="text-lg font-headline font-medium">+1 (555) 902-1142</p>
+</div>
+<div>
+<p class="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Location</p>
+<p class="text-lg font-headline font-medium">Detroit, MI Hub</p>
+</div>
+</div>
+</section>
+<!-- Vehicle of Interest -->
+<section class="bg-surface-container-high relative overflow-hidden group">
+<div class="absolute top-0 left-0 w-1 h-full bg-primary-container"></div>
+<div class="grid grid-cols-1 md:grid-cols-5 h-full">
+<div class="md:col-span-2 relative min-h-[240px]">
+<img class="absolute inset-0 w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" data-alt="high-performance black industrial truck with aggressive design parked in a moody concrete warehouse with neon teal accents" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCsSuU67TPdaE6eeNJAho_zbXbiY97HhvJHP_XlaSjKT7PlukLr38y9cH4kINY6SuEsyNEtMm4cKxRTm_CZ6m3sxRMX2Mhe964vY_I5jHiJYANFH9OW_iTj1N7arIIj9ah8jCnWiJiO6LqsgP7_3_FzIXRRDVvGQUZFL4H7RnXuOrISSYqMf3UOKBgLD8X6jUnbahaKacCStMGTOls0yWv8vMoQuqWrnm1gCH5JHARqst64lGniyQVt5SAXleTU_Pm69SDP52YauiZL"/>
+<div class="absolute inset-0 bg-gradient-to-r from-surface-container-high via-transparent to-transparent md:bg-gradient-to-l opacity-60"></div>
+</div>
+<div class="md:col-span-3 p-8 flex flex-col justify-center">
+<h2 class="font-headline font-bold text-xs tracking-[0.2em] text-primary-container uppercase mb-4">Target Inventory</h2>
+<h3 class="text-3xl font-black font-headline tracking-tighter mb-2">2024 VANGUARD X-TREME</h3>
+<div class="flex flex-wrap gap-4 mb-6">
+<div class="bg-surface-container-highest px-3 py-1 border border-zinc-700">
+<span class="text-[9px] text-zinc-500 block">VIN SERIAL</span>
+<span class="font-mono text-xs font-bold">VN-9942001-X</span>
+</div>
+<div class="bg-surface-container-highest px-3 py-1 border border-zinc-700">
+<span class="text-[9px] text-zinc-500 block">PRICE SPEC</span>
+<span class="font-mono text-xs font-bold">$142,500.00</span>
+</div>
+<div class="bg-surface-container-highest px-3 py-1 border border-zinc-700">
+<span class="text-[9px] text-zinc-500 block">STATUS</span>
+<span class="font-mono text-xs font-bold text-secondary">IN STOCK</span>
+</div>
+</div>
+<button class="text-secondary text-[10px] font-headline font-bold tracking-[0.2em] flex items-center gap-2 hover:gap-4 transition-all">
+                                VIEW FULL SPEC SHEET <span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Notes / Additional Specs -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="bg-surface-container-low border border-zinc-800 p-6">
+<h4 class="font-headline font-bold text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-4">Trade-In Profile</h4>
+<div class="flex items-center gap-4 bg-surface-container p-4">
+<span class="material-symbols-outlined text-secondary" data-icon="no_crash">no_crash</span>
+<div>
+<p class="text-xs font-bold uppercase">2020 Nomad Heavy Duty</p>
+<p class="text-[10px] text-zinc-500">Estimated Value: $42,000</p>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-low border border-zinc-800 p-6">
+<h4 class="font-headline font-bold text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-4">Finance Status</h4>
+<div class="flex items-center gap-4 bg-surface-container p-4">
+<span class="material-symbols-outlined text-primary-container" data-icon="account_balance">account_balance</span>
+<div>
+<p class="text-xs font-bold uppercase">Pre-Approved</p>
+<p class="text-[10px] text-zinc-500">Tier 1 Credit (780+ Score)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Column: Interaction Timeline -->
+<div class="xl:col-span-4">
+<section class="bg-surface-container border border-zinc-800 h-full flex flex-col">
+<div class="p-6 border-b border-zinc-800 flex justify-between items-center">
+<h2 class="font-headline font-bold text-xs tracking-[0.2em] text-zinc-400 uppercase">System Interaction Log</h2>
+<span class="material-symbols-outlined text-zinc-600">history</span>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8 relative">
+<!-- Vertical line -->
+<div class="absolute left-9 top-10 bottom-10 w-px bg-zinc-800"></div>
+<!-- Timeline Items -->
+<div class="relative pl-10">
+<div class="absolute left-[-5px] top-1 w-[11px] h-[11px] bg-secondary border-4 border-surface ring-1 ring-secondary"></div>
+<div class="mb-1">
+<span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">Today 09:42 AM</span>
+</div>
+<p class="text-sm font-bold text-zinc-200">Email Inquiry Received</p>
+<p class="text-xs text-zinc-500 mt-1 italic">"Requesting information on towing capacity and winter package availability."</p>
+</div>
+<div class="relative pl-10 opacity-70">
+<div class="absolute left-[-5px] top-1 w-[11px] h-[11px] bg-zinc-700 border-4 border-surface"></div>
+<div class="mb-1">
+<span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">Yesterday 04:15 PM</span>
+</div>
+<p class="text-sm font-bold text-zinc-200">Website Interaction: Configuration Saved</p>
+<p class="text-xs text-zinc-500 mt-1">Lead configured Vanguard X-Treme in Matte Obsidian with Industrial Upgrade Pkg.</p>
+</div>
+<div class="relative pl-10 opacity-70">
+<div class="absolute left-[-5px] top-1 w-[11px] h-[11px] bg-zinc-700 border-4 border-surface"></div>
+<div class="mb-1">
+<span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">Oct 12 11:30 AM</span>
+</div>
+<p class="text-sm font-bold text-zinc-200">Identity Verification</p>
+<p class="text-xs text-zinc-500 mt-1 uppercase tracking-tighter">Status: Authenticated via Dealer Portal</p>
+</div>
+<div class="relative pl-10 opacity-50">
+<div class="absolute left-[-5px] top-1 w-[11px] h-[11px] bg-zinc-800 border-4 border-surface"></div>
+<div class="mb-1">
+<span class="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">Oct 10 02:00 PM</span>
+</div>
+<p class="text-sm font-bold text-zinc-400">Account Initialized</p>
+</div>
+</div>
+<div class="p-4 bg-surface-container-high">
+<div class="relative">
+<textarea class="w-full bg-surface border border-zinc-800 text-xs font-mono p-4 min-h-[100px] focus:ring-1 focus:ring-secondary focus:border-secondary placeholder:text-zinc-700" placeholder="ADD TECHNICAL NOTE..."></textarea>
+<button class="absolute bottom-3 right-3 text-secondary hover:text-secondary-fixed">
+<span class="material-symbols-outlined">send</span>
+</button>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Bottom Control Bar -->
+<footer class="fixed bottom-0 left-0 lg:left-64 right-0 glass-dark border-t border-zinc-800 px-6 py-4 z-50 flex items-center justify-between">
+<div class="flex items-center gap-6">
+<div class="flex flex-col">
+<span class="text-[9px] text-zinc-500 uppercase tracking-widest mb-1">Lead Health</span>
+<div class="flex gap-1">
+<div class="h-1 w-6 bg-secondary"></div>
+<div class="h-1 w-6 bg-secondary"></div>
+<div class="h-1 w-6 bg-secondary"></div>
+<div class="h-1 w-6 bg-zinc-800"></div>
+</div>
+</div>
+<div class="h-10 w-px bg-zinc-800 mx-2"></div>
+<div>
+<label class="text-[9px] text-zinc-500 uppercase tracking-widest block mb-1" for="status">Process Status</label>
+<select class="bg-surface border-none text-xs font-headline font-bold uppercase text-secondary py-1 pl-0 pr-8 focus:ring-0 cursor-pointer" id="status">
+<option>Hot Pursuit</option>
+<option>Engagement Pending</option>
+<option>Negotiation</option>
+<option>Unit Sold</option>
+<option>Dormant</option>
+</select>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="text-zinc-500 hover:text-zinc-300 text-[10px] font-headline font-bold tracking-widest uppercase px-4">Discard Changes</button>
+<button class="bg-primary-container text-on-primary-container px-10 py-3 font-headline font-black text-xs tracking-[0.2em] uppercase hover:bg-primary-fixed-dim transition-all active:scale-95 shadow-[0_0_20px_rgba(255,193,7,0.1)]">
+                Commit &amp; Save Changes
+            </button>
+</div>
+</footer>
+<!-- Bottom Footer (Brand) -->
+<div class="hidden lg:flex fixed bottom-20 left-64 right-0 px-10 items-center justify-between opacity-30 pointer-events-none">
+<p class="text-zinc-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em]">©2024 OVERDRIVE INDUSTRIAL. ALL SYSTEMS OPERATIONAL.</p>
+<div class="flex gap-6">
+<span class="text-zinc-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em]">Privacy Policy</span>
+<span class="text-zinc-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em]">Terms of Service</span>
+<span class="text-zinc-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em]">Dealer Portal</span>
+</div>
+</div>
+</body></html>

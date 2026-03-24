@@ -13,29 +13,49 @@ export const metadata: Metadata = {
   alternates: { canonical: 'https://konastoneautos.com' },
 };
 
+export const revalidate = 3600; // Revalidate every hour for ISR
+
 export default async function Home() {
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     let featuredVehicles: Vehicle[] = [];
     let uniqueMakes: string[] = [];
+    let featuredError: string | null = null;
+    let makesError: string | null = null;
 
     if (isSupabaseConfigured) {
-        const { data: featuredData } = await supabase
-            .from('vehicles')
-            .select('*')
-            .eq('is_featured', true)
-            .limit(3);
+        try {
+            const { data: featuredData, error: featuredErr } = await supabase
+                .from('vehicles')
+                .select('*')
+                .eq('is_featured', true)
+                .limit(3);
 
-        if (featuredData) {
-            featuredVehicles = featuredData;
+            if (featuredErr) {
+                featuredError = 'Failed to load featured vehicles';
+                console.error('Featured vehicles error:', featuredErr);
+            } else if (featuredData) {
+                featuredVehicles = featuredData;
+            }
+        } catch (err) {
+            featuredError = 'Network error loading featured vehicles';
+            console.error('Featured vehicles fetch error:', err);
         }
 
-        const { data: makesData } = await supabase
-            .from('vehicles')
-            .select('make');
-            
-        if (makesData) {
-            uniqueMakes = Array.from(new Set(makesData.map(v => v.make)));
+        try {
+            const { data: makesData, error: makesErr } = await supabase
+                .from('vehicles')
+                .select('make');
+
+            if (makesErr) {
+                makesError = 'Failed to load vehicle brands';
+                console.error('Makes error:', makesErr);
+            } else if (makesData) {
+                uniqueMakes = Array.from(new Set(makesData.map(v => v.make)));
+            }
+        } catch (err) {
+            makesError = 'Network error loading vehicle brands';
+            console.error('Makes fetch error:', err);
         }
     }
 
@@ -57,12 +77,15 @@ export default async function Home() {
             {/* Hero Section */}
             <section className="flex flex-col lg:flex-row min-h-[600px]">
                 <div className="lg:w-[60%] relative overflow-hidden h-[400px] lg:h-auto">
-                    <img
+                    <Image
                         alt="Luxury car at dusk in Mombasa"
                         className="absolute inset-0 w-full h-full object-cover"
                         src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGekMr5-7ufq0mbhw8Rz5pUC4s_zGTAU5B6kLOMtwml1JQHbNGylFtnBk7phUFQilKEWEuvopoH26U7_iIfT0w83Z49NybdApRXTQX_CDJyDNq1cQQdlQyPVUt3PmVrCPUy6ckHebYzftqzF0lAW6w65ltuIR1pNT1gEJNEn0KSO1oKy7VWzS2BVz_OxP2pzFNlPL-av0NGyaFXKED5tj1WIvqYi84RUUH1SAk1Sgw8t5xRP4DulOQXWGaESmKlgmuXOJ9tTUMmNVc"
+                        fill
+                        priority
+                        sizes="(max-width: 1024px) 100vw, 60vw"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
+                    <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
                         <h1 className="font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg">
                             DRIVE YOUR<br />
                             <span className="text-primary">DREAM.</span><br />
@@ -85,12 +108,17 @@ export default async function Home() {
                         <p className="text-gray-400 font-body text-lg">Select from our curated collection of premium automotive brands</p>
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
-                        {uniqueMakes.length > 0 ? uniqueMakes.map((make, idx) => {
+                        {makesError ? (
+                            <div className="col-span-full text-gray-500 text-center py-8">
+                                <span className="material-symbols-outlined text-4xl mb-2">error</span>
+                                <p>Unable to load brands at the moment.</p>
+                            </div>
+                        ) : uniqueMakes.length > 0 ? uniqueMakes.map((make, idx) => {
                             const brandInfo = brandLogoMap[make];
                             return (
                                 <Link key={idx} className="group glass-dark rounded-2xl w-32 h-32 flex flex-col items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href={`/inventory?make=${make.toLowerCase()}`}>
                                     {brandInfo ? (
-                                        <img alt={brandInfo.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brandInfo.src} />
+                                        <Image alt={brandInfo.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brandInfo.src} width={64} height={64} />
                                     ) : (
                                         <span className="text-white font-display text-xl uppercase opacity-60 group-hover:opacity-100 transition-opacity">{make}</span>
                                     )}
@@ -140,7 +168,15 @@ export default async function Home() {
                             </div>
                         )}
 
-                        {isSupabaseConfigured && featuredVehicles.length === 0 && (
+                        {isSupabaseConfigured && featuredError && (
+                            <div className="col-span-full border border-red-500/50 bg-red-500/10 p-6 rounded-lg text-red-500 text-center flex flex-col items-center justify-center gap-2">
+                                <span className="material-symbols-outlined text-4xl">error</span>
+                                <h3 className="text-xl font-bold font-display uppercase tracking-wider">Loading Error</h3>
+                                <p className="text-sm">{featuredError}</p>
+                            </div>
+                        )}
+
+                        {isSupabaseConfigured && !featuredError && featuredVehicles.length === 0 && (
                             <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
                                 No featured vehicles found at the moment.
                             </div>

@@ -9,11 +9,23 @@ export interface Vehicle {
     transmission: 'Automatic' | 'Manual';
     drive_type: '2WD' | '4WD' | 'AWD' | null;
     color: string | null;
-    body_type: 'SUV' | 'Sedan' | 'Hatchback' | 'Wagon' | null;
+    body_type: 'SUV' | 'Sedan' | 'Hatchback' | 'Wagon' | 'Truck' | null;
     status: 'available' | 'reserved' | 'sold' | 'in_transit';
     description: string | null;
     folder_name: string;
     is_featured: boolean;
+    
+    // Extended Technical Specs
+    vin?: string | null;
+    chassis_number?: string | null;
+    engine_code?: string | null;
+    fuel_system?: string | null;
+    power_kw?: number | null;
+    torque_nm?: number | null;
+    length_mm?: number | null;
+    width_mm?: number | null;
+    weight_kg?: number | null;
+
     created_at: string;
     updated_at: string;
 }
@@ -26,21 +38,42 @@ export interface VehicleFeature {
 
 export interface Lead {
     id: string;
-    created_at: string;
+    vehicle_id: string | null;
     client_name: string;
+    client_email: string;
     client_phone: string;
     client_message: string | null;
-    vehicle_id: string | null;
-    status: 'new' | 'contacted' | 'resolved';
+    
+    // Extended CRM Fields
+    location?: string | null;
+    trade_in_make?: string | null;
+    trade_in_model?: string | null;
+    trade_in_year?: number | null;
+    trade_in_value?: number | null;
+    finance_status?: string | null;
+    finance_tier?: string | null;
+
+    status: 'new' | 'contacted' | 'negotiation' | 'resolved' | 'dormant';
+    created_at: string;
+    updated_at: string;
 }
 
-export interface Review {
+export interface LeadTimelineEvent {
     id: string;
+    lead_id: string;
+    event_type: 'email' | 'note' | 'website_interaction' | 'status_change' | 'system';
+    title: string;
+    description?: string | null;
     created_at: string;
+}
+
+export interface CustomerReview {
+    id: string;
     reviewer_name: string;
+    vehicle_make: string | null;
+    vehicle_model: string | null;
     rating: number;
     comment: string;
     is_approved: boolean;
-    vehicle_make: string | null;
-    vehicle_model: string | null;
+    created_at: string;
 }

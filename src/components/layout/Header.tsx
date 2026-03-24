@@ -16,7 +16,7 @@ export default function Header() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between h-20">
                     <div className="flex items-center">
-                        <Link className="flex-shrink-0 flex items-center" href="/" onClick={closeMenu}>
+                        <Link className="shrink-0 flex items-center" href="/" onClick={closeMenu}>
                             <span className="font-display text-4xl text-primary tracking-wider">KONASTONE AUTOS</span>
                         </Link>
                         <nav className="hidden md:ml-10 md:flex md:space-x-8">

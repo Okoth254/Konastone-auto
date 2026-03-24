@@ -107,9 +107,9 @@ export default async function Inventory({
                         const imagePath = `/images/inventory/${vehicle.folder_name}/1.jpeg`;
 
                         return (
-                            <div key={vehicle.id} className={`group bg-card-bg rounded-lg overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b border-border-color hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-all flex flex-col h-full shadow-lg`}>
+                            <div key={vehicle.id} className={`group bg-card-bg rounded-lg overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-all flex flex-col h-full shadow-lg`}>
                                 {inTransit && <div className="absolute top-0 left-0 w-full h-1 bg-accent z-20"></div>}
-                                <div className="relative aspect-[4/3] overflow-hidden bg-background-dark">
+                                <div className="relative aspect-4/3 overflow-hidden bg-background-dark">
                                     <VehicleImage src={imagePath} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} className={`w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ${inTransit ? 'opacity-90' : ''}`} />
 
                                     {inTransit && <div className="absolute inset-0 bg-background-dark/20 group-hover:bg-transparent transition-colors"></div>}

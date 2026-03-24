@@ -1,0 +1,19 @@
+﻿
+> konastone-motors@0.1.0 lint
+> eslint
+
+
+C:\Users\Eugene\OneDrive\Desktop\Konastone-auto\src\app\layout.tsx
+  61:9  warning  Custom fonts not added in `pages/_document.js` will only load for a single page. This is discouraged. See: https://nextjs.org/docs/messages/no-page-custom-font  @next/next/no-page-custom-font
+
+C:\Users\Eugene\OneDrive\Desktop\Konastone-auto\src\app\reviews\page.tsx
+   2:8   warning  'Link' is defined but never used                                 @typescript-eslint/no-unused-vars
+   3:8   warning  'Image' is defined but never used                                @typescript-eslint/no-unused-vars
+  56:29  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+  56:82  error    `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`  react/no-unescaped-entities
+
+C:\Users\Eugene\OneDrive\Desktop\Konastone-auto\src\utils\supabase\middleware.ts
+  22:48  warning  'options' is defined but never used  @typescript-eslint/no-unused-vars
+
+Γ£û 6 problems (2 errors, 4 warnings)
+

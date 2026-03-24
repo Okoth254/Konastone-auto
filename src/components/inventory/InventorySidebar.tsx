@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 
 export default function InventorySidebar() {
@@ -17,27 +17,16 @@ export default function InventorySidebar() {
     const [make, setMake] = useState(searchParams.get("make") || "all");
     const [model, setModel] = useState(searchParams.get("model") || "all");
     const [minYear, setMinYear] = useState(searchParams.get("minYear") || "2015");
-    const [maxYear, setMaxYear] = useState(searchParams.get("maxYear") || "2024");
+    const [maxYear] = useState(searchParams.get("maxYear") || "2024");
 
     // Instead of a true double-slider which is complex to build custom,
     // we use a simpler set of ranges for price
     const [maxPrice, setMaxPrice] = useState(searchParams.get("maxPrice") || "15000000");
 
-    const createQueryString = useCallback(
-        (name: string, value: string) => {
-            const params = new URLSearchParams(searchParams.toString())
-            if (value === "all" || value === "") {
-                params.delete(name);
-            } else {
-                params.set(name, value);
-            }
-            return params.toString();
-        },
-        [searchParams]
-    );
+    // createQueryString was removed because it was unused
 
     const applyFilters = () => {
-        let params = new URLSearchParams();
+        const params = new URLSearchParams();
         if (status !== 'all') params.set('status', status);
         if (make !== 'all') params.set('make', make);
         if (model !== 'all') params.set('model', model);
@@ -80,6 +69,7 @@ export default function InventorySidebar() {
     useEffect(() => {
         // If the selected make changes and the current model is not applicable, reset model
         if (make !== 'all' && availableModels.length > 0 && model !== 'all' && !availableModels.includes(model)) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setModel('all');
         }
     }, [make, availableModels, model]);

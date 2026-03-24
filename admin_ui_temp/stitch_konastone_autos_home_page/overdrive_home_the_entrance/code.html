@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800;900&amp;family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "on-error": "#690005",
+              "on-primary-container": "#6d5100",
+              "on-primary-fixed-variant": "#5b4300",
+              "tertiary": "#ffe0dd",
+              "secondary-fixed-dim": "#45d8ed",
+              "secondary": "#45d8ed",
+              "outline-variant": "#4f4632",
+              "error": "#ffb4ab",
+              "surface-container-highest": "#353535",
+              "on-tertiary-fixed-variant": "#93000d",
+              "inverse-surface": "#e5e2e1",
+              "surface-container": "#20201f",
+              "surface": "#131313",
+              "surface-tint": "#fabd00",
+              "surface-container-high": "#2a2a2a",
+              "secondary-fixed": "#98f0ff",
+              "error-container": "#93000a",
+              "on-tertiary-container": "#ae0714",
+              "background": "#131313",
+              "inverse-primary": "#785900",
+              "surface-container-lowest": "#0e0e0e",
+              "primary-fixed": "#ffdf9e",
+              "tertiary-container": "#ffbab3",
+              "on-secondary": "#00363d",
+              "primary": "#ffe4af",
+              "secondary-container": "#00bacd",
+              "on-secondary-container": "#00444d",
+              "tertiary-fixed": "#ffdad6",
+              "on-primary": "#3f2e00",
+              "on-surface-variant": "#d4c5ab",
+              "on-primary-fixed": "#261a00",
+              "surface-variant": "#353535",
+              "outline": "#9c8f78",
+              "on-tertiary-fixed": "#410002",
+              "surface-container-low": "#1c1b1b",
+              "primary-container": "#ffc107",
+              "on-secondary-fixed": "#001f24",
+              "on-background": "#e5e2e1",
+              "surface-bright": "#393939",
+              "surface-dim": "#131313",
+              "tertiary-fixed-dim": "#ffb4ac",
+              "inverse-on-surface": "#313030",
+              "on-tertiary": "#690006",
+              "on-surface": "#e5e2e1",
+              "on-error-container": "#ffdad6",
+              "primary-fixed-dim": "#fabd00",
+              "on-secondary-fixed-variant": "#004f58"
+            },
+            fontFamily: {
+              "headline": ["Space Grotesk"],
+              "body": ["Inter"],
+              "label": ["Inter"]
+            },
+            borderRadius: {"DEFAULT": "0px", "lg": "0px", "xl": "0px", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .scanline {
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            background-size: 100% 4px, 3px 100%;
+            pointer-events: none;
+        }
+        .text-grunge {
+            text-shadow: 3px 3px 0px #FFC107;
+            -webkit-text-stroke: 1px rgba(255, 255, 255, 0.1);
+        }
+        .glass-dark {
+            background: rgba(20, 20, 19, 0.8);
+            backdrop-filter: blur(20px);
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container">
+<!-- Top Navigation Shell -->
+<nav class="fixed top-0 z-50 w-full px-6 h-16 flex justify-between items-center bg-[#131313]/80 backdrop-blur-xl border-b border-amber-400/20">
+<div class="text-2xl font-black tracking-tighter text-amber-400 font-headline">OVERDRIVE</div>
+<div class="hidden md:flex items-center gap-8">
+<a class="text-amber-400 border-b-2 border-amber-400 pb-1 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold transition-colors duration-150" href="#">Inventory</a>
+<a class="text-zinc-400 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold hover:text-amber-400 transition-colors duration-150" href="#">Finance</a>
+<a class="text-zinc-400 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold hover:text-amber-400 transition-colors duration-150" href="#">Sell</a>
+<a class="text-zinc-400 font-['Space_Grotesk'] tracking-[0.05em] uppercase font-bold hover:text-amber-400 transition-colors duration-150" href="#">Reviews</a>
+</div>
+<div class="flex items-center gap-6">
+<button class="material-symbols-outlined text-zinc-400 hover:text-amber-400 transition-colors">search</button>
+<button class="bg-primary-container text-on-primary font-headline font-bold uppercase px-6 py-2 tracking-widest active:scale-95 duration-75">Login</button>
+</div>
+</nav>
+<main>
+<!-- Cinematic Hero Section -->
+<section class="relative h-screen w-full flex items-center justify-center overflow-hidden bg-surface-container-lowest">
+<div class="absolute inset-0 z-0">
+<img alt="Cinematic sports car" class="w-full h-full object-cover opacity-60 mix-blend-luminosity" data-alt="cinematic low angle shot of a sleek modern supercar in a dark industrial garage with moody rim lighting and atmospheric smoke" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBUSwVk_ik0xGbWXUxz834S0BVNwPCCZ8Z7cQfK9fDpdwKAY6VyCO7eajQLkmsUStZCwN3ZXqNpMmVkRiicd9FX8bAuwr_w95xxstKd4YU9QqYixVVBJgWjglQZrqWFPcSfVcpCF8XCRG5kJ8s8Q_CWlY3hBCCXgONircoXo-hsAAHSEXSMLwgc2KBn2QyjjI0Ud-ieq3Eq1-KMA-o5NmWxNhIy9hW2D3n-zifxPQbCX9DZ-JrDSbk_fLtzdOQubASQdTAgF5BveORi"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface via-transparent to-transparent"></div>
+<div class="absolute inset-0 scanline opacity-30"></div>
+</div>
+<div class="relative z-10 text-center px-4 max-w-5xl">
+<div class="inline-block px-3 py-1 bg-primary-container/10 border border-primary-container text-primary-container font-headline tracking-[0.2em] text-xs font-bold uppercase mb-6">
+                    System Active // Terminal 01
+                </div>
+<h1 class="font-headline text-6xl md:text-9xl font-black text-white tracking-tighter text-grunge mb-8 uppercase">
+                    High Torque<br/>Precision
+                </h1>
+<p class="max-w-2xl mx-auto text-on-surface-variant font-medium text-lg mb-10 tracking-tight">
+                    Industrial-grade automotive acquisition. Browse the world's most curated collection of performance engineering and heavy utility.
+                </p>
+<div class="flex flex-col md:flex-row gap-4 justify-center">
+<button class="px-10 py-4 bg-primary-container text-on-primary font-headline font-extrabold uppercase tracking-widest text-lg hover:bg-primary-fixed-dim transition-all">
+                        Explore Inventory
+                    </button>
+<button class="px-10 py-4 border border-secondary text-secondary font-headline font-extrabold uppercase tracking-widest text-lg hover:bg-secondary/10 transition-all">
+                        Sell Your Asset
+                    </button>
+</div>
+</div>
+<!-- Telemetry HUD Overlay -->
+<div class="absolute bottom-10 left-10 hidden lg:block font-headline text-[10px] tracking-[0.2em] text-secondary opacity-50 space-y-2">
+<div>LAT: 4.0435° S</div>
+<div>LONG: 39.6682° E</div>
+<div>STATUS: OPERATIONAL</div>
+</div>
+</section>
+<!-- Browse by Brand curated grid -->
+<section class="py-24 bg-surface border-y border-outline-variant/20">
+<div class="container mx-auto px-6">
+<div class="flex items-center justify-between mb-12 border-l-4 border-secondary pl-6">
+<div>
+<h2 class="font-headline text-3xl font-black tracking-tight uppercase">Strategic Partners</h2>
+<p class="text-on-surface-variant text-sm tracking-widest uppercase">Verified Tier 1 Manufacturers</p>
+</div>
+<a class="text-secondary font-headline font-bold uppercase tracking-widest text-xs hover:underline" href="#">View All Brands</a>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-0 border border-outline-variant/20">
+<!-- Brand Items -->
+<div class="h-32 flex items-center justify-center border-r border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">PORSCHE</span>
+</div>
+<div class="h-32 flex items-center justify-center border-r border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">MERCEDES</span>
+</div>
+<div class="h-32 flex items-center justify-center border-r border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">BMW</span>
+</div>
+<div class="h-32 flex items-center justify-center border-r border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">TESLA</span>
+</div>
+<div class="h-32 flex items-center justify-center border-r border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">LAND ROVER</span>
+</div>
+<div class="h-32 flex items-center justify-center border-b border-outline-variant/20 hover:bg-surface-container-high transition-colors group cursor-pointer">
+<span class="text-on-surface-variant font-headline font-black text-xl tracking-tighter group-hover:text-primary transition-colors">FERRARI</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Featured Inventory Asymmetrical Grid -->
+<section class="py-32 bg-[#1A1A1A]">
+<div class="container mx-auto px-6">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-20">
+<div class="max-w-xl">
+<div class="text-primary font-headline font-bold tracking-[0.3em] uppercase text-xs mb-4">Current Fleet // 04-2024</div>
+<h2 class="font-headline text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">Featured<br/>Inventory</h2>
+</div>
+<p class="max-w-xs text-on-surface-variant text-sm border-l border-outline-variant pl-6">
+                        Strictly inspected assets with complete telemetry logs and maintenance history. Performance guaranteed.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-6 h-auto md:h-[1200px]">
+<!-- Primary Featured -->
+<div class="md:col-span-8 md:row-span-2 group relative overflow-hidden bg-surface-container">
+<img alt="Luxury Car" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80" data-alt="front profile of a charcoal grey high-performance sports car in a minimalist concrete studio with dramatic top lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB5obtk_H2txeBJe7sK3lCB8Oh6nckVXexwp93KTH--VmJAX7kg7RQ8_oh-LkWggxaj5rioULHPFNX_GHsAF4a3oiLrkKGUQHHeISUmfDElsxHi0QcCgdkRReftLWXuv918m_fC9Ykq6oEXBK15rKCJBRm3Jx_x3S1ptamv4WZZfBbfRPbu8Dn96pkTj-T9rnrre01nv0tXslRibaWzhyJqEuNTghcfk0F-XqM-au58BIY7JTjRjMVLRvu7JsBrS4Fro7VwVa2PZ-Hs"/>
+<div class="absolute top-0 left-0 p-8">
+<span class="bg-primary text-on-primary font-headline text-xs font-bold px-3 py-1 uppercase tracking-widest">New Arrival</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-10 bg-gradient-to-t from-black/90 to-transparent">
+<h3 class="font-headline text-4xl font-bold uppercase tracking-tight text-white mb-2">911 GT3 RS</h3>
+<div class="flex gap-6 font-headline text-secondary text-sm tracking-widest">
+<span>518 HP</span>
+<span>3.2S 0-100</span>
+<span>TRACK SPEC</span>
+</div>
+</div>
+</div>
+<!-- Secondary Items -->
+<div class="md:col-span-4 md:row-span-1 group relative overflow-hidden bg-surface-container">
+<img alt="Off-road Vehicle" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80" data-alt="rugged matte black off-road utility vehicle parked on a dusty ridge at twilight with distant mountains" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAy2kPQyVEdeshPTvf_NHJpNPVpl3869E4Tqqwb9VInKlaRH47YfPXd1XqCq2DYnd307GM28sYv88F93BMOq6YtadLBR1lS-GeenV0SP2t33isi8t7d_Mw_moqerexmli4MqOM2Ix5PILQPUg1MehpcKni8QGi76OHyEm_-HSoTqbcXgb3AAJXq-vcieqMTFCBEzEWjN_u5TDRz2koe_kWcxl8PZI4qrCSeRtNnWCQXwlqd3H8ItHcLMndoPpSfqztlt3ydQY5BnEiy"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h3 class="font-headline text-2xl font-bold uppercase text-white">Defender 110</h3>
+<p class="text-primary text-xs font-bold tracking-[0.2em] uppercase">Expedition Ready</p>
+</div>
+</div>
+<div class="md:col-span-4 md:row-span-1 group relative overflow-hidden bg-surface-container">
+<img alt="Modern Sedan" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 opacity-80" data-alt="side view of a white electric luxury sedan reflecting neon city lights at night" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgCW7Q3zY1QAzad_FCpLztR6Bvb-FLiG-XYDh5rtjna1vqCsrw_l49PCkzU0Y8NqUjc3puoY4L0R4362BLCmlFF67zw7Q3JS9HA_9KjzGoQS6fj30OFCodIQTNzF7npkdbfwevooUs93bov3LYbhOwIH1NCkild06KJpaaIOPBQ4WIQ6QULKI8kq2ltYcKD68HYMiavUjP-mlIu82vppOnjfCAQuYf-aWiTkMQVcnxAmRZGwRdUUmbGV4HDCdiqQbU-eNfEDIw0UZe"/>
+<div class="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all"></div>
+<div class="absolute bottom-0 left-0 p-8">
+<h3 class="font-headline text-2xl font-bold uppercase text-white">Model S Plaid</h3>
+<p class="text-primary text-xs font-bold tracking-[0.2em] uppercase">1020 HP // EV</p>
+</div>
+</div>
+<!-- Wide Feature -->
+<div class="md:col-span-12 md:row-span-1 group relative overflow-hidden bg-surface-container-high border-l-4 border-primary">
+<div class="grid grid-cols-1 md:grid-cols-2 h-full">
+<div class="p-12 flex flex-col justify-center">
+<h3 class="font-headline text-3xl font-bold uppercase mb-4">G-Wagon Professional</h3>
+<p class="text-on-surface-variant mb-8 font-medium">Limited military-spec edition. Reinforced chassis, industrial cargo capacity, and V8 reliability.</p>
+<button class="w-fit px-8 py-3 border border-outline text-on-surface font-headline font-bold uppercase tracking-widest hover:border-primary transition-all">View Details</button>
+</div>
+<div class="relative overflow-hidden">
+<img alt="G-Wagon" class="w-full h-full object-cover" data-alt="close up of a heavy duty black SUV wheel and suspension with industrial details in a rugged environment" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAMIULDKFK1JTPScqCr0fEY_59h4oQ6FvqZAVrLNLTA0UtoZLm9ASbseJfw72z7noOhwk7R-IOm9JRwflZAI-kWZ-I4V_FNxLmEWJTD0-HkbgeHRWRsXfZ7cwrhjqtXHDgUT08oTkm37fatLSKMsXo5cAqwvxLU0_reh3mC-aZwWANahjU1i83kfNKItORPNf9u3ZUk_ukuctJChap3LLUYtWJVHXKJbF8mrLvVACN3RDelNnK65KaOnGBQSAMZzIfIORrJmMWT-AiZ"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Technical Stats Section -->
+<section class="py-24 bg-surface border-t border-outline-variant/20">
+<div class="container mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12">
+<div class="text-center">
+<div class="font-headline text-5xl font-black text-secondary mb-2">1,200+</div>
+<div class="text-on-surface-variant text-[10px] tracking-[0.2em] uppercase font-bold">Assets Delivered</div>
+</div>
+<div class="text-center">
+<div class="font-headline text-5xl font-black text-secondary mb-2">98.4%</div>
+<div class="text-on-surface-variant text-[10px] tracking-[0.2em] uppercase font-bold">Client Retention</div>
+</div>
+<div class="text-center">
+<div class="font-headline text-5xl font-black text-secondary mb-2">24H</div>
+<div class="text-on-surface-variant text-[10px] tracking-[0.2em] uppercase font-bold">Valuation Speed</div>
+</div>
+<div class="text-center">
+<div class="font-headline text-5xl font-black text-secondary mb-2">∞</div>
+<div class="text-on-surface-variant text-[10px] tracking-[0.2em] uppercase font-bold">Engineering Support</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Full Footer with Mombasa Contact -->
+<footer class="bg-[#131313] border-t border-zinc-900 pt-20 pb-10">
+<div class="container mx-auto px-10">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-20">
+<div class="col-span-1 md:col-span-1">
+<div class="text-2xl font-black tracking-tighter text-amber-400 font-headline mb-6">OVERDRIVE</div>
+<p class="text-zinc-500 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] leading-relaxed">
+                        Industrial-tier automotive solutions for the East African corridor and beyond. High-performance acquisitions, verified by experts.
+                    </p>
+</div>
+<div>
+<h4 class="font-headline text-white text-xs font-bold tracking-[0.2em] uppercase mb-6">Contact Hub</h4>
+<div class="space-y-4 font-body text-xs text-zinc-500">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-amber-400 text-sm">location_on</span>
+<span>Mombasa Industrial Park, Gate 4<br/>Mombasa, Kenya</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-400 text-sm">call</span>
+<span>+254 041 555 0192</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-amber-400 text-sm">mail</span>
+<span>ops@overdriveindustrial.com</span>
+</div>
+</div>
+</div>
+<div>
+<h4 class="font-headline text-white text-xs font-bold tracking-[0.2em] uppercase mb-6">System Links</h4>
+<ul class="space-y-3 font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em]">
+<li><a class="text-zinc-600 hover:text-amber-400 transition-colors" href="#">Dealer Portal</a></li>
+<li><a class="text-zinc-600 hover:text-amber-400 transition-colors" href="#">Inventory API</a></li>
+<li><a class="text-zinc-600 hover:text-amber-400 transition-colors" href="#">Asset Appraisal</a></li>
+<li><a class="text-zinc-600 hover:text-amber-400 transition-colors" href="#">Privacy Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-headline text-white text-xs font-bold tracking-[0.2em] uppercase mb-6">Newsletter</h4>
+<p class="text-zinc-600 text-[10px] uppercase tracking-[0.1em] mb-4">Subscribe for asset availability alerts.</p>
+<div class="flex border-b border-zinc-800 focus-within:border-amber-400 transition-colors">
+<input class="bg-transparent border-none text-[10px] text-white tracking-widest w-full py-2 focus:ring-0" placeholder="EMAIL ADDRESS" type="email"/>
+<button class="material-symbols-outlined text-amber-400 p-2">arrow_forward</button>
+</div>
+</div>
+</div>
+<div class="w-full flex flex-col md:flex-row justify-between items-center pt-10 border-t border-zinc-900">
+<div class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-500 mb-4 md:mb-0">
+                    ©2024 OVERDRIVE INDUSTRIAL. ALL SYSTEMS OPERATIONAL.
+                </div>
+<div class="flex gap-8">
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300" href="#">Privacy Policy</a>
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300" href="#">Terms of Service</a>
+<a class="font-['Space_Grotesk'] text-[10px] uppercase tracking-[0.1em] text-zinc-600 hover:text-zinc-300" href="#">Dealer Portal</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

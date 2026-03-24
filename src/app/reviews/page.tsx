@@ -1,9 +1,7 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import ReviewForm from "@/components/reviews/ReviewForm";
-import { Review } from "@/types/database";
+import { CustomerReview } from "@/types/database";
 
 export const metadata: Metadata = {
   title: 'Customer Reviews — Trusted Dealership',
@@ -12,7 +10,7 @@ export const metadata: Metadata = {
 };
 
 export default async function Reviews() {
-    let reviews: Review[] = [];
+    let reviews: CustomerReview[] = [];
     const isSupabaseConfigured = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
     if (isSupabaseConfigured) {
@@ -46,14 +44,14 @@ export default async function Reviews() {
                 <div className="flex flex-col md:flex-row min-h-[400px]">
                     {/* Image side */}
                     <div className="md:w-1/2 relative min-h-[300px] md:min-h-full bg-cover bg-center" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCQlCHYU5jA_loaHsmWcxG2qgP5oBi32sCPY2qxnq6DVUbsmzT3juaiaN0w1oFrPZhOsY_51Qub_lKshMsgJ9j7LP8vz_YDwMusKQfu0KvTjI7xmIlJ-0oAPPPGsz4uzOp3BlGJuhnnpH8DzTc4bop5CXpXPLY2CYYMSCaLL7M2cPV-QImH9We5MoGh-46CxoYp1-rkaINqk3-gJmHvr3_5fokws0KnQe98Gu3HIsdPA0xBRzfSAPeST0TdbrwhdvNq2mKFGLPZ_RLx')" }}>
-                        <div className="absolute inset-0 bg-gradient-to-r from-card-dark via-transparent to-transparent md:hidden"></div>
-                        <div className="absolute inset-0 bg-gradient-to-l from-card-dark via-transparent to-transparent hidden md:block"></div>
+                        <div className="absolute inset-0 bg-linear-to-r from-card-dark via-transparent to-transparent md:hidden"></div>
+                        <div className="absolute inset-0 bg-linear-to-l from-card-dark via-transparent to-transparent hidden md:block"></div>
                     </div>
                     {/* Content side */}
                     <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center bg-card-dark relative z-10">
                         <span className="material-symbols-outlined text-primary text-6xl opacity-20 absolute top-8 left-8">format_quote</span>
                         <blockquote className="text-2xl md:text-3xl lg:text-4xl font-quote font-bold text-white leading-tight mb-8 relative z-10 italic">
-                            "The most transparent car buying experience in Kenya."
+                            &quot;The most transparent car buying experience in Kenya.&quot;
                         </blockquote>
                         <div className="flex items-center gap-4">
                             <div className="bg-cover bg-center rounded-full size-12 border-2 border-primary" style={{ backgroundImage: "url('https://lh3.googleusercontent.com/aida-public/AB6AXuCC0YTrrD8XsTMcEV8ysYZtdZfOkoMp8Tjatxp3NhNEYGjZLt0bkNGMIJnhYZdsu6rcABwFpuuZvoL_Wl2DV_GCV6XEuB0-hZFlkIF5-0WGw6w1XccxbWMlIf_5I6jDM2IpaJ0SAnvWrthoZO7pFUrekiWegvlCn9myzbTFOJKzLtTGNkZwti8KJf0HnvE71LiIsPmLS1uQ_bEO6yVOHBBBfBJvHQdJvZcE4DEHx5y8HL9_p_gR_wRMLD79Mn3oWNZ6mL4AI-JkmDrJ')" }}></div>
@@ -117,7 +115,7 @@ export default async function Reviews() {
                             </p>
                             <div className="flex items-center justify-between border-t border-secondary/10 pt-4 mt-auto">
                                 <div className="flex items-center gap-3">
-                                    <div className="bg-primary/20 flex px-2 py-1 items-center justify-center rounded-full size-8 bg-slate-700 font-bold text-primary">
+                                    <div className="bg-primary/20 flex px-2 py-1 items-center justify-center rounded-full size-8 font-bold text-primary">
                                         {review.reviewer_name.charAt(0).toUpperCase()}
                                     </div>
                                     <div>
