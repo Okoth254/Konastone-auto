@@ -6,15 +6,23 @@ import { createClient } from "@/utils/supabase/server";
 export default async function VehicleSpecsView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const supabase = await createClient();
-    const { data: vehicle } = await supabase
-        .from('vehicles')
-        .select('*')
-        .eq('id', id)
-        .single();
+    const [vehicleResult, imagesResult] = await Promise.all([
+        supabase.from('vehicles').select('*').eq('id', id).single(),
+        supabase.from('vehicle_images').select('public_url, is_main, sort_order').eq('vehicle_id', id).order('sort_order', { ascending: true }),
+    ]);
+    const vehicle = vehicleResult.data;
+    const vehicleImages = imagesResult.data || [];
 
     if (!vehicle) {
         notFound();
     }
+
+    // Resolve the best hero image from the fallback chain
+    const heroImage = vehicleImages.find(i => i.is_main)?.public_url
+        || vehicleImages[0]?.public_url
+        || vehicle.main_image_url
+        || (vehicle.folder_name ? `/images/inventory/${vehicle.folder_name}/1.jpeg` : null)
+        || 'https://placehold.co/1600x900/1a1a1a/444444?text=No+Image';
 
     return (
         <div className="space-y-8 flex-1">
@@ -39,7 +47,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
             <div className="p-8 space-y-8 max-w-7xl mx-auto">
                 {/* Hero Section */}
                 <section className="relative h-[450px] w-full overflow-hidden bg-surface-dark border border-zinc-800">
-                    <Image fill className="object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" src={vehicle.main_image_url || "https://lh3.googleusercontent.com/aida-public/AB6AXuBkAMbXB77pmLRkToKbZmp-FP-PGh9W08Vi2s63i6X4QZtweNNDFN9B699-I8oitn5CYxJiL_FO8-em7qK7PgRzwMCsI6TM9pDPPc-BAMEYrhVCNDZL6R-VjjcKy_BMum1AkzUOUjGkYtXCnowjwx560YVPY8Z5NbJzBIuKbrZRx5ZFBoUJckDXNeJxUkLEdXJrrIO8f4xwEY_4QJ0Q9Aug0ps9NxRRd6A60Tn0KU1iW3mKZKO0eVPKmcXL_a1_disc-xMTi8kFa5u7"} alt="Vehicle cover" />
+                    <Image fill className="object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" src={heroImage} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} />
                     <div className="absolute inset-0 bg-linear-to-r from-admin-background via-admin-background/40 to-transparent"></div>
                     
                     <div className="absolute bottom-12 left-12 space-y-4 w-full pr-12">
@@ -53,9 +61,6 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                             <Link href={`/admin/vehicles/edit/${vehicle.id}`} className="bg-primary text-black px-8 py-3 font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(255,193,7,0.4)] text-center text-xs">
                                 Edit in Manager
                             </Link>
-                            <button className="border-2 border-primary text-primary px-8 py-3 font-bold uppercase tracking-widest hover:bg-primary hover:text-black transition-all text-xs">
-                                Export Telemetry
-                            </button>
                         </div>
                     </div>
                 </section>
@@ -129,7 +134,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                             </div>
                             <div>
                                 <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Price</p>
-                                <p className="text-xl font-black text-white uppercase">${vehicle.price ? Intl.NumberFormat('en-US').format(vehicle.price) : 'N/A'}</p>
+                                <p className="text-xl font-black text-white uppercase">KSH {vehicle.price ? Intl.NumberFormat('en-KE').format(vehicle.price) : 'N/A'}</p>
                             </div>
                         </div>
                     </div>

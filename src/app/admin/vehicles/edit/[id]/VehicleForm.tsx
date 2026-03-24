@@ -259,7 +259,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         <h4 className="font-headline font-bold text-xs tracking-widest text-amber-400 uppercase mb-4">Price Point</h4>
                         <div className="space-y-2">
                             <div className="flex items-baseline gap-1">
-                                <span className="text-xl font-headline font-black text-white">$</span>
+                                <span className="text-sm font-headline font-black text-zinc-400 mr-1">KSH</span>
                                 <input name="price" className="bg-transparent border-none p-0 text-3xl font-headline font-black text-white w-full focus:ring-0 outline-none" type="number" defaultValue={vehicle?.price || 0} />
                             </div>
                         </div>
