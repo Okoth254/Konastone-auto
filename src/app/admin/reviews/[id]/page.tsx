@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
-import { updateReviewStatus } from "../actions";
+import { notFound, redirect } from "next/navigation";
+import { updateReviewStatus, deleteReview } from "../actions";
 
 export default async function ReviewModerationDetail({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -20,6 +20,13 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
     if (error || !review) {
         notFound();
     }
+
+    // Bind actions
+    const deleteReviewAction = async () => {
+        "use server";
+        await deleteReview(id);
+        redirect('/admin/reviews');
+    };
 
     return (
         <div className="flex-1 flex items-center justify-center p-4 md:p-8 relative overflow-hidden min-h-[calc(100vh-(--spacing(16)))]">
@@ -120,9 +127,16 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
                                 REJECT_ENTRY
                             </button>
                         </form>
-                        <button className="flex-1 border border-zinc-700 text-zinc-400 font-headline font-bold tracking-widest text-xs py-4 px-2 hover:border-admin-secondary hover:text-admin-secondary transition-all active:scale-[0.98]">
-                            FLAG_ESCALATION
-                        </button>
+                        <form action={updateReviewStatus.bind(null, review.id, 'flagged')} className="flex-1 flex">
+                            <button type="submit" className="w-full border border-zinc-700 text-zinc-400 font-headline font-bold tracking-widest text-xs py-4 px-2 hover:border-admin-secondary hover:text-admin-secondary transition-all active:scale-[0.98]">
+                                FLAG_ESCALATION
+                            </button>
+                        </form>
+                        <form action={deleteReviewAction} className="flex-1 flex">
+                            <button type="submit" className="w-full border border-red-500/50 text-red-500 font-headline font-bold tracking-widest text-xs py-4 px-2 hover:bg-red-500/20 transition-all active:scale-[0.98]">
+                                DELETE_PERMANENTLY
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>

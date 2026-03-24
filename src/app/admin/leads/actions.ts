@@ -54,3 +54,22 @@ export async function updateLeadStatus(leadId: string, formData: FormData) {
     revalidatePath(`/admin/leads`);
     revalidatePath(`/admin/leads/${leadId}`);
 }
+
+export async function deleteLead(leadId: string) {
+    const supabase = await createClient();
+    
+    // Deleting the lead will cascade delete timeline events if FK is set up correctly,
+    // otherwise we just delete the lead.
+    const { error } = await supabase
+        .from('leads')
+        .delete()
+        .eq('id', leadId);
+
+    if (error) {
+        console.error('Error deleting lead:', error);
+        throw new Error('Failed to delete lead');
+    }
+
+    revalidatePath('/admin/leads');
+    // We cannot redirect from a server action without importing `redirect`
+}

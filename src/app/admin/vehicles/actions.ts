@@ -68,3 +68,19 @@ export async function saveVehicle(formData: FormData) {
   revalidatePath('/inventory');
   redirect('/admin/vehicles');
 }
+
+export async function deleteVehicle(id: string) {
+  const supabase = await createClient();
+
+  // Optionally delete images from storage, but we'll focus on database entry first
+  const { error } = await supabase.from('vehicles').delete().eq('id', id);
+
+  if (error) {
+    console.error('Error deleting vehicle:', error);
+    throw new Error('Failed to delete vehicle');
+  }
+
+  revalidatePath('/admin/vehicles');
+  revalidatePath('/inventory');
+  redirect('/admin/vehicles');
+}

@@ -1,3 +1,36 @@
 {
-    "css.lint.unknownAtRules": "ignore"
+    "css.lint.unknownAtRules": "ignore",
+    "cSpell.words": [
+        "Achieng",
+        "Atenza",
+        "Bento",
+        "BLIS",
+        "googleusercontent",
+        "Harman",
+        "ilike",
+        "JTMHV",
+        "Kamau",
+        "Kardon",
+        "KHTML",
+        "Kibet",
+        "Konastone",
+        "Landcruiser",
+        "landrover",
+        "MERC",
+        "mercedez",
+        "Muthama",
+        "Njoroge",
+        "Ochieng",
+        "ossp",
+        "plpgsql",
+        "scanline",
+        "Sensus",
+        "simpleicons",
+        "supabase",
+        "Thorne",
+        "Treme",
+        "turbopack",
+        "Vezel",
+        "Wanjiru"
+    ]
 }

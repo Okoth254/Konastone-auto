@@ -1,21 +1,69 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function ReviewsListView() {
-    const supabase = await createClient();
-    const { data: reviews } = await supabase
-        .from('customer_reviews')
-        .select(`
-            *,
-            vehicles (
-                year,
-                make,
-                model
-            )
-        `)
-        .order('created_at', { ascending: false });
+export default async function ReviewsListView(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    const searchParams = await props.searchParams;
+    const currentStatus = searchParams?.status as string | undefined;
+    const currentSort = searchParams?.sort as string | undefined;
+    const currentPage = searchParams?.page ? parseInt(searchParams.page as string) : 1;
 
-    const pendingReviewsCount = reviews?.filter(r => r.status === 'pending').length || 0;
+    const supabase = await createClient();
+    
+    // 1. Fetch counts independent of filters
+    const { data: allReviews } = await supabase.from('customer_reviews').select('status');
+    const pendingReviewsCount = allReviews?.filter(r => r.status === 'pending').length || 0;
+    const totalReviewsCount = allReviews?.length || 0;
+
+    // 2. Fetch filtered paginated data
+    let query = supabase.from('customer_reviews').select(`
+        *,
+        vehicles (
+            year,
+            make,
+            model
+        )
+    `, { count: 'exact' });
+
+    if (currentStatus) {
+        query = query.eq('status', currentStatus);
+    }
+
+    if (currentSort === 'newest') {
+        query = query.order('created_at', { ascending: false });
+    } else {
+        query = query.order('created_at', { ascending: true }); // oldest
+    }
+
+    const pageSize = 12;
+    const from = (currentPage - 1) * pageSize;
+    const to = from + pageSize - 1;
+    query = query.range(from, to);
+
+    const { data: reviews, count } = await query;
+    const totalPages = count ? Math.ceil(count / pageSize) : 1;
+
+    // Helper functions for links
+    const getSortLink = (sortType: string) => {
+        const params = new URLSearchParams();
+        if (currentStatus) params.set('status', currentStatus);
+        params.set('sort', sortType);
+        return `?${params.toString()}`;
+    };
+
+    const getStatusLink = (statusType: string) => {
+        const params = new URLSearchParams();
+        if (statusType !== 'all') params.set('status', statusType);
+        if (currentSort) params.set('sort', currentSort);
+        return `?${params.toString()}`;
+    };
+
+    const getPageLink = (page: number) => {
+        const params = new URLSearchParams();
+        if (currentStatus) params.set('status', currentStatus);
+        if (currentSort) params.set('sort', currentSort);
+        params.set('page', page.toString());
+        return `?${params.toString()}`;
+    };
 
     return (
         <div className="p-8 space-y-8 flex-1 w-full max-w-[1600px] mx-auto">
@@ -23,15 +71,31 @@ export default async function ReviewsListView() {
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface uppercase mb-2">Review Moderation</h1>
-                    <p className="text-zinc-500 font-label text-sm tracking-wide uppercase">Total Network Logs: {reviews?.length || 0} | Pending Review: {pendingReviewsCount}</p>
+                    <p className="text-zinc-500 font-label text-sm tracking-wide uppercase">Total Network Logs: {totalReviewsCount} | Pending Review: {pendingReviewsCount}</p>
                 </div>
                 <div className="flex gap-2">
-                    <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700">
-                        Filter: Pending Review
-                    </button>
-                    <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700">
-                        Sort: Oldest First
-                    </button>
+                    <div className="relative group cursor-pointer z-50">
+                        <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700 min-w-[170px] flex justify-between items-center gap-2">
+                            Filter: {currentStatus ? currentStatus.replace('_', ' ') : 'All Reviews'}
+                            <span className="material-symbols-outlined text-sm">expand_more</span>
+                        </button>
+                        <div className="absolute top-full right-0 mt-1 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50">
+                            <Link href={getStatusLink('all')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 transition-colors">All Reviews</Link>
+                            <Link href={getStatusLink('pending')} className="text-[10px] font-bold tracking-widest uppercase text-amber-500 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Pending</Link>
+                            <Link href={getStatusLink('approved')} className="text-[10px] font-bold tracking-widest uppercase text-admin-secondary hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Approved</Link>
+                            <Link href={getStatusLink('rejected')} className="text-[10px] font-bold tracking-widest uppercase text-red-500 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Rejected</Link>
+                        </div>
+                    </div>
+                    <div className="relative group cursor-pointer z-50">
+                        <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700 min-w-[140px] flex justify-between items-center gap-2">
+                            Sort: {currentSort === 'newest' ? 'Newest First' : 'Oldest First'}
+                            <span className="material-symbols-outlined text-sm">expand_more</span>
+                        </button>
+                        <div className="absolute top-full right-0 mt-1 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50">
+                            <Link href={getSortLink('oldest')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 transition-colors">Oldest First</Link>
+                            <Link href={getSortLink('newest')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Newest First</Link>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -89,7 +153,7 @@ export default async function ReviewsListView() {
                             ) : (
                                 <tr>
                                     <td colSpan={7} className="p-8 text-center text-zinc-500 font-bold uppercase tracking-widest">
-                                        No reviews found in database.
+                                        No reviews found matching filters.
                                     </td>
                                 </tr>
                             )}
@@ -99,22 +163,23 @@ export default async function ReviewsListView() {
             </div>
             
             {/* Pagination / Controls */}
-            {reviews && reviews.length > 0 && (
+            {totalPages > 1 && (
             <div className="flex justify-between items-center mt-6">
-                <p className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">Showing {reviews.length} Records</p>
+                <p className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">Showing Page {currentPage} of {totalPages}</p>
                 <div className="flex gap-2">
-                    <button className="h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container text-zinc-500 hover:text-white hover:border-zinc-500 transition-colors">
+                    <Link scroll={false} href={currentPage > 1 ? getPageLink(currentPage - 1) : '#'} className={`h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container transition-colors ${currentPage > 1 ? 'text-zinc-400 hover:text-white hover:border-zinc-500' : 'text-zinc-600 pointer-events-none'}`}>
                         <span className="material-symbols-outlined text-sm">chevron_left</span>
-                    </button>
-                    <button className="h-8 w-8 flex items-center justify-center border border-admin-secondary bg-admin-secondary/10 text-admin-secondary">
-                        <span className="text-xs font-bold">1</span>
-                    </button>
-                    <button className="h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container text-zinc-400 hover:text-white hover:border-zinc-500 transition-colors">
-                        <span className="text-xs font-bold">2</span>
-                    </button>
-                    <button className="h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container text-zinc-500 hover:text-white hover:border-zinc-500 transition-colors">
+                    </Link>
+                    
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                        <Link scroll={false} key={page} href={getPageLink(page)} className={`h-8 w-8 flex items-center justify-center border transition-colors ${page === currentPage ? 'border-admin-secondary bg-admin-secondary/10 text-admin-secondary' : 'border-zinc-700 bg-surface-container text-zinc-400 hover:text-white hover:border-zinc-500'}`}>
+                            <span className="text-xs font-bold">{page}</span>
+                        </Link>
+                    ))}
+
+                    <Link scroll={false} href={currentPage < totalPages ? getPageLink(currentPage + 1) : '#'} className={`h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container transition-colors ${currentPage < totalPages ? 'text-zinc-400 hover:text-white hover:border-zinc-500' : 'text-zinc-600 pointer-events-none'}`}>
                         <span className="material-symbols-outlined text-sm">chevron_right</span>
-                    </button>
+                    </Link>
                 </div>
             </div>
             )}

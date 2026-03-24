@@ -1,7 +1,7 @@
 'use client';
 
 import Link from "next/link";
-import { saveVehicle } from "../../actions";
+import { saveVehicle, deleteVehicle } from "../../actions";
 import { useState } from "react";
 import Image from "next/image";
 
@@ -9,6 +9,8 @@ import Image from "next/image";
 export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehicleId: string }) {
     const isNew = vehicleId === 'new';
     const [status, setStatus] = useState(vehicle?.status || 'available');
+    
+    const deleteAction = deleteVehicle.bind(null, vehicleId);
     
     return (
         <form action={saveVehicle} className="flex flex-col min-h-full">
@@ -163,6 +165,16 @@ export default function VehicleForm({ vehicle, vehicleId }: { vehicle: any, vehi
                             </div>
                         </div>
                     </div>
+                    
+                    {!isNew && (
+                        <div className="bg-surface-container p-6 space-y-4 border-l-4 border-red-500/50">
+                            <h4 className="font-headline font-bold text-xs tracking-widest text-red-500 uppercase">Danger Zone</h4>
+                            <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">Permanently delete this vehicle and remove it from all inventory views.</p>
+                            <button formAction={deleteAction} className="w-full bg-red-500/10 text-red-500 border border-red-500/20 py-3 text-xs font-bold font-headline tracking-widest hover:bg-red-500/20 transition-colors uppercase cursor-pointer">
+                                Delete Vehicle
+                            </button>
+                        </div>
+                    )}
                 </aside>
             </div>
         </form>

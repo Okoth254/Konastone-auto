@@ -1,8 +1,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { notFound } from "next/navigation";
-import { addTimelineNote, updateLeadStatus } from "../actions";
+import { notFound, redirect } from "next/navigation";
+import { addTimelineNote, updateLeadStatus, deleteLead } from "../actions";
 
 export default async function LeadDetailView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -23,6 +23,13 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
     }
 
     const timeline = lead.lead_timeline_events?.sort((a: { created_at: string }, b: { created_at: string }) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
+    
+    // Bind actions
+    const deleteLeadAction = async () => {
+        "use server";
+        await deleteLead(id);
+        redirect('/admin/leads');
+    };
 
     return (
         <div className="flex flex-col flex-1 pb-32">
@@ -39,12 +46,14 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                     <p className="text-zinc-500 font-mono text-xs mt-2 tracking-widest">UID: 0x{lead.id.substring(0, 12).toUpperCase()}</p>
                 </div>
                 <div className="flex gap-4">
-                    <button className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
+                    <a href={`mailto:${lead.email}`} className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">mail</span> EMAIL CUSTOMER
-                    </button>
-                    <button className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
+                    </a>
+                    {lead.phone && (
+                    <a href={`tel:${lead.phone.replace(/[^0-9+]/g, '')}`} className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">call</span> INITIATE CALL
-                    </button>
+                    </a>
+                    )}
                 </div>
             </header>
 
@@ -208,6 +217,9 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
                     </div>
                     <div className="flex items-center gap-4">
+                        <button formAction={deleteLeadAction} className="text-red-500 hover:text-red-400 text-[10px] font-headline font-bold tracking-widest uppercase px-4 hidden sm:block transition-colors">
+                            Delete Lead
+                        </button>
                         <Link href="/admin/leads" className="text-zinc-500 hover:text-zinc-300 text-[10px] font-headline font-bold tracking-widest uppercase px-4 hidden sm:block">Discard Changes</Link>
                         <button type="submit" className="bg-primary-container text-black px-10 py-3 font-headline font-black text-xs tracking-[0.2em] uppercase hover:bg-amber-500 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,193,7,0.1)]">
                             Commit &amp; Save Changes

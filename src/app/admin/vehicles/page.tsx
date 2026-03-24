@@ -2,12 +2,64 @@ import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 
-export default async function AdminVehicles() {
+export default async function AdminVehicles(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
+    const searchParams = await props.searchParams;
+    const currentStatus = searchParams?.status as string | undefined;
+    const currentSort = searchParams?.sort as string | undefined;
+    const currentPage = searchParams?.page ? parseInt(searchParams.page as string) : 1;
+
     const supabase = await createClient();
-    const { data: vehicles } = await supabase
-        .from('vehicles')
-        .select('*')
-        .order('created_at', { ascending: false });
+
+    // 1. Fetch counts independent of filters
+    const { data: allVehicles } = await supabase.from('vehicles').select('status');
+    const availableCount = allVehicles?.filter(v => v.status === 'available').length || 0;
+    const inTransitCount = allVehicles?.filter(v => v.status === 'in_transit').length || 0;
+
+    // 2. Fetch filtered paginated data
+    let query = supabase.from('vehicles').select('*', { count: 'exact' });
+    
+    if (currentStatus) {
+        query = query.eq('status', currentStatus);
+    }
+    
+    if (currentSort === 'price_asc') {
+        query = query.order('price', { ascending: true });
+    } else if (currentSort === 'price_desc') {
+        query = query.order('price', { ascending: false });
+    } else {
+        query = query.order('created_at', { ascending: false }); // newest
+    }
+
+    const pageSize = 12;
+    const from = (currentPage - 1) * pageSize;
+    const to = from + pageSize - 1;
+    query = query.range(0, to); // Always fetch from 0 to current page's end (incremental loading)
+
+    const { data: vehicles, count } = await query;
+    const hasMore = count !== null && count > to + 1;
+
+    // Helper functions for links
+    const getSortLink = (sortType: string) => {
+        const params = new URLSearchParams();
+        if (currentStatus) params.set('status', currentStatus);
+        params.set('sort', sortType);
+        return `?${params.toString()}`;
+    };
+
+    const getStatusLink = (statusType: string) => {
+        const params = new URLSearchParams();
+        params.set('status', statusType);
+        if (currentSort) params.set('sort', currentSort);
+        return `?${params.toString()}`;
+    };
+
+    const getNextPageLink = () => {
+        const params = new URLSearchParams();
+        if (currentStatus) params.set('status', currentStatus);
+        if (currentSort) params.set('sort', currentSort);
+        params.set('page', (currentPage + 1).toString());
+        return `?${params.toString()}`;
+    };
 
     return (
         <div className="p-8">
@@ -15,15 +67,23 @@ export default async function AdminVehicles() {
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div>
                     <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-background uppercase mb-2">Inventory Fleet</h1>
-                    <p className="text-zinc-500 font-label text-sm tracking-wide uppercase">Active Assets: {vehicles?.filter(v => v.status === 'available').length || 0} | Logistics Pipeline: {vehicles?.filter(v => v.status === 'in_transit').length || 0} Units</p>
+                    <p className="text-zinc-500 font-label text-sm tracking-wide uppercase">Active Assets: {availableCount} | Logistics Pipeline: {inTransitCount} Units</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative">
                     <button className="glass-dark px-4 py-2 border border-admin-secondary/30 text-admin-secondary text-[10px] font-bold tracking-widest uppercase flex items-center gap-2">
                         <span className="material-symbols-outlined text-sm">filter_alt</span> Export Data
                     </button>
-                    <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700">
-                        Sort: Newest First
-                    </button>
+                    <div className="relative group cursor-pointer">
+                        <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700 min-w-[170px] flex justify-between items-center gap-2">
+                            Sort: {currentSort === 'price_asc' ? 'Low to High' : currentSort === 'price_desc' ? 'High to Low' : 'Newest'}
+                            <span className="material-symbols-outlined text-sm">expand_more</span>
+                        </button>
+                        <div className="absolute top-full right-0 mt-1 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50">
+                            <Link href={getSortLink('newest')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 transition-colors">Newest First</Link>
+                            <Link href={getSortLink('price_desc')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Highest Price</Link>
+                            <Link href={getSortLink('price_asc')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Lowest Price</Link>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -39,40 +99,19 @@ export default async function AdminVehicles() {
                             <div className="space-y-3">
                                 <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Asset Category</label>
                                 <div className="flex flex-col gap-2">
-                                    <button className="glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider text-admin-secondary border-l-2 border-admin-secondary flex justify-between items-center group">
-                                        New Arrivals <span className="material-symbols-outlined text-sm opacity-50">chevron_right</span>
-                                    </button>
-                                    <button className="glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider text-zinc-400 border-l-2 border-transparent hover:border-zinc-500 transition-all flex justify-between items-center group">
-                                        On Shipment <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-50">chevron_right</span>
-                                    </button>
-                                    <button className="glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider text-zinc-400 border-l-2 border-transparent hover:border-zinc-500 transition-all flex justify-between items-center group">
-                                        Foreign Used <span className="material-symbols-outlined text-sm opacity-0 group-hover:opacity-50">chevron_right</span>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            {/* Price Sliders */}
-                            <div className="space-y-4">
-                                <div className="flex justify-between items-center">
-                                    <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Price Range (USD)</label>
-                                    <span className="text-xs text-primary-container font-mono">$45k - $120k</span>
-                                </div>
-                                <div className="relative h-1 w-full bg-surface-container-highest">
-                                    <div className="absolute h-full bg-primary-container left-1/4 right-1/4"></div>
-                                    <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-3 h-3 bg-primary-container"></div>
-                                    <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-3 h-3 bg-primary-container"></div>
-                                </div>
-                            </div>
-
-                            <div className="space-y-4 pt-4">
-                                <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Transmission</label>
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button className="py-2 bg-surface-container-highest text-[10px] font-bold uppercase tracking-widest text-zinc-300 border border-zinc-700">Automatic</button>
-                                    <button className="py-2 bg-primary-container text-on-primary text-[10px] font-bold uppercase tracking-widest">Manual</button>
+                                    <Link href={getStatusLink('available')} className={`glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider flex justify-between items-center group border-l-2 transition-all ${currentStatus === 'available' ? 'text-admin-secondary border-admin-secondary' : 'text-zinc-400 border-transparent hover:border-zinc-500'}`}>
+                                        New Arrivals <span className={`material-symbols-outlined text-sm ${currentStatus === 'available' ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}>chevron_right</span>
+                                    </Link>
+                                    <Link href={getStatusLink('in_transit')} className={`glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider flex justify-between items-center group border-l-2 transition-all ${currentStatus === 'in_transit' ? 'text-admin-secondary border-admin-secondary' : 'text-zinc-400 border-transparent hover:border-zinc-500'}`}>
+                                        On Shipment <span className={`material-symbols-outlined text-sm ${currentStatus === 'in_transit' ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}>chevron_right</span>
+                                    </Link>
+                                    <Link href={getStatusLink('sold')} className={`glass-dark px-4 py-3 text-left text-xs font-bold tracking-wider flex justify-between items-center group border-l-2 transition-all ${currentStatus === 'sold' ? 'text-admin-secondary border-admin-secondary' : 'text-zinc-400 border-transparent hover:border-zinc-500'}`}>
+                                        Sold History <span className={`material-symbols-outlined text-sm ${currentStatus === 'sold' ? 'opacity-50' : 'opacity-0 group-hover:opacity-50'}`}>chevron_right</span>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
-                        <button className="w-full mt-8 py-3 bg-zinc-100 text-black font-headline font-black text-xs uppercase tracking-widest hover:bg-white transition-colors">Reset System</button>
+                        <Link href="/admin/vehicles" className="w-full mt-8 py-3 bg-zinc-100 text-black font-headline font-black text-xs uppercase tracking-widest hover:bg-white transition-colors block text-center">Reset System</Link>
                     </div>
 
                     {/* Logistics Status Card */}
@@ -104,9 +143,10 @@ export default async function AdminVehicles() {
                                         <span className={`px-3 py-1 text-[10px] font-black uppercase tracking-widest ${
                                             vehicle.status === 'in_transit' ? 'bg-error-container text-on-error-container' : 
                                             vehicle.status === 'available' ? 'bg-primary-container text-on-primary-container' : 
+                                            vehicle.status === 'sold' ? 'bg-zinc-800 text-zinc-400' :
                                             'bg-surface-container-highest text-zinc-300'
                                         }`}>
-                                            {vehicle.status.replace('_', ' ')}
+                                            {vehicle.status?.replace('_', ' ')}
                                         </span>
                                         {vehicle.status === 'in_transit' && (
                                             <span className="bg-black/80 backdrop-blur-md text-white px-3 py-1 text-[10px] font-mono uppercase tracking-widest">ETA: 48H</span>
@@ -120,7 +160,7 @@ export default async function AdminVehicles() {
                                             <span className="text-admin-secondary font-mono text-[10px] tracking-widest">VIN: {vehicle.vin || 'PENDING'}</span>
                                         </div>
                                         <div className="text-right shrink-0">
-                                            <span className="block text-primary-container font-headline font-black text-xl">${Intl.NumberFormat('en-US').format(vehicle.price)}</span>
+                                            <span className="block text-primary-container font-headline font-black text-xl">${Intl.NumberFormat('en-US').format(vehicle.price || 0)}</span>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-3 gap-2 mt-auto pt-4 border-t border-zinc-800">
@@ -130,7 +170,7 @@ export default async function AdminVehicles() {
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="text-[9px] text-zinc-500 uppercase tracking-tighter">Mileage</span>
-                                            <span className="text-[11px] font-bold text-admin-secondary uppercase">{Intl.NumberFormat('en-US').format(vehicle.mileage)} MI</span>
+                                            <span className="text-[11px] font-bold text-admin-secondary uppercase">{Intl.NumberFormat('en-US').format(vehicle.mileage || 0)} MI</span>
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="text-[9px] text-zinc-500 uppercase tracking-tighter">Grade</span>
@@ -146,16 +186,20 @@ export default async function AdminVehicles() {
                         ))}
 
                         {(!vehicles || vehicles.length === 0) && (
-                            <div className="col-span-full py-20 text-center">
+                            <div className="col-span-full py-20 text-center border-2 border-dashed border-zinc-800">
                                 <span className="material-symbols-outlined text-4xl text-zinc-600 mb-4 block">inventory_2</span>
-                                <p className="text-zinc-500 font-headline uppercase tracking-widest text-sm">No vehicles found in the system</p>
+                                <p className="text-zinc-500 font-headline uppercase tracking-widest text-sm">No vehicles found matching filters</p>
                             </div>
                         )}
                     </div>
                     {/* Load More / Pagination */}
-                    <div className="mt-12 flex justify-center">
-                        <button className="px-12 py-4 border-2 border-zinc-800 text-zinc-500 font-headline font-bold text-xs uppercase tracking-[0.3em] hover:border-admin-secondary hover:text-admin-secondary transition-all active:scale-95">Load Next Protocol</button>
-                    </div>
+                    {hasMore && (
+                        <div className="mt-12 flex justify-center">
+                            <Link href={getNextPageLink()} scroll={false} className="px-12 py-4 border-2 border-zinc-800 text-zinc-500 font-headline font-bold text-xs uppercase tracking-[0.3em] hover:border-admin-secondary hover:text-admin-secondary transition-all active:scale-95 text-center">
+                                Load Next Protocol (Page {currentPage + 1})
+                            </Link>
+                        </div>
+                    )}
                 </section>
             </div>
         </div>

@@ -42,6 +42,13 @@ export default async function AdminDashboard() {
     return acc;
   }, {} as Record<string, number>) || {};
 
+  // 7. Fetch recent timeline events
+  const { data: timelineEvents } = await supabase
+    .from('lead_timeline_events')
+    .select('*')
+    .order('created_at', { ascending: false })
+    .limit(10);
+
   return (
     <div className="p-8">
       {/* Header Section */}
@@ -185,14 +192,17 @@ export default async function AdminDashboard() {
           </div>
           <div className="bg-surface-container-lowest p-6 border border-white/5 font-mono text-[11px] leading-relaxed h-[360px] overflow-y-auto">
             <div className="space-y-3">
-              <div className="flex gap-3 animate-pulse">
-                <span className="text-zinc-600">[{new Date().toLocaleTimeString('en-US', {hour12: false}).substring(0, 8)}]</span>
-                <p><span className="text-admin-secondary">SYS_AUTH</span>: Dashboard initialized.</p>
-              </div>
-              <div className="flex gap-3">
-                <span className="text-zinc-600">[--:--:--]</span>
-                <p><span className="text-admin-secondary">WAITING_FOR_DATA_PACKETS...</span></p>
-              </div>
+              {timelineEvents && timelineEvents.length > 0 ? timelineEvents.map((event) => (
+                  <div key={event.id} className="flex gap-3 relative group">
+                      <span className="text-zinc-600 shrink-0">[{new Date(event.created_at).toLocaleTimeString('en-US', {hour12: false}).substring(0, 8)}]</span>
+                      <p><span className="text-admin-secondary font-bold">{event.event_type.toUpperCase()}</span>: <span className="text-zinc-300">{event.description}</span></p>
+                  </div>
+              )) : (
+                  <div className="flex gap-3">
+                    <span className="text-zinc-600">[--:--:--]</span>
+                    <p><span className="text-admin-secondary">WAITING_FOR_DATA_PACKETS...</span></p>
+                  </div>
+              )}
             </div>
           </div>
         </div>
@@ -257,19 +267,19 @@ export default async function AdminDashboard() {
               <div className="flex flex-col gap-1">
                 <div className="flex justify-between text-[10px] font-headline font-bold text-zinc-400 uppercase tracking-widest">
                   <span>In Negotiation</span>
-                  <span>{leadStats['negotiation'] || 0}</span>
+                  <span>{leadStats['negotiating'] || 0}</span>
                 </div>
                 <div className="w-full bg-surface-container-highest h-2">
-                  <div className="bg-amber-400 h-full transition-all duration-1000" style={{ width: `${Math.min(100, ((leadStats['negotiation'] || 0) / Math.max(1, (allLeads?.length || 1))) * 100)}%` }}></div>
+                  <div className="bg-amber-400 h-full transition-all duration-1000" style={{ width: `${Math.min(100, ((leadStats['negotiating'] || 0) / Math.max(1, (allLeads?.length || 1))) * 100)}%` }}></div>
                 </div>
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex justify-between text-[10px] font-headline font-bold text-zinc-400 uppercase tracking-widest">
-                  <span>Resolved</span>
-                  <span>{leadStats['resolved'] || 0}</span>
+                  <span>Resolved (Sold/Lost)</span>
+                  <span>{(leadStats['sold'] || 0) + (leadStats['lost'] || 0)}</span>
                 </div>
                 <div className="w-full bg-surface-container-highest h-2">
-                  <div className="bg-admin-secondary h-full transition-all duration-1000" style={{ width: `${Math.min(100, ((leadStats['resolved'] || 0) / Math.max(1, (allLeads?.length || 1))) * 100)}%` }}></div>
+                  <div className="bg-admin-secondary h-full transition-all duration-1000" style={{ width: `${Math.min(100, (((leadStats['sold'] || 0) + (leadStats['lost'] || 0)) / Math.max(1, (allLeads?.length || 1))) * 100)}%` }}></div>
                 </div>
               </div>
             </div>
