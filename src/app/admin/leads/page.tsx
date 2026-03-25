@@ -1,5 +1,6 @@
-import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import Link from "next/link";
+import LeadsTimeline from "@/components/admin/LeadsTimeline";
 
 export default async function LeadsListView(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const searchParams = await props.searchParams;
@@ -69,111 +70,65 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
     };
 
     return (
-        <div className="p-8 space-y-8 flex-1 w-full max-w-[1600px] mx-auto">
+        <div className="p-8 space-y-8 flex-1 w-full max-w-[1400px] mx-auto min-h-screen selection:bg-primary selection:text-background-dark">
             {/* Header Section */}
-            <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+            <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-8 border-b border-zinc-800 pb-12">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface uppercase mb-2">Leads Terminal</h1>
-                    <p className="text-zinc-500 font-label text-sm tracking-wide uppercase">Active Inquiries: {activeLeadsCount} | Total: {totalLeadsCount}</p>
+                    <h1 className="text-5xl md:text-7xl font-black font-headline tracking-tighter text-on-surface uppercase mb-4 leading-none glitch-hover" data-text="LEADS">Leads <span className="text-primary italic">Terminal</span></h1>
+                    <div className="flex flex-wrap gap-4 text-zinc-500 font-label text-[10px] font-black tracking-[0.3em] uppercase">
+                        <span className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                            Active Inquiries: {activeLeadsCount}
+                        </span>
+                        <span className="text-zinc-700">|</span>
+                        <span>Telemetry Total: {totalLeadsCount}</span>
+                    </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-4">
                     <div className="relative group cursor-pointer z-50">
-                        <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700 min-w-[140px] flex justify-between items-center gap-2">
-                            Filter: {currentStatus ? currentStatus.replace('_', ' ') : 'All Leads'}
+                        <button className="bg-surface-container-high/50 hover:bg-surface-container-high px-6 py-3 text-zinc-300 text-[10px] font-black tracking-widest uppercase border border-zinc-700 min-w-[180px] flex justify-between items-center gap-3 transition-all rounded-sm">
+                            Status: <span className="text-primary">{currentStatus ? currentStatus.replace('_', ' ') : 'All Dossiers'}</span>
                             <span className="material-symbols-outlined text-sm">expand_more</span>
                         </button>
-                        <div className="absolute top-full right-0 mt-1 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50">
-                            <Link href={getStatusLink('all')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 transition-colors">All Leads</Link>
-                            <Link href={getStatusLink('new')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">New</Link>
-                            <Link href={getStatusLink('contacted')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Contacted</Link>
-                            <Link href={getStatusLink('negotiating')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Negotiating</Link>
+                        <div className="absolute top-full right-0 mt-2 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50 shadow-2xl rounded-sm backdrop-blur-xl overflow-hidden">
+                            <Link href={getStatusLink('all')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 transition-all">All Dossiers</Link>
+                            <Link href={getStatusLink('new')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 border-t border-zinc-800 transition-all">New</Link>
+                            <Link href={getStatusLink('contacted')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 border-t border-zinc-800 transition-all">Contacted</Link>
+                            <Link href={getStatusLink('negotiating')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 border-t border-zinc-800 transition-all">Negotiating</Link>
                         </div>
                     </div>
                     <div className="relative group cursor-pointer z-50">
-                        <button className="bg-surface-container-high px-4 py-2 text-zinc-300 text-[10px] font-bold tracking-widest uppercase border border-zinc-700 min-w-[140px] flex justify-between items-center gap-2">
-                            Sort: {currentSort === 'oldest' ? 'Oldest First' : 'Newest First'}
+                        <button className="bg-surface-container-high/50 hover:bg-surface-container-high px-6 py-3 text-zinc-300 text-[10px] font-black tracking-widest uppercase border border-zinc-700 min-w-[180px] flex justify-between items-center gap-3 transition-all rounded-sm">
+                            Sequence: <span className="text-primary">{currentSort === 'oldest' ? 'Oldest' : 'Newest'}</span>
                             <span className="material-symbols-outlined text-sm">expand_more</span>
                         </button>
-                        <div className="absolute top-full right-0 mt-1 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50">
-                            <Link href={getSortLink('newest')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 transition-colors">Newest First</Link>
-                            <Link href={getSortLink('oldest')} className="text-[10px] font-bold tracking-widest uppercase text-zinc-300 hover:bg-admin-secondary hover:text-black py-3 px-4 border-t border-zinc-700 transition-colors">Oldest First</Link>
+                        <div className="absolute top-full right-0 mt-2 w-full bg-surface-container-highest border border-zinc-700 hidden group-hover:flex flex-col z-50 shadow-2xl rounded-sm backdrop-blur-xl overflow-hidden">
+                            <Link href={getSortLink('newest')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 transition-all">Newest First</Link>
+                            <Link href={getSortLink('oldest')} className="text-[10px] font-black tracking-widest uppercase text-zinc-300 hover:bg-primary hover:text-black py-4 px-6 border-t border-zinc-800 transition-all">Oldest First</Link>
                         </div>
                     </div>
                 </div>
             </div>
 
-            {/* List Table */}
-            <div className="bg-surface-container-high border border-zinc-800 overflow-hidden">
-                <div className="overflow-x-auto">
-                    <table className="w-full text-left border-collapse min-w-[800px]">
-                        <thead>
-                            <tr className="bg-zinc-900 border-b border-zinc-700 text-zinc-400 text-[10px] font-bold uppercase tracking-widest">
-                                <th className="p-4 pl-6">Lead ID</th>
-                                <th className="p-4">Customer Name</th>
-                                <th className="p-4">Target Vehicle</th>
-                                <th className="p-4">Status</th>
-                                <th className="p-4">Captured On</th>
-                                <th className="p-4 text-right pr-6">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-sm">
-                            {leads && leads.length > 0 ? (
-                                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                                leads.map((lead: any) => {
-                                    // Parse status colors
-                                    let statusColorClass = "bg-zinc-800 border border-zinc-600 text-zinc-400";
-                                    if (lead.status === 'new') statusColorClass = "bg-admin-secondary/10 border border-admin-secondary text-admin-secondary";
-                                    else if (lead.status === 'contacted') statusColorClass = "bg-blue-500/10 border border-blue-500 text-blue-500";
-                                    else if (lead.status === 'negotiating') statusColorClass = "bg-amber-500/10 border border-amber-500 text-amber-500";
-                                    else if (lead.status === 'sold') statusColorClass = "bg-green-500/10 border border-green-500 text-green-500";
-
-                                    const targetVehicle = lead.vehicles ? `${lead.vehicles.year || ''} ${lead.vehicles.make || ''} ${lead.vehicles.model || ''}`.trim() : 'General Inquiry';
-
-                                    return (
-                                        <tr key={lead.id} className="border-b border-zinc-800 hover:bg-zinc-800/30 transition-colors group">
-                                            <td className="p-4 pl-6 text-zinc-500 font-mono text-xs">{lead.id.substring(0, 8).toUpperCase()}</td>
-                                            <td className="p-4 text-white font-bold">{lead.name}</td>
-                                            <td className="p-4 text-zinc-300">{targetVehicle}</td>
-                                            <td className="p-4">
-                                                <span className={`inline-block px-2 py-1 text-[10px] font-bold uppercase tracking-widest ${statusColorClass}`}>{lead.status.replace('_', ' ')}</span>
-                                            </td>
-                                            <td className="p-4 text-zinc-500 font-mono text-xs">{new Date(lead.created_at).toLocaleDateString()}</td>
-                                            <td className="p-4 pr-6 text-right">
-                                                <Link href={`/admin/leads/${lead.id}`} className="text-admin-secondary hover:text-white transition-colors text-xs font-bold uppercase tracking-widest flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100">
-                                                    Open Log <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                                </Link>
-                                            </td>
-                                        </tr>
-                                    );
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="p-8 text-center text-zinc-500 font-bold uppercase tracking-widest">
-                                        No leads found matching filters.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            {/* Timeline View */}
+            <LeadsTimeline leads={leads || []} />
             
             {/* Pagination / Controls */}
             {totalPages > 1 && (
-            <div className="flex justify-between items-center mt-6">
-                <p className="text-[10px] text-zinc-500 font-bold tracking-widest uppercase">Showing Page {currentPage} of {totalPages}</p>
-                <div className="flex gap-2">
-                    <Link scroll={false} href={currentPage > 1 ? getPageLink(currentPage - 1) : '#'} className={`h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container transition-colors ${currentPage > 1 ? 'text-zinc-400 hover:text-white hover:border-zinc-500' : 'text-zinc-600 pointer-events-none'}`}>
+            <div className="flex justify-between items-center mt-12 border-t border-zinc-800 pt-8">
+                <p className="text-[10px] text-zinc-500 font-black tracking-[0.2em] uppercase">Telemetry Page {currentPage} of {totalPages}</p>
+                <div className="flex gap-3">
+                    <Link scroll={false} href={currentPage > 1 ? getPageLink(currentPage - 1) : '#'} className={`h-10 w-10 flex items-center justify-center border border-zinc-700 bg-surface-container transition-all rounded-sm ${currentPage > 1 ? 'text-zinc-400 hover:text-primary hover:border-primary' : 'text-zinc-800 pointer-events-none'}`}>
                         <span className="material-symbols-outlined text-sm">chevron_left</span>
                     </Link>
                     
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                        <Link scroll={false} key={page} href={getPageLink(page)} className={`h-8 w-8 flex items-center justify-center border transition-colors ${page === currentPage ? 'border-admin-secondary bg-admin-secondary/10 text-admin-secondary' : 'border-zinc-700 bg-surface-container text-zinc-400 hover:text-white hover:border-zinc-500'}`}>
-                            <span className="text-xs font-bold">{page}</span>
+                        <Link scroll={false} key={page} href={getPageLink(page)} className={`h-10 w-10 flex items-center justify-center border transition-all rounded-sm ${page === currentPage ? 'border-primary bg-primary/10 text-primary font-black' : 'border-zinc-700 bg-surface-container text-zinc-500 hover:text-white hover:border-zinc-500 font-bold'}`}>
+                            <span className="text-xs">{page}</span>
                         </Link>
                     ))}
 
-                    <Link scroll={false} href={currentPage < totalPages ? getPageLink(currentPage + 1) : '#'} className={`h-8 w-8 flex items-center justify-center border border-zinc-700 bg-surface-container transition-colors ${currentPage < totalPages ? 'text-zinc-400 hover:text-white hover:border-zinc-500' : 'text-zinc-600 pointer-events-none'}`}>
+                    <Link scroll={false} href={currentPage < totalPages ? getPageLink(currentPage + 1) : '#'} className={`h-10 w-10 flex items-center justify-center border border-zinc-700 bg-surface-container transition-all rounded-sm ${currentPage < totalPages ? 'text-zinc-400 hover:text-primary hover:border-primary' : 'text-zinc-800 pointer-events-none'}`}>
                         <span className="material-symbols-outlined text-sm">chevron_right</span>
                     </Link>
                 </div>

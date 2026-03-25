@@ -4,6 +4,7 @@ import Link from "next/link";
 import { saveVehicle, deleteVehicle } from "../../actions";
 import { useState, useRef } from "react";
 import Image from "next/image";
+import { Reorder } from "framer-motion";
 
 interface ExistingImage {
     id: string;
@@ -57,6 +58,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
             <input type="hidden" name="main_image_url" value={mainImageUrl} />
             <input type="hidden" name="main_image_index" value={mainImageIndex.toString()} />
             <input type="hidden" name="deleted_image_ids" value={deletedIds.join(',')} />
+            <input type="hidden" name="existing_image_order" value={keepImages.map((img) => img.id).join(',')} />
             
             {/* Hidden multi-file input is handled by the ref below */}
 
@@ -176,50 +178,67 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
 
                         {/* Gallery Grid */}
                         {(keepImages.length > 0 || previews.length > 0) ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                {/* Existing images from DB */}
-                                {keepImages.map((img) => (
-                                    <div
-                                        key={img.id}
-                                        onClick={() => setExistingAsMain(img.public_url)}
-                                        className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${mainImageUrl === img.public_url ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-700 hover:border-zinc-500'}`}
-                                    >
-                                        <Image fill src={img.public_url} alt="Vehicle image" className="object-cover" />
-                                        {mainImageUrl === img.public_url && (
-                                            <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={(e) => { e.stopPropagation(); removeExistingImage(img.id); }}
-                                            className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                            <div className="space-y-4">
+                                {keepImages.length > 0 && (
+                                    <>
+                                        <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold">Drag to reorder saved gallery images</p>
+                                        <Reorder.Group
+                                            axis="y"
+                                            values={keepImages}
+                                            onReorder={setKeepImages}
+                                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
                                         >
-                                            <span className="material-symbols-outlined text-xs">close</span>
-                                        </button>
-                                    </div>
-                                ))}
+                                            {keepImages.map((img) => (
+                                                <Reorder.Item
+                                                    key={img.id}
+                                                    value={img}
+                                                    className={`relative aspect-video overflow-hidden group cursor-grab active:cursor-grabbing border-2 transition-all ${mainImageUrl === img.public_url ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-700 hover:border-zinc-500'}`}
+                                                    onClick={() => setExistingAsMain(img.public_url)}
+                                                >
+                                                    <Image fill src={img.public_url} alt="Vehicle image" className="object-cover" />
+                                                    <div className="absolute bottom-1 right-1 bg-zinc-900/80 text-zinc-300 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest">drag</div>
+                                                    {mainImageUrl === img.public_url && (
+                                                        <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
+                                                    )}
+                                                    <button
+                                                        type="button"
+                                                        onClick={(e) => { e.stopPropagation(); removeExistingImage(img.id); }}
+                                                        className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                                    >
+                                                        <span className="material-symbols-outlined text-xs">close</span>
+                                                    </button>
+                                                </Reorder.Item>
+                                            ))}
+                                        </Reorder.Group>
+                                    </>
+                                )}
 
                                 {/* New preview images */}
-                                {previews.map((preview, idx) => (
-                                    <div
-                                        key={preview.url}
-                                        onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
-                                        className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${!mainImageUrl && mainImageIndex === idx ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-600 hover:border-zinc-400 border-dashed'}`}
-                                    >
-                                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                                        <img src={preview.url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
-                                        <div className="absolute bottom-1 left-1 bg-zinc-900/80 text-[8px] font-bold text-admin-secondary px-1.5 py-0.5 uppercase tracking-widest">NEW</div>
-                                        {!mainImageUrl && mainImageIndex === idx && (
-                                            <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
-                                        )}
-                                        <button
-                                            type="button"
-                                            onClick={(e) => { e.stopPropagation(); removeNewImage(idx); }}
-                                            className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
-                                        >
-                                            <span className="material-symbols-outlined text-xs">close</span>
-                                        </button>
+                                {previews.length > 0 && (
+                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                        {previews.map((preview, idx) => (
+                                            <div
+                                                key={preview.url}
+                                                onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
+                                                className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${!mainImageUrl && mainImageIndex === idx ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-600 hover:border-zinc-400 border-dashed'}`}
+                                            >
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={preview.url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                                                <div className="absolute bottom-1 left-1 bg-zinc-900/80 text-[8px] font-bold text-admin-secondary px-1.5 py-0.5 uppercase tracking-widest">NEW</div>
+                                                {!mainImageUrl && mainImageIndex === idx && (
+                                                    <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
+                                                )}
+                                                <button
+                                                    type="button"
+                                                    onClick={(e) => { e.stopPropagation(); removeNewImage(idx); }}
+                                                    className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                                >
+                                                    <span className="material-symbols-outlined text-xs">close</span>
+                                                </button>
+                                            </div>
+                                        ))}
                                     </div>
-                                ))}
+                                )}
                             </div>
                         ) : (
                             <div

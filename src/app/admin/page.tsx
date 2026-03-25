@@ -2,6 +2,7 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import AnimatedCounter from "@/components/home/AnimatedCounter";
 import { VehicleDistributionChart } from "@/components/admin/VehicleDistributionChart";
+import { SystemEventStream } from "@/components/admin/SystemEventStream";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -197,21 +198,7 @@ export default async function AdminDashboard() {
             <h4 className="font-headline font-bold tracking-widest text-sm uppercase">System Logs</h4>
             <span className="text-[9px] bg-zinc-800 px-2 py-0.5 text-zinc-400">REAL-TIME</span>
           </div>
-          <div className="bg-surface-container-lowest p-6 border border-white/5 font-mono text-[11px] leading-relaxed h-[360px] overflow-y-auto">
-            <div className="space-y-3">
-              {timelineEvents && timelineEvents.length > 0 ? timelineEvents.map((event) => (
-                  <div key={event.id} className="flex gap-3 relative group">
-                      <span className="text-zinc-600 shrink-0">[{new Date(event.created_at).toLocaleTimeString('en-US', {hour12: false}).substring(0, 8)}]</span>
-                      <p><span className="text-admin-secondary font-bold">{event.event_type.toUpperCase()}</span>: <span className="text-zinc-300">{event.description}</span></p>
-                  </div>
-              )) : (
-                  <div className="flex gap-3">
-                    <span className="text-zinc-600">[--:--:--]</span>
-                    <p><span className="text-admin-secondary">WAITING_FOR_DATA_PACKETS...</span></p>
-                  </div>
-              )}
-            </div>
-          </div>
+          <SystemEventStream events={timelineEvents || []} />
         </div>
       </div>
       

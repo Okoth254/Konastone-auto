@@ -10,6 +10,7 @@ import AnimatedCounter from "@/components/home/AnimatedCounter";
 import { AnimatedHeroText } from "@/components/home/AnimatedHeroText";
 import { BrandCarousel } from "@/components/home/BrandCarousel";
 import { StaggeredGrid } from "@/components/home/StaggeredGrid";
+import { MagneticButton } from "@/components/home/MagneticButton";
 
 export const metadata: Metadata = {
   title: 'Premium Car Dealership in Mombasa, Kenya',
@@ -90,7 +91,10 @@ export default async function Home() {
                         sizes="(max-width: 1024px) 100vw, 60vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
-                        <AnimatedHeroText />
+                        <div className="space-y-8">
+                            <AnimatedHeroText />
+                            <MagneticButton href="/inventory" label="EXPLORE FLEET" />
+                        </div>
                     </div>
                 </div>
                 <div className="lg:w-[40%] bg-gray-100 dark:bg-surface-dark p-8 lg:p-12 flex flex-col justify-center border-l border-gray-200 dark:border-gray-800 transition-colors duration-300">

@@ -19,6 +19,7 @@ export async function saveVehicle(formData: FormData) {
   const galleryFiles = formData.getAll('gallery_images') as File[];
   const mainImageIndex = parseInt(formData.get('main_image_index') as string || '0');
   const deletedImageIds = (formData.get('deleted_image_ids') as string || '').split(',').filter(Boolean);
+  const existingImageOrder = (formData.get('existing_image_order') as string || '').split(',').filter(Boolean);
 
   // Upload each new gallery file to Supabase Storage
   const newlyUploadedImages: { storage_path: string; public_url: string }[] = [];
@@ -122,6 +123,19 @@ export async function saveVehicle(formData: FormData) {
     await supabase.from('vehicle_images').update({ is_main: false }).eq('vehicle_id', vehicleId);
     await supabase.from('vehicle_images').update({ is_main: true }).eq('vehicle_id', vehicleId).eq('public_url', mainImageUrl);
     await supabase.from('vehicles').update({ main_image_url: mainImageUrl }).eq('id', vehicleId);
+  }
+
+  // --- 6. Persist re-ordered existing image positions ---
+  if (existingImageOrder.length > 0) {
+    await Promise.all(
+      existingImageOrder.map((imageId, idx) =>
+        supabase
+          .from('vehicle_images')
+          .update({ sort_order: idx })
+          .eq('id', imageId)
+          .eq('vehicle_id', vehicleId)
+      )
+    );
   }
 
   revalidatePath('/admin/vehicles');
