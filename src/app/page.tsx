@@ -1,16 +1,11 @@
 import { Metadata } from "next";
-import Link from "next/link";
-import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { Vehicle } from "@/types/database";
-import HeroSearchForm from "@/components/home/HeroSearchForm";
 import { siteConfig } from "@/config/site";
-import VehicleImage from "@/components/inventory/VehicleImage";
 import AnimatedCounter from "@/components/home/AnimatedCounter";
-import { AnimatedHeroText } from "@/components/home/AnimatedHeroText";
 import { BrandCarousel } from "@/components/home/BrandCarousel";
-import { StaggeredGrid } from "@/components/home/StaggeredGrid";
-import { MagneticButton } from "@/components/home/MagneticButton";
+import HeroSection from "@/components/home/HeroSection";
+import FeaturedVehicles from "@/components/home/FeaturedVehicles";
 
 export const metadata: Metadata = {
   title: 'Premium Car Dealership in Mombasa, Kenya',
@@ -77,34 +72,14 @@ export default async function Home() {
         'Land Rover': { src: "/images/brands/land rover.svg", alt: "Land Rover Logo" },
         'Volvo': { src: "/images/brands/volvo.svg", alt: "Volvo Logo" },
     };
+
     return (
-        <>
-            {/* Hero Section */}
-            <section className="flex flex-col lg:flex-row min-h-[600px]">
-                <div className="lg:w-[60%] relative overflow-hidden h-[52vh] min-h-[360px] lg:h-auto">
-                    <Image
-                        alt="Luxury car at dusk in Mombasa"
-                        className="absolute inset-0 w-full h-full object-cover"
-                        src="https://lh3.googleusercontent.com/aida-public/AB6AXuCGekMr5-7ufq0mbhw8Rz5pUC4s_zGTAU5B6kLOMtwml1JQHbNGylFtnBk7phUFQilKEWEuvopoH26U7_iIfT0w83Z49NybdApRXTQX_CDJyDNq1cQQdlQyPVUt3PmVrCPUy6ckHebYzftqzF0lAW6w65ltuIR1pNT1gEJNEn0KSO1oKy7VWzS2BVz_OxP2pzFNlPL-av0NGyaFXKED5tj1WIvqYi84RUUH1SAk1Sgw8t5xRP4DulOQXWGaESmKlgmuXOJ9tTUMmNVc"
-                        fill
-                        priority
-                        sizes="(max-width: 1024px) 100vw, 60vw"
-                    />
-                    <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
-                        <div className="space-y-8">
-                            <AnimatedHeroText />
-                            <MagneticButton href="/inventory" label="EXPLORE FLEET" className="w-full sm:w-auto justify-center" />
-                        </div>
-                    </div>
-                </div>
-                <div className="lg:w-[40%] bg-gray-100 dark:bg-surface-dark p-8 lg:p-12 flex flex-col justify-center border-l border-gray-200 dark:border-gray-800 transition-colors duration-300">
-                    <h2 className="font-display text-4xl mb-6 text-gray-900 dark:text-white tracking-wide">Find Your Perfect Car</h2>
-                    <HeroSearchForm />
-                </div>
-            </section>
+        <div className="overflow-hidden">
+            {/* New Cinematic Hero Section */}
+            <HeroSection />
 
             {/* Browse By Brand section */}
-            <section className="section-pad relative bg-[#1A1A1A] overflow-hidden animate-scroll-reveal" >
+            <section className="section-pad relative bg-[#1A1A1A] overflow-hidden animate-scroll-reveal">
                 <div className="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
                 <div className="page-shell relative z-10">
                     <div className="text-center mb-12">
@@ -125,7 +100,7 @@ export default async function Home() {
             </section>
 
             {/* Stats Section */}
-            <section className="bg-gray-50 dark:bg-[#151515] py-12 md:py-14 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
+            <section className="bg-gray-50 dark:bg-[#151515] py-12 md:py-14 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal">
                 <div className="page-shell">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                         {siteConfig.stats.map((stat, idx) => (
@@ -141,92 +116,15 @@ export default async function Home() {
                 </div>
             </section>
 
-            {/* Featured Listings Section */}
-            <section className="section-pad bg-white dark:bg-background-dark transition-colors duration-300 animate-scroll-reveal" >
-                <div className="page-shell">
-                    <div className="flex justify-between items-end mb-10">
-                        <div>
-                            <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">FEATURED LISTINGS</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-2">Premium hand-picked vehicles ready for immediate delivery.</p>
-                        </div>
-                        <Link className="hidden md:flex items-center px-6 py-2 rounded-full text-primary hover:text-background-dark btn-sweep btn-premium btn-premium-primary font-medium uppercase tracking-wider transition-colors" href="/inventory">
-                            View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
-                        </Link>
-                    </div>
-
-                    <StaggeredGrid vehicles={featuredVehicles} isSupabaseConfigured={!!isSupabaseConfigured} featuredError={featuredError}>
-                        {!isSupabaseConfigured && (
-                            <div className="col-span-full border border-yellow-500/50 bg-yellow-500/10 p-6 rounded-lg text-yellow-500 text-center flex flex-col items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-4xl">warning</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wider">Database Not Configured</h3>
-                                <p className="text-sm">Please provide Supabase credentials in <code>.env.local</code> to fetch live featured vehicles.</p>
-                            </div>
-                        )}
-
-                        {isSupabaseConfigured && featuredError && (
-                            <div className="col-span-full border border-red-500/50 bg-red-500/10 p-6 rounded-lg text-red-500 text-center flex flex-col items-center justify-center gap-2">
-                                <span className="material-symbols-outlined text-4xl">error</span>
-                                <h3 className="text-xl font-bold font-display uppercase tracking-wider">Loading Error</h3>
-                                <p className="text-sm">{featuredError}</p>
-                            </div>
-                        )}
-
-                        {isSupabaseConfigured && !featuredError && featuredVehicles.length === 0 && (
-                            <div className="col-span-full text-center text-gray-500 dark:text-gray-400 py-10">
-                                No featured vehicles found at the moment.
-                            </div>
-                        )}
-
-                        {featuredVehicles.map((car) => {
-                            const imagePath = `/images/inventory/${car.folder_name}/1.jpeg`;
-
-                            return (
-                                <div key={car.id} className="ui-card bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
-                                    <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                                        <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                        {car.status === 'available' && (
-                                            <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
-                                                Excellent
-                                            </div>
-                                        )}
-                                        {car.status === 'in_transit' && (
-                                            <div className="absolute top-4 left-4 bg-accent text-background-dark text-xs font-bold px-3 py-1 rounded uppercase tracking-wider animate-pulse-ring-accent">
-                                                In Transit
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="p-6 flex flex-col h-full">
-                                        <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2 line-clamp-1">{car.year} {car.make} {car.model}</h3>
-                                        <div className="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-gray-400 mb-6">
-                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">speed</span> {car.mileage.toLocaleString()} km</div>
-                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">local_gas_station</span> {car.fuel_type}</div>
-                                            <div className="flex items-center"><span className="material-icons text-[18px] mr-1">settings</span> {car.transmission}</div>
-                                        </div>
-                                        <div className="flex items-end justify-between border-t border-gray-200 dark:border-gray-700 pt-4 mt-auto">
-                                            <div>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Price</p>
-                                                <p className="font-display text-3xl text-primary">KES {car.price.toLocaleString()}</p>
-                                            </div>
-                                        </div>
-                                        <Link className="btn-premium mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href="#">
-                                            <span className="material-icons mr-2">whatsapp</span> Inquire on WhatsApp
-                                        </Link>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                    </StaggeredGrid>
-
-                    <div className="mt-10 flex justify-center md:hidden">
-                        <Link className="btn-premium inline-flex items-center px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
-                            View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
-                        </Link>
-                    </div>
-                </div>
-            </section>
+            {/* Featured Listings Section - New Premium Cards */}
+            <FeaturedVehicles 
+                vehicles={featuredVehicles}
+                isSupabaseConfigured={!!isSupabaseConfigured}
+                featuredError={featuredError}
+            />
 
             {/* Why Choose Konastone */}
-            <section className="section-pad bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
+            <section className="section-pad bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal">
                 <div className="page-shell">
                     <div className="text-center mb-16">
                         <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">WHY CHOOSE KONASTONE</h2>
@@ -264,6 +162,6 @@ export default async function Home() {
                     </div>
                 </div>
             </section>
-        </>
+        </div>
     );
 }
