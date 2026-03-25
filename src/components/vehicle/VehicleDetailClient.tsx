@@ -38,7 +38,6 @@ interface VehicleDetailClientProps {
     similarVehicles: Vehicle[];
     images: string[];
     whatsappLink: string;
-    formatPrice: (price: number) => string;
 }
 
 export default function VehicleDetailClient({
@@ -47,9 +46,15 @@ export default function VehicleDetailClient({
     similarVehicles,
     images,
     whatsappLink,
-    formatPrice,
 }: VehicleDetailClientProps) {
     const [isSpecsOpen, setIsSpecsOpen] = useState(true);
+
+    const formatPrice = (price: number) =>
+        new Intl.NumberFormat('en-KE', {
+            style: 'currency',
+            currency: 'KES',
+            maximumFractionDigits: 0,
+        }).format(price).replace('KES', 'Ksh');
 
     const containerVariants: Variants = {
         hidden: { opacity: 0 },

@@ -7,12 +7,13 @@ import VehicleDetailClient from "@/components/vehicle/VehicleDetailClient";
 // Revalidate every 60 seconds
 export const revalidate = 60;
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
     const supabase = await createClient();
     const { data: vehicle } = await supabase
         .from('vehicles')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single();
 
     if (!vehicle) return { title: 'Vehicle Not Found' };
@@ -26,13 +27,14 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     };
 }
 
-export default async function VehicleDetail({ params }: { params: { id: string } }) {
+export default async function VehicleDetail({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
     const supabase = await createClient();
     
     const { data: vehicle } = await supabase
         .from('vehicles')
         .select('*')
-        .eq('id', params.id)
+        .eq('id', id)
         .single();
 
     if (!vehicle) notFound();
@@ -41,7 +43,7 @@ export default async function VehicleDetail({ params }: { params: { id: string }
     const { data: imagesData } = await supabase
         .from('vehicle_images')
         .select('public_url')
-        .eq('vehicle_id', params.id)
+        .eq('vehicle_id', id)
         .order('id', { ascending: true });
 
     let images = imagesData?.map((img: { public_url: string }) => img.public_url) || [];
@@ -54,23 +56,15 @@ export default async function VehicleDetail({ params }: { params: { id: string }
     const { data: features } = await supabase
         .from('vehicle_features')
         .select('*')
-        .eq('vehicle_id', params.id);
+        .eq('vehicle_id', id);
 
     // Fetch similar vehicles
     const { data: similarVehicles } = await supabase
         .from('vehicles')
         .select('*')
-        .neq('id', params.id)
+        .neq('id', id)
         .eq('make', vehicle.make)
         .limit(3);
-
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('en-KE', {
-            style: 'currency',
-            currency: 'KES',
-            maximumFractionDigits: 0
-        }).format(price).replace('KES', 'Ksh');
-    };
 
     const whatsappMessage = encodeURIComponent(`Hi Konastone Autos, I'm interested in the ${vehicle.year} ${vehicle.make} ${vehicle.model} (Ref: ${vehicle.id})`);
     const whatsappLink = `https://wa.me/${siteConfig.contact.phoneFormatted}?text=${whatsappMessage}`;
@@ -100,7 +94,6 @@ export default async function VehicleDetail({ params }: { params: { id: string }
                 similarVehicles={similarVehicles || []}
                 images={images}
                 whatsappLink={whatsappLink}
-                formatPrice={formatPrice}
             />
         </div>
     );
