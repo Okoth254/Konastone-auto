@@ -42,10 +42,13 @@ export function StaggeredGrid({ vehicles, isSupabaseConfigured, featuredError, c
                     <motion.div 
                         key={car.id}
                         variants={item}
-                        className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
+                        className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group flex flex-col"
                     >
+
                         <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                            <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                            <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]" />
+
+
                             {car.status === 'available' && (
                                 <div className="absolute top-4 left-4 bg-secondary text-white text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">Excellent</div>
                             )}
@@ -53,22 +56,26 @@ export function StaggeredGrid({ vehicles, isSupabaseConfigured, featuredError, c
                                 <div className="absolute top-4 left-4 bg-accent text-background-dark text-xs font-bold px-3 py-1 rounded uppercase tracking-wider animate-pulse">In Transit</div>
                             )}
                         </div>
-                        <div className="p-6 flex flex-col">
-                            <h3 className="font-bold text-xl text-gray-900 dark:text-white mb-2 line-clamp-1">{car.year} {car.make} {car.model}</h3>
-                            <div className="flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-400 mb-6">
+                        <div className="p-5 flex flex-col flex-1 gap-3">
+                            <h3 className="font-bold text-xl text-gray-900 dark:text-white line-clamp-2">{car.year} {car.make} {car.model}</h3>
+                            <div className="flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-400">
+
                                 <div className="flex items-center"><span className="material-icons text-[16px] mr-1">speed</span>{car.mileage.toLocaleString()} km</div>
                                 <div className="flex items-center"><span className="material-icons text-[16px] mr-1">local_gas_station</span>{car.fuel_type}</div>
                                 <div className="flex items-center"><span className="material-icons text-[16px] mr-1">settings</span>{car.transmission}</div>
                             </div>
-                            <div className="flex items-end justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
+                            <div className="mt-auto flex items-end justify-between border-t border-gray-200 dark:border-gray-700 pt-4">
                                 <div>
                                     <p className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Price</p>
                                     <p className="font-display text-3xl text-primary">KES {car.price.toLocaleString()}</p>
                                 </div>
                             </div>
-                            <Link className="mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href={`/vehicle/${car.id}`}>
-                                <span className="material-icons mr-2">auto_awesome</span> View Details
+                            <Link className="btn-premium tap-highlight-none mt-4 flex items-center justify-center w-full gap-2 bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors group/cta" href={`/vehicle/${car.id}`}>
+                                <span className="material-icons">auto_awesome</span>
+                                View Details
+                                <span className="material-icons text-base transition-transform duration-200 group-hover/cta:translate-x-1">arrow_forward</span>
                             </Link>
+
                         </div>
                     </motion.div>
                 );

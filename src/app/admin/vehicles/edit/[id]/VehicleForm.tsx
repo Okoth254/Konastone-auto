@@ -4,7 +4,9 @@ import Link from "next/link";
 import { saveVehicle, deleteVehicle } from "../../actions";
 import { useState, useRef } from "react";
 import Image from "next/image";
-import { Reorder } from "framer-motion";
+import { Reorder, motion, AnimatePresence } from "framer-motion";
+import MotionButton from "@/components/ui/MotionButton";
+import MotionBadge from "@/components/ui/MotionBadge";
 
 interface ExistingImage {
     id: string;
@@ -13,7 +15,22 @@ interface ExistingImage {
     sort_order: number;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const containerVars = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1,
+            delayChildren: 0.2
+        }
+    }
+};
+
+const itemVars = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any } }
+};
+
 export default function VehicleForm({ vehicle, vehicleId, existingImages }: { vehicle: any, vehicleId: string, existingImages: ExistingImage[] }) {
     const isNew = vehicleId === 'new';
     const [status, setStatus] = useState(vehicle?.status || 'available');
@@ -23,36 +40,36 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     const [keepImages, setKeepImages] = useState<ExistingImage[]>(existingImages);
     const [deletedIds, setDeletedIds] = useState<string[]>([]);
     const [mainImageUrl, setMainImageUrl] = useState<string>(vehicle?.main_image_url || '');
-    const [mainImageIndex, setMainImageIndex] = useState(0); // index in new previews for main
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [mainImageIndex, setMainImageIndex] = useState(0);
+    const [isDirty, setIsDirty] = useState(false);
     
+    const fileInputRef = useRef<HTMLInputElement>(null);
     const deleteAction = deleteVehicle.bind(null, vehicleId);
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = Array.from(e.target.files || []);
         const newPreviews = files.map(file => ({ file, url: URL.createObjectURL(file) }));
         setPreviews(prev => [...prev, ...newPreviews]);
+        setIsDirty(true);
     };
 
     const removeNewImage = (idx: number) => {
         URL.revokeObjectURL(previews[idx].url);
         setPreviews(prev => prev.filter((_, i) => i !== idx));
+        setIsDirty(true);
     };
 
     const removeExistingImage = (imgId: string) => {
         setKeepImages(prev => prev.filter(img => img.id !== imgId));
         setDeletedIds(prev => [...prev, imgId]);
+        setIsDirty(true);
         if (keepImages.find(img => img.id === imgId)?.public_url === mainImageUrl) {
             setMainImageUrl('');
         }
     };
 
-    const setExistingAsMain = (url: string) => {
-        setMainImageUrl(url);
-    };
-    
     return (
-        <form action={saveVehicle} className="flex flex-col min-h-full">
+        <form action={saveVehicle} onChange={() => setIsDirty(true)} className="flex flex-col min-h-screen bg-background-dark">
             <input type="hidden" name="id" value={vehicleId} />
             <input type="hidden" name="status" value={status} />
             <input type="hidden" name="main_image_url" value={mainImageUrl} />
@@ -60,264 +77,272 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
             <input type="hidden" name="deleted_image_ids" value={deletedIds.join(',')} />
             <input type="hidden" name="existing_image_order" value={keepImages.map((img) => img.id).join(',')} />
             
-            {/* Hidden multi-file input is handled by the ref below */}
-
-            {/* TopAppBar */}
-            <header className="bg-admin-surface/80 backdrop-blur-xl border-b border-primary-container/20 flex justify-between items-center w-full px-8 h-16 sticky top-0 z-50">
-                <div className="flex items-center gap-4">
-                    <Link href="/admin/vehicles" className="material-symbols-outlined text-zinc-500 cursor-pointer hover:text-amber-400 transition-colors">arrow_back</Link>
-                    <h2 className="text-2xl font-black tracking-tighter text-amber-400 font-headline uppercase">{isNew ? 'New Vehicle' : 'Vehicle Editor'}</h2>
-                </div>
-                <div className="flex items-center gap-6">
-                    <button type="submit" className="bg-primary-container text-on-primary-container px-6 py-2 font-headline font-bold text-xs tracking-widest hover:bg-primary-fixed-dim transition-colors cursor-pointer">
-                        SAVE VEHICLE
-                    </button>
+            {/* Cinematic Header */}
+            <header className="sticky top-0 z-[100] bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-6 px-10">
+                <div className="max-w-[1600px] mx-auto flex items-center justify-between">
+                    <div className="flex items-center gap-8">
+                        <Link href="/admin/vehicles">
+                            <motion.div 
+                                whileHover={{ x: -5 }}
+                                className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-slate-400 hover:text-white transition-colors"
+                            >
+                                <span className="material-symbols-outlined">west</span>
+                            </motion.div>
+                        </Link>
+                        <div>
+                            <div className="flex items-center gap-3 mb-1">
+                                <MotionBadge color="primary" className="text-[9px] tracking-[0.3em] font-black">{isNew ? 'NEW_ENTRY' : 'EDITOR_ACTIVE'}</MotionBadge>
+                                <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{isNew ? 'AWAITING_INITIALIZATION' : `ASSET_ID: ${vehicleId.substring(0, 8)}`}</span>
+                            </div>
+                            <h1 className="text-3xl font-heading font-black text-white uppercase tracking-tighter leading-none italic">
+                                {isNew ? 'Initialize Vehicle' : 'Modify Asset Specification'}
+                            </h1>
+                        </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-4">
+                        <AnimatePresence>
+                            {isDirty && (
+                                <motion.span 
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.9 }}
+                                    className="text-[10px] font-black text-amber-500 uppercase tracking-[0.2em] px-4"
+                                >
+                                    Unsaved Changes Active
+                                </motion.span>
+                            )}
+                        </AnimatePresence>
+                        <MotionButton type="submit" variant="primary" className="px-10">
+                            Push_Changes
+                        </MotionButton>
+                    </div>
                 </div>
             </header>
 
-            {/* Editor Content */}
-            <div className="flex flex-1 p-8 gap-8 max-w-[1600px] mx-auto w-full flex-col xl:flex-row">
-                {/* Left Column: Form Sections */}
-                <div className="flex-1 space-y-8">
-                    {/* Section: Basic Info */}
-                    <section className="bg-surface-container p-6 border-l-2 border-admin-secondary">
-                        <div className="flex justify-between items-center mb-8">
-                            <h3 className="font-headline text-lg font-bold tracking-widest text-admin-secondary uppercase">01. BASIC INFO</h3>
-                            {!isNew && <span className="text-[10px] font-mono text-zinc-500 tracking-tighter">REF_ID: {vehicleId.substring(0, 8)}</span>}
-                        </div>
-                        <div className="grid grid-cols-2 gap-8">
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Make</label>
-                                <input name="make" required className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all text-white outline-none" type="text" defaultValue={vehicle?.make || ''} />
+            <main className="flex-1 py-16 px-10">
+                <motion.div 
+                    variants={containerVars}
+                    initial="hidden"
+                    animate="visible"
+                    className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-16"
+                >
+                    {/* Primary Technical Form */}
+                    <div className="xl:col-span-8 space-y-20">
+                        {/* 01. IDENTITY */}
+                        <motion.section variants={itemVars} className="space-y-10">
+                            <div className="flex items-center gap-6">
+                                <span className="text-4xl font-heading font-black text-white/10 italic">01</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Asset_Identity</h2>
                             </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Model</label>
-                                <input name="model" required className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all text-white outline-none" type="text" defaultValue={vehicle?.model || ''} />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Year</label>
-                                <input name="year" required className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all text-white outline-none" type="number" defaultValue={vehicle?.year || new Date().getFullYear()} />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">VIN Number</label>
-                                <input name="vin" required className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-mono tracking-widest focus:border-admin-primary transition-all text-white outline-none" type="text" defaultValue={vehicle?.vin || ''} />
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Body Style</label>
-                                <select name="body_style" className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all appearance-none cursor-pointer text-white outline-none" defaultValue={vehicle?.body_style || 'SUV'}>
-                                    <option value="Coupe">Coupe</option>
-                                    <option value="Sedan">Sedan</option>
-                                    <option value="SUV">SUV</option>
-                                    <option value="Truck">Truck</option>
-                                    <option value="Van">Van</option>
-                                    <option value="Wagon">Wagon</option>
-                                </select>
-                            </div>
-                            <div className="flex flex-col gap-1">
-                                <label className="text-[10px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Exterior Color</label>
-                                <input name="exterior_color" className="bg-surface-container-highest border-b border-zinc-700 py-3 px-4 text-sm font-medium focus:border-admin-primary transition-all text-white outline-none" type="text" defaultValue={vehicle?.exterior_color || ''} />
-                            </div>
-                        </div>
-                    </section>
-                    
-                    {/* Section: Technical Specs */}
-                    <section className="bg-surface-container p-6 border-l-2 border-admin-secondary">
-                        <h3 className="font-headline text-lg font-bold tracking-widest text-admin-secondary mb-8 uppercase">02. Technical Specs</h3>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                            <div className="bg-surface-container-low p-4 space-y-2">
-                                <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Engine Details</label>
-                                <input name="engine_type" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.engine_type || ''} placeholder="e.g. 4.0L V8" />
-                            </div>
-                            <div className="bg-surface-container-low p-4 space-y-2">
-                                <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Power</label>
-                                <input name="power" className="bg-transparent border-none p-0 w-full text-xl font-bold font-headline text-amber-400 outline-none" type="text" defaultValue={vehicle?.power || ''} placeholder="e.g. 500 HP" />
-                            </div>
-                            <div className="bg-surface-container-low p-4 space-y-2">
-                                <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Transmission</label>
-                                <select name="transmission" className="bg-transparent border-none p-0 w-full text-lg font-bold font-headline text-amber-400 appearance-none cursor-pointer outline-none" defaultValue={vehicle?.transmission || 'Automatic'}>
-                                    <option value="Automatic">Automatic</option>
-                                    <option value="Manual">Manual</option>
-                                    <option value="Dual-Clutch">Dual-Clutch</option>
-                                </select>
-                            </div>
-                            <div className="bg-surface-container-low p-4 space-y-2">
-                                <label className="text-[9px] font-headline font-bold tracking-[0.2em] text-zinc-500 uppercase">Drivetrain</label>
-                                <select name="drivetrain" className="bg-transparent border-none p-0 w-full text-lg font-bold font-headline text-amber-400 appearance-none cursor-pointer outline-none" defaultValue={vehicle?.drivetrain || 'AWD'}>
-                                    <option value="AWD">AWD</option>
-                                    <option value="RWD">RWD</option>
-                                    <option value="FWD">FWD</option>
-                                    <option value="4WD">4WD</option>
-                                </select>
-                            </div>
-                        </div>
-                    </section>
-                    
-                    {/* Section: Image Gallery Manager */}
-                    <section className="bg-surface-container p-6 border-l-2 border-admin-secondary">
-                        <div className="flex justify-between items-start mb-8">
-                            <div>
-                                <h3 className="font-headline text-lg font-bold tracking-widest text-admin-secondary uppercase">03. Assets & Media</h3>
-                                <p className="text-[10px] text-zinc-500 mt-1">Click any image to set as the main cover image. Use the &times; to remove.</p>
-                            </div>
-                            <button type="button" onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2 bg-admin-secondary/10 border border-admin-secondary text-admin-secondary text-[10px] font-bold tracking-widest uppercase px-4 py-2 hover:bg-admin-secondary/20 transition-colors cursor-pointer">
-                                <span className="material-symbols-outlined text-sm">add_photo_alternate</span>
-                                Add Images
-                            </button>
-                        </div>
-
-                        {/* Hidden multi-file input */}
-                        <input
-                            ref={fileInputRef}
-                            name="gallery_images"
-                            type="file"
-                            accept="image/*"
-                            multiple
-                            onChange={handleFileChange}
-                            className="hidden"
-                        />
-
-                        {/* Gallery Grid */}
-                        {(keepImages.length > 0 || previews.length > 0) ? (
-                            <div className="space-y-4">
-                                {keepImages.length > 0 && (
-                                    <>
-                                        <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-bold">Drag to reorder saved gallery images</p>
-                                        <Reorder.Group
-                                            axis="y"
-                                            values={keepImages}
-                                            onReorder={setKeepImages}
-                                            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
-                                        >
-                                            {keepImages.map((img) => (
-                                                <Reorder.Item
-                                                    key={img.id}
-                                                    value={img}
-                                                    className={`relative aspect-video overflow-hidden group cursor-grab active:cursor-grabbing border-2 transition-all ${mainImageUrl === img.public_url ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-700 hover:border-zinc-500'}`}
-                                                    onClick={() => setExistingAsMain(img.public_url)}
-                                                >
-                                                    <Image fill src={img.public_url} alt="Vehicle image" className="object-cover" />
-                                                    <div className="absolute bottom-1 right-1 bg-zinc-900/80 text-zinc-300 px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-widest">drag</div>
-                                                    {mainImageUrl === img.public_url && (
-                                                        <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
-                                                    )}
-                                                    <button
-                                                        type="button"
-                                                        onClick={(e) => { e.stopPropagation(); removeExistingImage(img.id); }}
-                                                        className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
-                                                    >
-                                                        <span className="material-symbols-outlined text-xs">close</span>
-                                                    </button>
-                                                </Reorder.Item>
-                                            ))}
-                                        </Reorder.Group>
-                                    </>
-                                )}
-
-                                {/* New preview images */}
-                                {previews.length > 0 && (
-                                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                                        {previews.map((preview, idx) => (
-                                            <div
-                                                key={preview.url}
-                                                onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
-                                                className={`relative aspect-video overflow-hidden group cursor-pointer border-2 transition-all ${!mainImageUrl && mainImageIndex === idx ? 'border-amber-400 shadow-[0_0_15px_rgba(255,193,7,0.3)]' : 'border-zinc-600 hover:border-zinc-400 border-dashed'}`}
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+                                {[
+                                    { label: 'Manufacturer', name: 'make', defaultValue: vehicle?.make },
+                                    { label: 'Model_Designation', name: 'model', defaultValue: vehicle?.model },
+                                    { label: 'Production_Year', name: 'year', type: 'number', defaultValue: vehicle?.year },
+                                    { label: 'VIN_Identification', name: 'vin', defaultValue: vehicle?.vin },
+                                    { label: 'Body_Configuration', name: 'body_style', type: 'select', options: ['SUV', 'Sedan', 'Coupe', 'Truck', 'Van', 'Wagon'], defaultValue: vehicle?.body_style },
+                                    { label: 'Exterior_Finish', name: 'exterior_color', defaultValue: vehicle?.exterior_color }
+                                ].map((field) => (
+                                    <div key={field.name} className="group relative">
+                                        <label className="absolute -top-2.5 left-4 px-2 bg-background-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">
+                                            {field.label}
+                                        </label>
+                                        {field.type === 'select' ? (
+                                            <select 
+                                                name={field.name} 
+                                                defaultValue={field.defaultValue}
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                                             >
-                                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                                <img src={preview.url} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
-                                                <div className="absolute bottom-1 left-1 bg-zinc-900/80 text-[8px] font-bold text-admin-secondary px-1.5 py-0.5 uppercase tracking-widest">NEW</div>
-                                                {!mainImageUrl && mainImageIndex === idx && (
-                                                    <div className="absolute top-1 left-1 bg-amber-400 text-black text-[8px] font-black px-1.5 py-0.5 uppercase tracking-widest">COVER</div>
+                                                {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
+                                            </select>
+                                        ) : (
+                                            <input 
+                                                type={field.type || 'text'} 
+                                                name={field.name}
+                                                defaultValue={field.defaultValue}
+                                                required
+                                                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+                                            />
+                                        )}
+                                        <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.section>
+
+                        {/* 02. TECHNICAL MATRICES */}
+                        <motion.section variants={itemVars} className="space-y-10">
+                            <div className="flex items-center gap-6">
+                                <span className="text-4xl font-heading font-black text-white/10 italic">02</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Propulsion_Metrics</h2>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                                {[
+                                    { label: 'Engine_Type', name: 'engine_type', placeholder: 'e.g. 4.0L V8', defaultValue: vehicle?.engine_type },
+                                    { label: 'Power_Output', name: 'power', placeholder: 'e.g. 500 HP', defaultValue: vehicle?.power },
+                                    { label: 'Transmission', name: 'transmission', type: 'select', options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
+                                    { label: 'Drive_Protocol', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD'], defaultValue: vehicle?.drivetrain }
+                                ].map((field) => (
+                                    <div key={field.name} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:bg-white/[0.04] transition-all">
+                                        <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}</label>
+                                        {field.type === 'select' ? (
+                                            <select name={field.name} defaultValue={field.defaultValue} className="w-full bg-transparent text-xl font-heading font-black text-white outline-none cursor-pointer">
+                                                {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
+                                            </select>
+                                        ) : (
+                                            <input name={field.name} defaultValue={field.defaultValue} placeholder={field.placeholder} className="w-full bg-transparent text-xl font-heading font-black text-white outline-none placeholder:text-white/10" />
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </motion.section>
+
+                        {/* 03. MEDIA PROTOCOL */}
+                        <motion.section variants={itemVars} className="space-y-10">
+                            <div className="flex items-center gap-6">
+                                <span className="text-4xl font-heading font-black text-white/10 italic">03</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Visual_Assets</h2>
+                            </div>
+
+                            <div className="bg-white/[0.02] border border-white/5 rounded-[3rem] p-10">
+                                <div className="flex justify-between items-center mb-10">
+                                    <div>
+                                        <p className="text-[10px] font-black text-white uppercase tracking-widest mb-2 italic">Gallery_Management</p>
+                                        <p className="text-[9px] text-slate-500 uppercase tracking-widest leading-relaxed">DRAG TO REORDER. TAP TO SET COVER IMAGE.</p>
+                                    </div>
+                                    <MotionButton type="button" variant="outline" onClick={() => fileInputRef.current?.click()} className="py-2.5">
+                                        Initialize_Upload
+                                    </MotionButton>
+                                    <input ref={fileInputRef} name="gallery_images" type="file" accept="image/*" multiple onChange={handleFileChange} className="hidden" />
+                                </div>
+
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                    <Reorder.Group axis="y" values={keepImages} onReorder={setKeepImages} className="contents">
+                                        {keepImages.map((img) => (
+                                            <Reorder.Item
+                                                key={img.id}
+                                                value={img}
+                                                className={`relative aspect-video rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border-2 transition-all ${mainImageUrl === img.public_url ? 'border-primary shadow-2xl shadow-primary/20' : 'border-white/5 hover:border-white/20'}`}
+                                                onClick={() => setMainImageUrl(img.public_url)}
+                                            >
+                                                <Image fill src={img.public_url} alt="Vehicle" className="object-cover" />
+                                                {mainImageUrl === img.public_url && (
+                                                    <div className="absolute top-4 left-4">
+                                                        <MotionBadge color="primary" className="text-[8px] font-black">COVER_ASSET</MotionBadge>
+                                                    </div>
                                                 )}
                                                 <button
                                                     type="button"
-                                                    onClick={(e) => { e.stopPropagation(); removeNewImage(idx); }}
-                                                    className="absolute top-1 right-1 bg-red-500/80 text-white w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
+                                                    onClick={(e) => { e.stopPropagation(); removeExistingImage(img.id); }}
+                                                    className="absolute top-4 right-4 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                                                 >
-                                                    <span className="material-symbols-outlined text-xs">close</span>
+                                                    <span className="material-symbols-outlined text-sm">close</span>
                                                 </button>
-                                            </div>
+                                            </Reorder.Item>
                                         ))}
+                                    </Reorder.Group>
+
+                                    {previews.map((preview, idx) => (
+                                        <div
+                                            key={preview.url}
+                                            onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
+                                            className={`relative aspect-video rounded-3xl overflow-hidden border-2 border-dashed transition-all group cursor-pointer ${!mainImageUrl && mainImageIndex === idx ? 'border-primary' : 'border-white/10 hover:border-white/20'}`}
+                                        >
+                                            <img src={preview.url} alt="Preview" className="w-full h-full object-cover" />
+                                            <div className="absolute top-4 left-4">
+                                                <MotionBadge color="neutral" className="text-[8px] font-black bg-white/10 text-white">NEW_UPLOAD</MotionBadge>
+                                            </div>
+                                            {!mainImageUrl && mainImageIndex === idx && (
+                                                <div className="absolute bottom-4 right-4">
+                                                    <MotionBadge color="primary" className="text-[8px] font-black">COVER_STRATEGY</MotionBadge>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+                                    
+                                    <div 
+                                        onClick={() => fileInputRef.current?.click()}
+                                        className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-3 text-slate-600 hover:text-primary hover:border-primary/20 transition-all cursor-pointer group"
+                                    >
+                                        <span className="material-symbols-outlined text-3xl transition-transform group-hover:scale-110">add_a_photo</span>
+                                        <span className="text-[8px] font-black uppercase tracking-[0.3em]">Link_Asset</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.section>
+                    </div>
+
+                    {/* Operational Sidebar */}
+                    <aside className="xl:col-span-4 space-y-10">
+                        <motion.div variants={itemVars} className="sticky top-40 space-y-10">
+                            {/* Valuation Panel */}
+                            <div className="bg-primary p-12 rounded-[3.5rem] relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform">
+                                    <span className="material-symbols-outlined text-9xl text-black">payments</span>
+                                </div>
+                                <label className="block text-[10px] font-black text-black uppercase tracking-[0.4em] mb-4">Asset_Valuation</label>
+                                <div className="flex items-baseline gap-3">
+                                    <span className="text-xl font-heading font-black text-black/40 italic">KSH</span>
+                                    <input 
+                                        name="price" 
+                                        type="number" 
+                                        defaultValue={vehicle?.price} 
+                                        className="bg-transparent border-none p-0 text-6xl font-heading font-black text-black w-full outline-none focus:ring-0" 
+                                    />
+                                </div>
+                            </div>
+
+                            {/* State Panel */}
+                            <div className="bg-white/[0.03] border border-white/5 rounded-[3.5rem] p-12 space-y-10">
+                                <div>
+                                    <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">Operational_State</label>
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex flex-col gap-1">
+                                            <span className="text-xl font-heading font-black text-white uppercase italic tracking-tight">{status === 'available' ? 'DEPLOYED' : 'ARCHIVED'}</span>
+                                            <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest">Global_Visibility_State</span>
+                                        </div>
+                                        <button 
+                                            type="button"
+                                            onClick={() => setStatus(status === 'available' ? 'sold' : 'available')}
+                                            className={`w-20 h-10 rounded-full relative transition-all duration-500 ${status === 'available' ? 'bg-primary' : 'bg-slate-800'}`}
+                                        >
+                                            <motion.div 
+                                                animate={{ x: status === 'available' ? 44 : 4 }}
+                                                className="absolute top-1 w-8 h-8 rounded-full bg-black shadow-lg"
+                                            />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="pt-10 border-t border-white/5 space-y-6">
+                                    <div className="flex items-center gap-4 text-slate-500">
+                                        <span className="material-symbols-outlined text-lg">verified</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Integrity Check Passed</span>
+                                    </div>
+                                    <div className="flex items-center gap-4 text-slate-500">
+                                        <span className="material-symbols-outlined text-lg">cloud_sync</span>
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Real-time Sync Active</span>
+                                    </div>
+                                </div>
+
+                                {!isNew && (
+                                    <div className="pt-10 border-t border-white/5">
+                                        <button formAction={deleteAction} className="w-full py-5 rounded-2xl border border-red-500/10 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-500">
+                                            PURGE_ASSET_FROM_REGISTRY
+                                        </button>
                                     </div>
                                 )}
                             </div>
-                        ) : (
-                            <div
-                                onClick={() => fileInputRef.current?.click()}
-                                className="border-2 border-dashed border-zinc-700 hover:border-admin-secondary transition-colors p-12 flex flex-col items-center justify-center gap-4 cursor-pointer group"
-                            >
-                                <span className="material-symbols-outlined text-4xl text-zinc-600 group-hover:text-admin-secondary transition-colors">cloud_upload</span>
-                                <p className="text-xs text-zinc-500 font-medium text-center">Click to upload vehicle images<br/><span className="text-[10px] text-zinc-600">Supports JPG, PNG, WEBP. Multiple files allowed.</span></p>
-                            </div>
-                        )}
-                    </section>
-                </div>
-                
-                {/* Right Column: Sidebar Status */}
-                <aside className="w-full xl:w-80 shrink-0 space-y-6">
-                    {/* Status Panel */}
-                    <div className="bg-surface-container p-6 space-y-6">
-                        <h4 className="font-headline font-bold text-xs tracking-widest text-zinc-500 uppercase">Publishing Status</h4>
-                        <div className="space-y-4">
-                            <div className="flex items-center justify-between group cursor-pointer" onClick={() => setStatus(status === 'sold' ? 'available' : 'sold')}>
-                                <span className="text-xs font-headline font-bold tracking-widest uppercase text-white group-hover:text-amber-400 transition-colors">Mark as Sold</span>
-                                <div className={`w-12 h-6 relative transition-colors ${status === 'sold' ? 'bg-primary-container' : 'bg-zinc-800 border border-zinc-700'}`}>
-                                    <div className={`absolute top-1 w-4 h-4 transition-all ${status === 'sold' ? 'right-1 bg-on-primary-container' : 'left-1 bg-zinc-600'}`}></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="pt-6 border-t border-zinc-800 space-y-4">
-                            <div className="flex justify-between items-center">
-                                <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Visibility</span>
-                                <span className="text-[10px] text-admin-secondary font-bold uppercase tracking-widest">{status === 'available' ? 'Public' : 'Hidden'}</span>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* Price Management */}
-                    <div className="bg-surface-container-high p-6 border-t-4 border-amber-400">
-                        <h4 className="font-headline font-bold text-xs tracking-widest text-amber-400 uppercase mb-4">Price Point</h4>
-                        <div className="space-y-2">
-                            <div className="flex items-baseline gap-1">
-                                <span className="text-sm font-headline font-black text-zinc-400 mr-1">KSH</span>
-                                <input name="price" className="bg-transparent border-none p-0 text-3xl font-headline font-black text-white w-full focus:ring-0 outline-none" type="number" defaultValue={vehicle?.price || 0} />
-                            </div>
-                        </div>
-                    </div>
-                    
-                    {/* Image count indicator */}
-                    {(keepImages.length > 0 || previews.length > 0) && (
-                        <div className="bg-surface-container p-4 border border-zinc-800">
-                            <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest mb-2">Gallery Summary</p>
-                            <div className="space-y-1 text-xs">
-                                <div className="flex justify-between text-zinc-400">
-                                    <span>Saved images</span>
-                                    <span className="text-admin-secondary font-bold">{keepImages.length}</span>
-                                </div>
-                                <div className="flex justify-between text-zinc-400">
-                                    <span>New uploads</span>
-                                    <span className="text-amber-400 font-bold">{previews.length}</span>
-                                </div>
-                                {deletedIds.length > 0 && (
-                                    <div className="flex justify-between text-zinc-400">
-                                        <span>Pending deletion</span>
-                                        <span className="text-red-500 font-bold">{deletedIds.length}</span>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-                    )}
-                    
-                    {!isNew && (
-                        <div className="bg-surface-container p-6 space-y-4 border-l-4 border-red-500/50">
-                            <h4 className="font-headline font-bold text-xs tracking-widest text-red-500 uppercase">Danger Zone</h4>
-                            <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">Permanently delete this vehicle and all its images.</p>
-                            <button formAction={deleteAction} className="w-full bg-red-500/10 text-red-500 border border-red-500/20 py-3 text-xs font-bold font-headline tracking-widest hover:bg-red-500/20 transition-colors uppercase cursor-pointer">
-                                Delete Vehicle
-                            </button>
-                        </div>
-                    )}
-                </aside>
-            </div>
+                        </motion.div>
+                    </aside>
+                </motion.div>
+            </main>
         </form>
     );
 }

@@ -36,7 +36,7 @@ export function MagneticButton({ href, label, className = "" }: MagneticButtonPr
                 onMouseMove={onMove}
                 onMouseLeave={reset}
                 onBlur={reset}
-                className={`inline-flex items-center gap-2 rounded-full bg-primary text-gray-900 px-7 py-3 font-display tracking-widest text-base shadow-[0_10px_35px_rgba(0,0,0,0.35)] hover:bg-yellow-400 transition-colors ${className}`}
+                className={`btn-premium tap-highlight-none inline-flex items-center gap-2 rounded-full bg-primary text-gray-900 px-7 py-3 font-display tracking-widest text-base shadow-[0_10px_35px_rgba(0,0,0,0.35)] hover:bg-yellow-400 transition-colors ${className}`}
             >
                 {label}
                 <span className="material-symbols-outlined text-[18px]">arrow_forward</span>

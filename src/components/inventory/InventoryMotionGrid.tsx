@@ -2,8 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { useState } from "react";
 import VehicleImage from "@/components/inventory/VehicleImage";
 import { Vehicle } from "@/types/database";
+import MotionBadge from "@/components/ui/MotionBadge";
+
 
 interface Props {
     vehicles: Vehicle[];
@@ -49,39 +52,49 @@ export function InventoryMotionGrid({ vehicles, isSupabaseConfigured }: Props) {
                     const imagePath = `/images/inventory/${vehicle.folder_name}/1.jpeg`;
                     const secondaryImagePath = `/images/inventory/${vehicle.folder_name}/2.jpeg`;
 
+                    const [isRevealed, setIsRevealed] = useState(false);
+
                     return (
                         <motion.div
                             key={vehicle.id}
                             layout
                             variants={card}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className={`ui-card group bg-card-bg rounded-lg overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-colors flex flex-col h-full shadow-lg`}
+                            onClick={() => setIsRevealed(!isRevealed)}
+                            className={`ui-card group bg-card-bg rounded-xl overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-all duration-300 flex flex-col h-full shadow-lg cursor-pointer lg:cursor-default`}
                         >
+
                             {inTransit && <div className="absolute top-0 left-0 w-full h-1 bg-accent z-20" />}
                             <div className="relative aspect-4/3 overflow-hidden bg-background-dark">
                                 <VehicleImage
                                     src={imagePath}
                                     alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
-                                    className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${inTransit ? 'opacity-90' : ''} group-hover:opacity-0`}
+                                    className={`absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-all duration-500 ${inTransit ? 'opacity-90' : ''} ${isRevealed ? 'opacity-0' : 'opacity-100'}`}
                                 />
                                 <VehicleImage
                                     src={secondaryImagePath}
                                     alt={`${vehicle.year} ${vehicle.make} ${vehicle.model} alternate view`}
                                     hideOnError
-                                    className={`absolute inset-0 w-full h-full object-cover scale-105 opacity-0 transition-all duration-500 group-hover:scale-100 group-hover:opacity-100 ${inTransit ? 'opacity-90 group-hover:opacity-90' : ''}`}
+                                    className={`absolute inset-0 w-full h-full object-cover scale-105 transition-all duration-500 group-hover:scale-100 ${isRevealed ? 'opacity-100 scale-100' : 'opacity-0'}`}
                                 />
+
 
                                 {inTransit && <div className="absolute inset-0 bg-background-dark/20 group-hover:bg-transparent transition-colors" />}
 
                                 {isNewArrival && (
-                                    <div className="absolute top-3 left-3 bg-primary text-background-dark px-3 py-1 rounded text-grunge text-lg font-bold shadow-md">NEW ARRIVAL</div>
+                                    <div className="absolute top-3 left-3 z-10">
+                                      <MotionBadge color="primary" className="text-lg! py-1! px-3! h-auto!">NEW ARRIVAL</MotionBadge>
+                                    </div>
                                 )}
                                 {inTransit && (
                                     <>
-                                        <div className="absolute top-3 left-3 bg-accent text-background-dark px-3 py-1 rounded font-display tracking-widest text-lg font-bold shadow-md uppercase animate-pulse">IN TRANSIT</div>
-                                        <div className="absolute top-3 right-3 bg-background-dark/90 text-accent px-2 py-1 rounded font-mono text-xs font-bold border border-accent/30 shadow-md">ETA: 14 DAYS</div>
+                                        <div className="absolute top-3 left-3 z-10">
+                                          <MotionBadge color="secondary" className="text-lg! py-1! px-3! h-auto! animate-pulse">IN TRANSIT</MotionBadge>
+                                        </div>
+                                        <div className="absolute top-3 right-3 bg-background-dark/90 text-accent px-2 py-1 rounded font-mono text-[10px] font-bold border border-accent/30 shadow-md z-10">ETA: 14D</div>
                                     </>
                                 )}
+
                             </div>
                             <div className="p-5 flex flex-col flex-1 gap-4">
                                 <div>
@@ -100,9 +113,10 @@ export function InventoryMotionGrid({ vehicles, isSupabaseConfigured }: Props) {
                                         <span className={`${inTransit ? 'text-white' : 'text-primary'} font-display text-3xl tracking-wide`}>KES {vehicle.price.toLocaleString()}</span>
                                     </div>
                                 </div>
-                                <div className="flex gap-3 pt-2">
-                                    <Link href={`/vehicle/${vehicle.id}`} className="btn-premium flex items-center justify-center flex-1 h-10 rounded border border-border-color hover:border-white text-white hover:bg-white/5 transition-colors text-sm font-medium uppercase tracking-wider">View Details</Link>
+                                <div className="flex gap-3 pt-2 mt-auto">
+                                    <Link href={`/vehicle/${vehicle.id}`} className="btn-premium tap-highlight-none flex items-center justify-center flex-1 h-12 rounded-xl border border-zinc-800 hover:border-white text-white hover:bg-white/5 transition-all text-sm font-bold uppercase tracking-[0.2em]">View Details</Link>
                                 </div>
+
                             </div>
                         </motion.div>
                     );
@@ -111,3 +125,25 @@ export function InventoryMotionGrid({ vehicles, isSupabaseConfigured }: Props) {
         </motion.div>
     );
 }
+
+// Simple Skeleton state for query transitions (can be used when loading)
+export function InventorySkeleton() {
+  return (
+    <div className="flex-1 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      {[1, 2, 3, 4, 5, 6].map((i) => (
+        <div key={i} className="ui-card bg-card-bg rounded-xl border border-border-color overflow-hidden animate-pulse">
+          <div className="aspect-4/3 bg-zinc-900" />
+          <div className="p-5 space-y-4">
+            <div className="h-6 bg-zinc-800 rounded w-3/4" />
+            <div className="grid grid-cols-2 gap-2">
+              <div className="h-4 bg-zinc-800 rounded w-full" />
+              <div className="h-4 bg-zinc-800 rounded w-full" />
+            </div>
+            <div className="h-10 bg-zinc-800 rounded w-full mt-4" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+

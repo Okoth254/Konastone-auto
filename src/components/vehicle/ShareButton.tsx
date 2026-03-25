@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import MotionButton from "@/components/ui/MotionButton";
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function ShareButton({ title }: { title: string }) {
     const [copied, setCopied] = useState(false);
@@ -23,14 +25,32 @@ export default function ShareButton({ title }: { title: string }) {
     };
 
     return (
-        <button 
-            onClick={handleShare}
-            className="flex-1 flex items-center justify-center gap-2 rounded-full h-10 border border-border-subtle hover:bg-border-subtle transition-colors text-sm font-medium text-slate-300 w-full mt-2 md:mt-0"
-        >
-            <span className="material-symbols-outlined text-[18px] text-accent-teal">
-                {copied ? "check" : "share"}
-            </span>
-            {copied ? "Link Copied!" : "Share Vehicle"}
-        </button>
+        <div className="relative w-full">
+            <MotionButton 
+                onClick={handleShare}
+                variant="outline"
+                className="w-full h-14 border-white/10 text-slate-400 hover:text-white hover:bg-white/5 h-14 text-[10px] font-black uppercase tracking-widest group"
+            >
+                <div className="flex items-center justify-center gap-3">
+                    <span className="material-symbols-outlined text-[20px] text-accent-teal group-hover:scale-110 transition-transform">
+                        {copied ? "check_circle" : "ios_share"}
+                    </span>
+                    {copied ? "Link Copied" : "Share Listing"}
+                </div>
+            </MotionButton>
+            
+            <AnimatePresence>
+                {copied && (
+                    <motion.div 
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        className="absolute -top-12 left-1/2 -translate-x-1/2 px-4 py-2 bg-accent-teal text-background-dark rounded-full text-[10px] font-black uppercase tracking-widest shadow-2xl z-20 pointer-events-none"
+                    >
+                        Ready to Share
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
     );
 }

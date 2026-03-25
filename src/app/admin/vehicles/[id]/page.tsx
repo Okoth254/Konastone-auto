@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { formatCurrency } from "@/utils/format";
+import * as motion from "framer-motion/client";
+import MotionButton from "@/components/ui/MotionButton";
+import MotionBadge from "@/components/ui/MotionBadge";
 
 export default async function VehicleSpecsView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -17,7 +21,6 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
         notFound();
     }
 
-    // Resolve the best hero image from the fallback chain
     const heroImage = vehicleImages.find(i => i.is_main)?.public_url
         || vehicleImages[0]?.public_url
         || vehicle.main_image_url
@@ -25,188 +28,153 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
         || 'https://placehold.co/1600x900/1a1a1a/444444?text=No+Image';
 
     return (
-        <div className="space-y-8 flex-1">
-            {/* TopAppBar */}
-            <header className="sticky top-0 z-40 flex justify-between items-center w-full px-8 py-4 bg-admin-surface/80 backdrop-blur-md border-b border-primary-container/20">
-                <div className="flex items-center gap-8">
-                    <Link href="/admin/vehicles" className="material-symbols-outlined text-zinc-400 hover:text-amber-400">arrow_back</Link>
-                    <span className="text-primary font-bold uppercase tracking-widest text-xs md:text-base">{vehicle.year} {vehicle.make} {vehicle.model}</span>
-                    <nav className="hidden md:flex gap-6">
-                        <span className="text-primary border-b-2 border-primary pb-1 uppercase tracking-widest text-xs font-bold cursor-pointer">Vehicle Details</span>
-                        <span className="text-neutral-400 hover:text-primary transition-all duration-150 ease-linear uppercase tracking-widest text-xs font-bold cursor-pointer">History</span>
-                        <span className="text-neutral-400 hover:text-primary transition-all duration-150 ease-linear uppercase tracking-widest text-xs font-bold cursor-pointer">Telemetry</span>
-                    </nav>
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
+            {/* Command Header */}
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="sticky top-0 z-50 flex justify-between items-center w-full px-10 py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
+            >
+                <div className="flex items-center gap-10">
+                    <Link href="/admin/vehicles" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all group">
+                        <span className="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">west</span>
+                    </Link>
+                    <div className="space-y-1">
+                        <h2 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">
+                            {vehicle.year} {vehicle.make} <span className="text-primary">{vehicle.model}</span>
+                        </h2>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">ASSET_ID: {vehicle.id.substring(0, 8)}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-800" />
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">CORE_STATE: {vehicle.status.toUpperCase()}</span>
+                        </div>
+                    </div>
                 </div>
-                <div className="items-center gap-4 hidden sm:flex">
-                    <span className="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary transition-colors">print</span>
-                    <span className="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary transition-colors">share</span>
-                    <span className="material-symbols-outlined text-neutral-400 cursor-pointer hover:text-primary transition-colors">more_vert</span>
+                
+                <div className="flex items-center gap-4">
+                    <MotionButton variant="ghost" className="w-12 h-12 p-0 rounded-xl border-white/5">
+                        <span className="material-symbols-outlined">print</span>
+                    </MotionButton>
+                    <MotionButton variant="outline" href={`/admin/vehicles/edit/${vehicle.id}`} className="px-8 h-12 rounded-xl border-primary/20 text-primary">
+                        EDIT_ASSET
+                    </MotionButton>
                 </div>
-            </header>
+            </motion.header>
 
-            <div className="p-8 space-y-8 max-w-7xl mx-auto">
-                {/* Hero Section */}
-                <section className="relative h-[450px] w-full overflow-hidden bg-surface-dark border border-zinc-800">
-                    <Image fill className="object-cover opacity-60 mix-blend-luminosity hover:mix-blend-normal transition-all duration-700" src={heroImage} alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} />
-                    <div className="absolute inset-0 bg-linear-to-r from-admin-background via-admin-background/40 to-transparent"></div>
+            <div className="p-10 space-y-12">
+                {/* Cinematic Hero */}
+                <motion.section 
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative h-[550px] w-full rounded-[3rem] overflow-hidden border border-white/10 group shadow-2xl"
+                >
+                    <Image 
+                        fill 
+                        className="object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 scale-105 group-hover:scale-100" 
+                        src={heroImage} 
+                        alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} 
+                    />
+                    <div className="absolute inset-0 bg-linear-to-t from-background-dark via-transparent to-transparent opacity-80" />
                     
-                    <div className="absolute bottom-12 left-12 space-y-4 w-full pr-12">
-                        <div className="inline-block bg-primary text-black px-3 py-1 text-[10px] font-black tracking-[0.2em] uppercase">
-                            {vehicle.status.replace('_', ' ')} / SPEC-ID: {vehicle.id.substring(0, 8)}
+                    <div className="absolute bottom-16 left-16 space-y-6 max-w-2xl">
+                        <div className="flex gap-3">
+                            <MotionBadge color="primary" className="px-6 py-2 tracking-[0.2em]">OPERATIONAL</MotionBadge>
+                            <MotionBadge color="secondary" className="px-6 py-2 tracking-[0.2em]">{vehicle.status.toUpperCase()}</MotionBadge>
                         </div>
-                        <h1 className="text-4xl md:text-6xl font-black tracking-tighter text-white uppercase leading-none">
-                            {vehicle.year} {vehicle.make} <br /> {vehicle.model}
+                        <h1 className="text-7xl md:text-8xl font-heading font-black tracking-tighter text-white uppercase leading-[0.85] italic">
+                            THE <span className="text-primary">{vehicle.model.split(' ')[0]}</span> <br /> 
+                            {vehicle.make.toUpperCase()}
                         </h1>
-                        <div className="flex flex-col sm:flex-row gap-4 pt-4">
-                            <Link href={`/admin/vehicles/edit/${vehicle.id}`} className="bg-primary text-black px-8 py-3 font-bold uppercase tracking-widest shadow-[0_0_15px_rgba(255,193,7,0.4)] text-center text-xs">
-                                Edit in Manager
-                            </Link>
+                    </div>
+
+                    {/* Telemetry Annex */}
+                    <div className="absolute bottom-16 right-16 bg-surface-dark/40 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/10 hidden lg:block">
+                        <div className="flex flex-col gap-6 w-48">
+                            <div className="space-y-1">
+                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">VALUATION</p>
+                                <p className="text-2xl font-heading font-black text-white italic">KSH {formatCurrency(vehicle.price || 0).split('KSh')[1]}</p>
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">DRIVETRAIN</p>
+                                <p className="text-lg font-heading font-black text-primary uppercase">{vehicle.drivetrain || 'ALL-WHEEL'}</p>
+                            </div>
                         </div>
                     </div>
+                </motion.section>
+
+                {/* Tech Cards Staggered */}
+                <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    {[
+                        { label: 'ENGINE & TELEMETRY', icon: 'settings_prolong', value: vehicle.engine_type, sub: vehicle.power || 'ACTIVE', color: 'primary' },
+                        { label: 'TRANSMISSION_ID', icon: 'grid_guides', value: vehicle.transmission, sub: `MIL: ${vehicle.mileage || 0} KM`, color: 'secondary' },
+                        { label: 'AESTHETIC_PROFILE', icon: 'palette', value: vehicle.exterior_color, sub: `INT: ${vehicle.interior_color || 'SLATE'}`, color: 'neutral' },
+                        { label: 'PROTOCOL_TAGS', icon: 'token', value: vehicle.tags?.[0] || 'STND', sub: `${vehicle.tags?.length || 0} MODULES`, color: 'primary' }
+                    ].map((card, i) => (
+                        <motion.div 
+                            key={card.label}
+                            initial={{ opacity: 0, y: 30 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 + (i * 0.1) }}
+                            className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 group hover:border-white/20 transition-all duration-500"
+                        >
+                            <div className="flex justify-between items-start mb-8">
+                                <div className="w-12 h-12 rounded-2xl bg-white/[0.02] flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform">
+                                    <span className="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary transition-colors">{card.icon}</span>
+                                </div>
+                                <div className="h-[1px] w-12 bg-white/10 mt-6" />
+                            </div>
+                            <div className="space-y-1">
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">{card.label}</p>
+                                <h3 className="text-2xl font-heading font-black text-white uppercase truncate">{card.value || 'NOMINAL'}</h3>
+                                <p className="text-[11px] font-black font-mono text-slate-500 uppercase tracking-widest">{card.sub}</p>
+                            </div>
+                        </motion.div>
+                    ))}
                 </section>
 
-                {/* Technical Specs Grid */}
-                <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {/* Card 1: Engine */}
-                    <div className="bg-[#252525] p-6 border border-zinc-800 border-l-4 border-l-primary relative overflow-hidden group">
-                        <div className="flex justify-between items-start mb-6">
-                            <h3 className="font-bold text-primary uppercase tracking-widest text-xs">ENGINE & PERFORMANCE</h3>
-                            <span className="material-symbols-outlined text-primary">bolt</span>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Displacement / Type</p>
-                                <p className="text-xl font-black text-white uppercase">{vehicle.engine_type || 'N/A'}</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <div>
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Power</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.power || 'N/A'}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Torque</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.torque || 'N/A'}</p>
-                                </div>
-                            </div>
+                {/* Identification Matrix */}
+                <motion.section 
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 overflow-hidden"
+                >
+                    <div className="px-10 py-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                        <h2 className="font-heading font-black text-2xl tracking-tighter uppercase text-white">Technical identification Matrix</h2>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">DB_ID: CORE_{vehicle.id.substring(0,6)}</span>
+                            <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_#26C6DA]" />
                         </div>
                     </div>
-
-                    {/* Card 2: Transmission */}
-                    <div className="bg-[#252525] p-6 border border-zinc-800 border-l-4 border-l-primary relative overflow-hidden group">
-                        <div className="flex justify-between items-start mb-6">
-                            <h3 className="font-bold text-primary uppercase tracking-widest text-xs">TRANSMISSION & DRIVETRAIN</h3>
-                            <span className="material-symbols-outlined text-primary">settings_input_component</span>
-                        </div>
-                        <div className="space-y-4">
-                            <div>
-                                <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Gearbox</p>
-                                <p className="text-xl font-black text-white uppercase">{vehicle.transmission || 'N/A'}</p>
-                            </div>
-                            <div className="flex justify-between">
-                                <div>
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Drive</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.drivetrain || 'N/A'}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Mileage</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.mileage ? `${Intl.NumberFormat('en-US').format(vehicle.mileage)} MI` : 'N/A'}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Card 3: Dimensions & Details */}
-                    <div className="bg-[#252525] p-6 border border-zinc-800 border-l-4 border-l-primary relative overflow-hidden group">
-                        <div className="flex justify-between items-start mb-6">
-                            <h3 className="font-bold text-primary uppercase tracking-widest text-xs">DIMENSIONS & DETAILS</h3>
-                            <span className="material-symbols-outlined text-primary">square_foot</span>
-                        </div>
-                        <div className="space-y-4">
-                            <div className="flex justify-between">
-                                <div>
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Exterior Color</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.exterior_color || 'N/A'}</p>
-                                </div>
-                                <div className="text-right">
-                                    <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Interior Color</p>
-                                    <p className="text-lg font-black text-white uppercase">{vehicle.interior_color || 'N/A'}</p>
-                                </div>
-                            </div>
-                            <div>
-                                <p className="text-[10px] text-neutral-500 uppercase tracking-widest font-bold">Price</p>
-                                <p className="text-xl font-black text-white uppercase">KSH {vehicle.price ? Intl.NumberFormat('en-KE').format(vehicle.price) : 'N/A'}</p>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Card 4: Features */}
-                    <div className="bg-[#252525] p-6 border border-zinc-800 border-l-4 border-l-primary relative overflow-hidden group">
-                        <div className="flex justify-between items-start mb-6">
-                            <h3 className="font-bold text-primary uppercase tracking-widest text-xs">FEATURES & TECH</h3>
-                            <span className="material-symbols-outlined text-primary">memory</span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2">
-                            {vehicle.tags && vehicle.tags.length > 0 ? (
-                                vehicle.tags.slice(0, 4).map((tag: string, index: number) => (
-                                    <div key={index} className="bg-admin-background p-2 text-center border border-zinc-800 overflow-hidden text-ellipsis whitespace-nowrap">
-                                        <p className="text-[8px] text-white uppercase leading-tight font-bold">{tag}</p>
-                                    </div>
-                                ))
-                            ) : (
-                                <div className="col-span-2 text-center text-xs text-zinc-500 py-4">No tags specified</div>
-                            )}
-                        </div>
-                        <div className="mt-4 pt-2 border-t border-zinc-800">
-                            <p className="text-[10px] text-primary font-bold uppercase tracking-widest flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[14px]">verified</span> SYSTEM ONLINE
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                {/* Detailed Specification Table */}
-                <section className="bg-[#252525] overflow-hidden border border-zinc-800">
-                    <div className="px-8 py-6 border-b border-zinc-800 flex justify-between items-center bg-surface-container-high">
-                        <h2 className="font-black text-xl tracking-tighter uppercase text-white">Technical Identification Matrix</h2>
-                        <div className="flex items-center gap-2 text-neutral-400">
-                            <span className="material-symbols-outlined text-sm">database</span>
-                            <span className="text-[10px] font-bold uppercase tracking-widest">DB_REF: 2022_LC78_V8</span>
-                        </div>
-                    </div>
+                    
                     <div className="overflow-x-auto">
-                        <table className="w-full text-left border-collapse min-w-[600px]">
-                            <thead>
-                                <tr className="bg-admin-background text-primary text-[10px] tracking-[0.2em] uppercase font-bold">
-                                    <th className="px-8 py-5 border-b border-zinc-800">Parameter</th>
-                                    <th className="px-8 py-5 border-b border-zinc-800">Value</th>
-                                    <th className="px-8 py-5 border-b border-zinc-800 text-right">Status</th>
-                                </tr>
-                            </thead>
+                        <table className="w-full text-left">
                             <tbody className="text-sm">
-                                <tr className="hover:bg-primary/5 transition-colors border-b border-zinc-800">
-                                    <td className="px-8 py-5 text-neutral-400 uppercase font-bold text-xs">VIN Number</td>
-                                    <td className="px-8 py-5 text-white font-mono tracking-wider">{vehicle.vin || 'N/A'}</td>
-                                    <td className="px-8 py-5 text-right"><span className="inline-block w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#FFC107]"></span></td>
-                                </tr>
-                                <tr className="bg-admin-background/30 hover:bg-primary/5 transition-colors border-b border-zinc-800">
-                                    <td className="px-8 py-5 text-neutral-400 uppercase font-bold text-xs">Grade / Condition</td>
-                                    <td className="px-8 py-5 text-white font-mono tracking-wider">{vehicle.condition || 'N/A'}</td>
-                                    <td className="px-8 py-5 text-right"><span className="inline-block w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#FFC107]"></span></td>
-                                </tr>
-                                <tr className="hover:bg-primary/5 transition-colors border-b border-zinc-800">
-                                    <td className="px-8 py-5 text-neutral-400 uppercase font-bold text-xs">Body Style</td>
-                                    <td className="px-8 py-5 text-white font-mono tracking-wider">{vehicle.body_style || 'N/A'}</td>
-                                    <td className="px-8 py-5 text-right"><span className="inline-block w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#FFC107]"></span></td>
-                                </tr>
-                                <tr className="bg-admin-background/30 hover:bg-primary/5 transition-colors border-b border-zinc-800">
-                                    <td className="px-8 py-5 text-neutral-400 uppercase font-bold text-xs">Fuel System</td>
-                                    <td className="px-8 py-5 text-white uppercase font-bold text-xs">Common Rail Direct Injection</td>
-                                    <td className="px-8 py-5 text-right"><span className="inline-block w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_10px_#FFC107]"></span></td>
-                                </tr>
+                                {[
+                                    { label: 'VIN_PROTOCOL', value: vehicle.vin || 'PENDING_ASSIGNMENT' },
+                                    { label: 'ASSET_GRADE', value: vehicle.condition || 'NOMINAL' },
+                                    { label: 'BODY_STRUCTURE', value: vehicle.body_style || 'STANDARD' },
+                                    { label: 'FUEL_PROFILE', value: vehicle.fuel_type || 'PETROL' },
+                                    { label: 'REG_COUNTRY', value: 'KENYA (OPERATIONAL)' },
+                                    { label: 'CHASSIS_CODE', value: vehicle.chassis_no || 'TBD' }
+                                ].map((row, i) => (
+                                    <tr key={row.label} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                                        <td className="px-10 py-6 text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] w-1/3">{row.label}</td>
+                                        <td className="px-10 py-6 text-white font-mono font-black tracking-widest group-hover:text-primary transition-colors">{row.value}</td>
+                                        <td className="px-10 py-6 text-right">
+                                            <div className="inline-flex gap-1">
+                                                {[0, 1, 2].map(dot => (
+                                                    <div key={dot} className="w-1 h-3 rounded-full bg-slate-800 group-hover:bg-primary transition-all" />
+                                                ))}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
                             </tbody>
                         </table>
                     </div>
-                </section>
+                </motion.section>
             </div>
         </div>
     );

@@ -3,6 +3,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import { motion, AnimatePresence } from "framer-motion";
+
 
 interface VehicleOption {
     make: string;
@@ -123,7 +125,7 @@ export default function HeroSearchForm() {
                         }}
                         onFocus={() => setShowMakeDropdown(true)}
                         onBlur={() => setTimeout(() => setShowMakeDropdown(false), 200)}
-                        className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors"
+                        className="mt-1 block w-full min-h-[44px] pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors"
                         placeholder="Search makes..."
                         id="make"
                         disabled={isLoading}
@@ -134,7 +136,16 @@ export default function HeroSearchForm() {
                         </div>
                     )}
                     {showMakeDropdown && filteredMakes.length > 0 && (
-                        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                        <AnimatePresence>
+                        <motion.div
+                            key="make-dropdown"
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                            className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto"
+                        >
+
                             <div
                                 className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                                 onClick={() => {
@@ -162,8 +173,10 @@ export default function HeroSearchForm() {
                                     {m}
                                 </div>
                             ))}
-                        </div>
+                        </motion.div>
+                        </AnimatePresence>
                     )}
+
                 </div>
                 {error && (
                     <p className="mt-1 text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -185,13 +198,22 @@ export default function HeroSearchForm() {
                         }}
                         onFocus={() => setShowModelDropdown(true)}
                         onBlur={() => setTimeout(() => setShowModelDropdown(false), 200)}
-                        className="mt-1 block w-full pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors disabled:opacity-50"
+                        className="mt-1 block w-full min-h-[44px] pl-3 pr-10 py-3 text-base border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm rounded-md bg-white dark:bg-header-dark dark:text-white transition-colors disabled:opacity-50"
                         placeholder="Search models..."
                         id="model"
                         disabled={isLoading || (make !== 'all' && filteredModels.length === 0)}
                     />
                     {showModelDropdown && filteredModels.length > 0 && (
-                        <div className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto">
+                        <AnimatePresence>
+                        <motion.div
+                            key="model-dropdown"
+                            initial={{ opacity: 0, y: -6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -6 }}
+                            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                            className="absolute z-10 mt-1 w-full bg-white dark:bg-header-dark border border-gray-300 dark:border-gray-600 rounded-md shadow-lg max-h-60 overflow-auto"
+                        >
+
                             <div
                                 className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer"
                                 onClick={() => {
@@ -215,7 +237,8 @@ export default function HeroSearchForm() {
                                     {m}
                                 </div>
                             ))}
-                        </div>
+                        </motion.div>
+                        </AnimatePresence>
                     )}
                 </div>
             </div>
@@ -238,17 +261,19 @@ export default function HeroSearchForm() {
             <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-lg font-display tracking-widest text-gray-900 bg-primary hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ minWidth: '100%' }}
+                className="btn-premium w-full flex justify-center py-4 px-4 border border-transparent rounded-md shadow-sm text-lg font-display tracking-widest text-gray-900 bg-primary hover:bg-yellow-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors disabled:opacity-50 disabled:cursor-not-allowed relative"
             >
                 {isLoading ? (
-                    <>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900 mr-2"></div>
+                    <span className="flex items-center gap-2">
+                        <span className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-900" />
                         LOADING...
-                    </>
+                    </span>
                 ) : (
                     'SEARCH INVENTORY'
                 )}
             </button>
+
         </form>
     );
 }

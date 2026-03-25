@@ -8,13 +8,13 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (
-        <div className={`${spaceGrotesk.variable} bg-admin-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dark flex w-full`}>
+        <div className={`${spaceGrotesk.variable} bg-admin-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dark flex w-full relative`}>
             
             <AdminSidebar />
 
             {/* Main Canvas Context */}
-            <div className="ml-64 flex-1 flex flex-col min-h-screen">
-                <main className="flex-1">
+            <div className="flex-1 flex flex-col min-h-screen xl:ml-72 transition-all duration-700">
+                <main className="flex-1 w-full overflow-hidden">
                     {children}
                 </main>
                 

@@ -5,6 +5,9 @@
   --motion-base: 280ms;
   --motion-slow: 420ms;
   --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+  --space-section-mobile: 3rem;
+  --space-section-tablet: 4rem;
+  --space-section-desktop: 5rem;
 }
 
 @theme {
@@ -167,16 +170,12 @@
 }
 
 .animate-fade-up {
-  animation: fade-slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
   opacity: 0;
 }
 
 .animate-wiggle:hover {
   animation: wiggle 0.4s ease-in-out;
-}
-
-.animate-fade-up {
-  animation: fade-slide-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 .animate-drive {
@@ -202,15 +201,27 @@
   padding-inline: 1rem;
 }
 
+.section-pad {
+  padding-block: var(--space-section-mobile);
+}
+
 @media (min-width: 640px) {
   .page-shell {
     padding-inline: 1.5rem;
+  }
+
+  .section-pad {
+    padding-block: var(--space-section-tablet);
   }
 }
 
 @media (min-width: 1024px) {
   .page-shell {
     padding-inline: 2.5rem;
+  }
+
+  .section-pad {
+    padding-block: var(--space-section-desktop);
   }
 }
 
@@ -233,6 +244,7 @@
   font-weight: 700;
   letter-spacing: 0.04em;
   transition: transform var(--motion-fast) var(--ease-premium), box-shadow var(--motion-base) var(--ease-premium), opacity var(--motion-fast) linear, background-color var(--motion-base) var(--ease-premium), color var(--motion-base) var(--ease-premium), border-color var(--motion-base) var(--ease-premium);
+  will-change: transform;
 }
 
 .btn-premium:hover {
@@ -241,6 +253,13 @@
 
 .btn-premium:active {
   transform: translateY(0) scale(0.98);
+}
+
+.btn-premium:disabled,
+.btn-premium[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .btn-premium:focus-visible {
@@ -271,6 +290,29 @@
 
 .safe-bottom {
   padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+.tap-highlight-none {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Admin telemetry row glow — inventory table */
+.telemetry-row {
+  transition: background-color 180ms var(--ease-premium),
+              box-shadow 180ms var(--ease-premium);
+}
+.telemetry-row:hover {
+  background-color: rgba(69, 216, 237, 0.04);
+  box-shadow: inset 3px 0 0 rgba(69, 216, 237, 0.35);
+}
+
+/* Admin system event stream row hover */
+.telemetry-stream-row {
+  transition: background-color 150ms var(--ease-premium);
+  border-radius: 2px;
+}
+.telemetry-stream-row:hover {
+  background-color: rgba(69, 216, 237, 0.05);
 }
 
 @media (prefers-reduced-motion: reduce) {

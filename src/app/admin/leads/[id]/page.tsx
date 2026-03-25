@@ -3,6 +3,10 @@ import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { addTimelineNote, updateLeadStatus, deleteLead } from "../actions";
+import * as motion from "framer-motion/client";
+import MotionButton from "@/components/ui/MotionButton";
+import MotionBadge from "@/components/ui/MotionBadge";
+import { formatCurrency } from "@/utils/format";
 
 export default async function LeadDetailView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -24,207 +28,281 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
 
     const timeline = lead.lead_timeline_events?.sort((a: { created_at: string }, b: { created_at: string }) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
     
-    // Bind actions
     const deleteLeadAction = async () => {
         "use server";
         await deleteLead(id);
     };
 
     return (
-        <div className="flex flex-col flex-1 pb-32">
-            <header className="mb-10 p-8 flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-zinc-800 bg-admin-surface sticky top-0 z-40">
-                <div>
-                    <nav className="flex items-center gap-2 text-[10px] font-headline tracking-[0.2em] text-zinc-500 uppercase mb-2">
-                        <Link className="hover:text-admin-secondary transition-colors" href="/admin/leads">CRM</Link>
-                        <span className="material-symbols-outlined text-[12px]">chevron_right</span>
-                        <Link className="hover:text-admin-secondary transition-colors" href="/admin/leads">Active Leads</Link>
-                        <span className="material-symbols-outlined text-[12px]">chevron_right</span>
-                        <span className="text-admin-secondary">{lead.id.substring(0, 8).toUpperCase()}</span>
-                    </nav>
-                    <h1 className="text-4xl md:text-5xl font-black font-headline tracking-tighter text-on-surface uppercase leading-none">{lead.name}</h1>
-                    <p className="text-zinc-500 font-mono text-xs mt-2 tracking-widest">UID: 0x{lead.id.substring(0, 12).toUpperCase()}</p>
-                </div>
-                <div className="flex gap-4">
-                    <a href={`mailto:${lead.email}`} className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
-                        <span className="material-symbols-outlined text-sm">mail</span> EMAIL CUSTOMER
-                    </a>
-                    {lead.phone && (
-                    <a href={`tel:${lead.phone.replace(/[^0-9+]/g, '')}`} className="border border-admin-secondary text-admin-secondary px-6 py-3 font-headline font-bold text-xs tracking-widest hover:bg-admin-secondary/10 transition-colors flex items-center gap-2">
-                        <span className="material-symbols-outlined text-sm">call</span> INITIATE CALL
-                    </a>
-                    )}
-                </div>
-            </header>
-
-            {/* Technical Layout Grid */}
-            <div className="px-8 grid grid-cols-1 xl:grid-cols-12 gap-6 w-full max-w-[1600px] mx-auto">
-                {/* Left Column: Customer Profile & Vehicle */}
-                <div className="xl:col-span-8 space-y-6">
-                    {/* Customer Info Card */}
-                    <section className="bg-surface-container-high border-l-2 border-admin-secondary p-6">
-                        <div className="flex justify-between items-start mb-8">
-                            <h2 className="font-headline font-bold text-xs tracking-[0.2em] text-admin-secondary uppercase">Lead Parameters</h2>
-                            <span className="bg-admin-secondary/10 text-admin-secondary text-[10px] font-mono px-2 py-1 tracking-widest">VERIFIED IDENTITY</span>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                            <div>
-                                <p className="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Contact Point</p>
-                                <p className="text-lg font-headline font-medium text-white">{lead.email}</p>
-                            </div>
-                            <div>
-                                <p className="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Direct Line</p>
-                                <p className="text-lg font-headline font-medium text-white">{lead.phone || 'N/A'}</p>
-                            </div>
-                            <div>
-                                <p className="text-[10px] text-zinc-500 font-headline uppercase tracking-widest mb-1">Location</p>
-                                <p className="text-lg font-headline font-medium text-white">Detroit, MI Hub</p>
-                            </div>
-                        </div>
-                    </section>
-                    
-                    {/* Vehicle of Interest */}
-                    {lead.vehicles ? (
-                        <section className="bg-surface-container-high relative overflow-hidden group">
-                            <div className="absolute top-0 left-0 w-1 h-full bg-primary-container z-10"></div>
-                            <div className="grid grid-cols-1 md:grid-cols-5 h-full relative">
-                                <div className="md:col-span-2 relative min-h-[240px]">
-                                    <Image fill className="object-cover grayscale hover:grayscale-0 transition-all duration-500" src={lead.vehicles.main_image_url || "https://images.unsplash.com/photo-1583121274602-3e2820c69888?q=80&w=2070"} alt="Vehicle of Interest" />
-                                    <div className="absolute inset-0 bg-linear-to-r from-surface-container-high via-transparent to-transparent md:bg-linear-to-l opacity-60"></div>
-                                </div>
-                                <div className="md:col-span-3 p-8 flex flex-col justify-center bg-surface-container-high z-10">
-                                    <h2 className="font-headline font-bold text-xs tracking-[0.2em] text-amber-400 uppercase mb-4">Target Inventory</h2>
-                                    <h3 className="text-2xl md:text-3xl font-black font-headline tracking-tighter mb-2 text-white">{lead.vehicles.year} {lead.vehicles.make} {lead.vehicles.model}</h3>
-                                    <div className="flex flex-wrap gap-4 mb-6">
-                                        <div className="bg-surface-container-highest px-3 py-1 border border-zinc-700 text-white">
-                                            <span className="text-[9px] text-zinc-500 block">VIN SERIAL</span>
-                                            <span className="font-mono text-xs font-bold">{lead.vehicles.vin || 'N/A'}</span>
-                                        </div>
-                                        <div className="bg-surface-container-highest px-3 py-1 border border-zinc-700 text-white">
-                                            <span className="text-[9px] text-zinc-500 block">PRICE SPEC</span>
-                                            <span className="font-mono text-xs font-bold">${lead.vehicles.price ? Intl.NumberFormat('en-US').format(lead.vehicles.price) : 'N/A'}</span>
-                                        </div>
-                                        <div className="bg-surface-container-highest px-3 py-1 border border-zinc-700 text-white">
-                                            <span className="text-[9px] text-zinc-500 block">STATUS</span>
-                                            <span className="font-mono text-xs font-bold text-admin-secondary">{lead.vehicles.status.replace('_', ' ').toUpperCase()}</span>
-                                        </div>
-                                    </div>
-                                    <Link href={`/admin/vehicles/${lead.vehicles.id}`} className="text-admin-secondary text-[10px] font-headline font-bold tracking-[0.2em] flex items-center gap-2 hover:gap-4 transition-all w-fit uppercase">
-                                        VIEW FULL SPEC SHEET <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                    </Link>
-                                </div>
-                            </div>
-                        </section>
-                    ) : (
-                        <section className="bg-surface-container-high relative overflow-hidden group p-8 border-l-4 border-zinc-600">
-                            <h2 className="font-headline font-bold text-xs tracking-[0.2em] text-zinc-400 uppercase mb-4">Target Inventory</h2>
-                            <h3 className="text-2xl md:text-3xl font-black font-headline tracking-tighter mb-2 text-white">{lead.target_vehicle || 'General Inquiry'}</h3>
-                        </section>
-                    )}
-                    
-                    {/* Notes / Additional Specs */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="bg-surface-container-low border border-zinc-800 p-6">
-                            <h4 className="font-headline font-bold text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-4">Trade-In Profile</h4>
-                            <div className="flex items-center gap-4 bg-surface-container p-4">
-                                <span className="material-symbols-outlined text-admin-secondary">no_crash</span>
-                                <div>
-                                    <p className="text-xs font-bold uppercase text-white">{lead.trade_in_year ? `${lead.trade_in_year} ` : ''}{lead.trade_in_make ? `${lead.trade_in_make} ` : ''}{lead.trade_in_model || 'No Trade-In Specified'}</p>
-                                    <p className="text-[10px] text-zinc-500">{lead.trade_in_value ? `Estimated Value: $${Intl.NumberFormat('en-US').format(lead.trade_in_value)}` : ''}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="bg-surface-container-low border border-zinc-800 p-6">
-                            <h4 className="font-headline font-bold text-[10px] tracking-[0.2em] text-zinc-500 uppercase mb-4">Finance / Purchase Plan</h4>
-                            <div className="flex items-center gap-4 bg-surface-container p-4">
-                                <span className="material-symbols-outlined text-amber-400">account_balance</span>
-                                <div>
-                                    <p className="text-xs font-bold uppercase text-white">{lead.finance_status ? lead.finance_status.replace('_', ' ') : 'Cash / Unspecified'}</p>
-                                    <p className="text-[10px] text-zinc-500">{lead.finance_score_tier || ''} - {lead.expected_purchase_date || ''}</p>
-                                </div>
-                            </div>
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
+            <motion.header 
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="sticky top-0 z-50 flex justify-between items-center w-full px-10 py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
+            >
+                <div className="flex items-center gap-10">
+                    <Link href="/admin/leads" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all group">
+                        <span className="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">west</span>
+                    </Link>
+                    <div className="space-y-1">
+                        <h2 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">
+                            LEAD: <span className="text-primary">{lead.name.split(' ')[0]}</span> {lead.name.split(' ').slice(1).join(' ')}
+                        </h2>
+                        <div className="flex items-center gap-3">
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">UID: {lead.id.substring(0, 12).toUpperCase()}</span>
+                            <span className="w-1 h-1 rounded-full bg-slate-800" />
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">CHNL: {lead.source?.toUpperCase() || 'DIRECT_WEB'}</span>
                         </div>
                     </div>
                 </div>
                 
-                {/* Right Column: Interaction Timeline */}
-                <div className="xl:col-span-4">
-                    <section className="bg-surface-container border border-zinc-800 h-full flex flex-col min-h-[600px]">
-                        <div className="p-6 border-b border-zinc-800 flex justify-between items-center">
-                            <h2 className="font-headline font-bold text-xs tracking-[0.2em] text-zinc-400 uppercase">System Interaction Log</h2>
-                            <span className="material-symbols-outlined text-zinc-600">history</span>
+                <div className="flex items-center gap-4">
+                    <MotionButton variant="ghost" className="w-12 h-12 p-0 rounded-xl border-white/5" href={`mailto:${lead.email}`}>
+                        <span className="material-symbols-outlined">mail</span>
+                    </MotionButton>
+                    {lead.phone && (
+                        <MotionButton variant="ghost" className="w-12 h-12 p-0 rounded-xl border-white/5" href={`tel:${lead.phone}`}>
+                            <span className="material-symbols-outlined">call</span>
+                        </MotionButton>
+                    )}
+                    <MotionButton variant="outline" className="px-8 h-12 rounded-xl border-primary/20 text-primary">
+                        PROTO_COMM
+                    </MotionButton>
+                </div>
+            </motion.header>
+
+            <div className="p-10 grid grid-cols-12 gap-10">
+                {/* Information Core */}
+                <div className="col-span-12 xl:col-span-8 space-y-10">
+                    {/* Identity Matrix */}
+                    <motion.section 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.1 }}
+                        className="bg-surface-dark/40 backdrop-blur-xl p-10 rounded-[3rem] border border-white/5 relative overflow-hidden group"
+                    >
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full" />
+                        <div className="flex justify-between items-start mb-12 relative z-10">
+                            <div>
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Subject_Profile</p>
+                                <div className="h-[2px] w-12 bg-primary" />
+                            </div>
+                            <MotionBadge color="primary" icon="verified">IDENTITY_CONFIRMED</MotionBadge>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-6 space-y-8 relative">
-                            {/* Vertical line */}
-                            <div className="absolute left-9 top-10 bottom-10 w-px bg-zinc-800"></div>
-                            {/* Timeline Items */}
-                            {timeline.length > 0 ? timeline.map((event: { id: string; created_at: string; event_type: string; description: string }, index: number) => (
-                                <div key={event.id} className={`relative pl-10 ${index > 0 ? 'opacity-70' : ''}`}>
-                                    <div className={`absolute left-[-5px] top-1 w-[11px] h-[11px] border-4 border-admin-surface ${index === 0 ? 'bg-admin-secondary ring-1 ring-admin-secondary' : 'bg-zinc-700'}`}></div>
-                                    <div className="mb-1">
-                                        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">{new Date(event.created_at).toLocaleString()}</span>
-                                    </div>
-                                    <p className="text-sm font-bold text-zinc-200">{event.event_type.replace(/_/g, ' ').toUpperCase()}</p>
-                                    <p className="text-xs text-zinc-500 mt-1 italic">&quot;{event.description}&quot;</p>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+                            <div className="space-y-2">
+                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Primary Email</p>
+                                <p className="text-xl font-heading font-black text-white truncate">{lead.email}</p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Mobile Link</p>
+                                <p className="text-xl font-heading font-black text-white">{lead.phone || 'N/A'}</p>
+                            </div>
+                            <div className="space-y-2">
+                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Deployment Zone</p>
+                                <p className="text-xl font-heading font-black text-white uppercase italic">NAIROBI_METRO</p>
+                            </div>
+                        </div>
+                    </motion.section>
+
+                    {/* Target Asset Profile */}
+                    <motion.section 
+                        initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 }}
+                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 overflow-hidden group"
+                    >
+                        {lead.vehicles ? (
+                            <div className="grid grid-cols-1 md:grid-cols-5 min-h-[300px]">
+                                <div className="md:col-span-2 relative">
+                                    <Image 
+                                        fill 
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
+                                        src={lead.vehicles.main_image_url || "/images/placeholders/car-hero.jpg"} 
+                                        alt="Target Asset" 
+                                    />
+                                    <div className="absolute inset-0 bg-linear-to-r from-surface-dark via-transparent to-transparent opacity-60" />
                                 </div>
-                            )) : (
-                                <div className="relative pl-10">
-                                    <div className="absolute left-[-5px] top-1 w-[11px] h-[11px] bg-admin-secondary border-4 border-admin-surface ring-1 ring-admin-secondary"></div>
-                                    <div className="mb-1">
-                                        <span className="text-[9px] font-mono text-zinc-500 uppercase tracking-widest">{new Date(lead.created_at).toLocaleString()}</span>
+                                <div className="md:col-span-3 p-10 flex flex-col justify-center gap-6">
+                                    <div className="space-y-2">
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Target_Inventory</p>
+                                        <h3 className="text-4xl font-heading font-black text-white uppercase tracking-tighter italic">
+                                            {lead.vehicles.year} {lead.vehicles.make} <br /> {lead.vehicles.model}
+                                        </h3>
                                     </div>
-                                    <p className="text-sm font-bold text-zinc-200">System Genesis</p>
-                                    <p className="text-xs text-zinc-500 mt-1 italic">&quot;Lead captured via primary ingestion channel.&quot;</p>
-                                    {lead.notes && <p className="text-xs text-zinc-400 mt-2 p-2 border-l border-zinc-700">{lead.notes}</p>}
+                                    
+                                    <div className="flex gap-4">
+                                        <div className="bg-white/[0.02] border border-white/5 px-4 py-2 rounded-xl">
+                                            <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Valuation</p>
+                                            <p className="text-sm font-heading font-black text-white tracking-widest whitespace-nowrap">KSH {formatCurrency(lead.vehicles.price || 0).split('KSh')[1]}</p>
+                                        </div>
+                                        <div className="bg-white/[0.02] border border-white/5 px-4 py-2 rounded-xl">
+                                            <p className="text-[8px] font-black text-slate-500 uppercase mb-1">State</p>
+                                            <p className="text-sm font-heading font-black text-accent-teal uppercase tracking-widest">{lead.vehicles.status.toUpperCase()}</p>
+                                        </div>
+                                    </div>
+
+                                    <Link href={`/admin/vehicles/${lead.vehicles.id}`} className="text-[9px] font-black text-slate-500 hover:text-primary transition-all uppercase tracking-[0.4em] flex items-center gap-2 group/link">
+                                        EXAMINE SPEC_SHEET
+                                        <span className="material-symbols-outlined text-sm group-hover/link:translate-x-2 transition-transform">east</span>
+                                    </Link>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="p-12 text-center space-y-4">
+                                <span className="material-symbols-outlined text-6xl text-slate-800">search_off</span>
+                                <h3 className="text-2xl font-heading font-black text-slate-600 uppercase italic">NO_TARGET_ASSET_LOCKED</h3>
+                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">User initiated general inquiry protocol</p>
+                            </div>
+                        )}
+                    </motion.section>
+
+                    {/* Secondary Intel */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.3 }}
+                            className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6"
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="material-symbols-outlined text-accent-teal">no_crash</span>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Trade_In_Profile</p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                                <p className="text-sm font-black font-heading text-white uppercase italic">
+                                    {lead.trade_in_year ? `${lead.trade_in_year} ` : ''}{lead.trade_in_make ? `${lead.trade_in_make} ` : ''}{lead.trade_in_model || 'NONE_SPECIFIED'}
+                                </p>
+                                {lead.trade_in_value && (
+                                    <p className="text-[10px] font-black font-mono text-accent-teal mt-2 uppercase">EST_VALUE: KSH {formatCurrency(lead.trade_in_value).split('KSh')[1]}</p>
+                                )}
+                            </div>
+                        </motion.div>
+
+                        <motion.div 
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.4 }}
+                            className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6"
+                        >
+                            <div className="flex items-center gap-3">
+                                <span className="material-symbols-outlined text-primary">account_balance</span>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Procurement_Plan</p>
+                            </div>
+                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                                <p className="text-sm font-black font-heading text-white uppercase italic">
+                                    {lead.finance_status ? lead.finance_status.toUpperCase() : 'CASH_PROTOCOL'}
+                                </p>
+                                <p className="text-[10px] font-black font-mono text-slate-500 mt-2 uppercase tracking-widest">
+                                    {lead.expected_purchase_date || 'IMMEDIATE_EXECUTION'}
+                                </p>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+
+                {/* Interaction Timeline */}
+                <div className="col-span-12 xl:col-span-4 h-full">
+                    <motion.section 
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] h-[800px] flex flex-col overflow-hidden sticky top-32"
+                    >
+                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                            <h2 className="font-heading font-black text-xl tracking-tighter uppercase text-white">interaction_Log</h2>
+                            <div className="flex gap-1">
+                                {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />)}
+                            </div>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-10 space-y-10 relative scrollbar-hide">
+                            <div className="absolute left-[51px] top-10 bottom-10 w-[1px] bg-slate-800/50" />
+                            
+                            {timeline.length > 0 ? timeline.map((event: any, i: number) => (
+                                <motion.div 
+                                    key={event.id}
+                                    initial={{ opacity: 0, x: -10 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: 0.6 + (i * 0.1) }}
+                                    className="relative pl-12 group/evt"
+                                >
+                                    <div className={`absolute left-[-5px] top-1 w-3 h-3 rounded-full border-2 border-surface-dark transition-all duration-500 ${i === 0 ? 'bg-primary ring-4 ring-primary/20 scale-125' : 'bg-slate-700'}`} />
+                                    <div className="space-y-2">
+                                        <p className="text-[9px] font-black font-mono text-slate-600 uppercase tracking-widest">{new Date(event.created_at).toLocaleString()}</p>
+                                        <p className="text-[11px] font-black text-slate-200 uppercase tracking-widest group-hover/evt:text-primary transition-colors">{event.event_type.replace(/_/g, ' ')}</p>
+                                        <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 border-l-2 border-l-slate-800 group-hover/evt:border-l-primary transition-all">
+                                            <p className="text-[11px] text-slate-400 italic font-medium leading-relaxed">&quot;{event.description}&quot;</p>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )) : (
+                                <div className="text-center py-20 opacity-20">
+                                    <span className="material-symbols-outlined text-6xl">cloud_off</span>
+                                    <p className="text-[10px] font-black uppercase mt-4">NO_LOGS_RECORDED</p>
                                 </div>
                             )}
                         </div>
-                        <div className="p-4 bg-surface-container-high border-t border-zinc-800">
-                            <form action={addTimelineNote.bind(null, lead.id)} className="relative">
-                                <textarea name="note" required className="w-full bg-surface border border-zinc-800 text-xs font-mono p-4 min-h-[100px] focus:ring-1 focus:ring-admin-secondary focus:border-admin-secondary placeholder:text-zinc-700 outline-none text-white" placeholder="ADD TECHNICAL NOTE..."></textarea>
-                                <button type="submit" className="absolute bottom-3 right-3 text-admin-secondary hover:text-cyan-300">
-                                    <span className="material-symbols-outlined">send</span>
+
+                        {/* Note Entry */}
+                        <div className="p-8 bg-surface-dark/60 border-t border-white/5">
+                            <form action={addTimelineNote.bind(null, lead.id)} className="relative group/form">
+                                <textarea 
+                                    name="note" 
+                                    required 
+                                    className="w-full bg-white/[0.02] border border-white/10 rounded-[1.5rem] p-6 text-[11px] font-mono text-white placeholder:text-slate-600 outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
+                                    placeholder="APPEND_INTEL_NOTE..."
+                                />
+                                <button type="submit" className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-primary text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl shadow-primary/20">
+                                    <span className="material-symbols-outlined font-black">send</span>
                                 </button>
                             </form>
                         </div>
-                    </section>
+                    </motion.section>
                 </div>
             </div>
 
-            {/* Bottom Control Bar */}
+            {/* Global Control Bar */}
             <form action={updateLeadStatus.bind(null, lead.id)}>
-                <footer className="fixed bottom-0 left-0 lg:left-64 right-0 bg-[#141413]/90 backdrop-blur-md border-t border-zinc-800 px-6 py-4 z-50 flex items-center justify-between">
-                    <div className="flex items-center gap-6">
-                        <div className="flex flex-col">
-                            <span className="text-[9px] text-zinc-500 uppercase tracking-widest mb-1">Lead Health</span>
-                            <div className="flex gap-1">
-                                <div className="h-1 w-6 bg-admin-secondary"></div>
-                                <div className="h-1 w-6 bg-admin-secondary"></div>
-                                <div className="h-1 w-6 bg-admin-secondary"></div>
-                                <div className="h-1 w-6 bg-zinc-800"></div>
+                <motion.footer 
+                    initial={{ y: 100 }}
+                    animate={{ y: 0 }}
+                    className="fixed bottom-0 left-0 lg:left-80 right-0 bg-surface-dark/80 backdrop-blur-3xl border-t border-white/5 px-10 py-6 z-[60] flex items-center justify-between"
+                >
+                    <div className="flex items-center gap-12">
+                        <div className="space-y-2">
+                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Pipeline_Status</p>
+                            <div className="flex gap-1.5 h-1.5">
+                                {[0, 1, 2, 3].map(i => (
+                                    <div key={i} className={`w-8 rounded-full ${i < 3 ? 'bg-primary' : 'bg-slate-800'}`} />
+                                ))}
                             </div>
                         </div>
-                        <div className="h-10 w-px bg-zinc-800 mx-2 hidden sm:block"></div>
-                        <div className="hidden sm:block">
-                            <label className="text-[9px] text-zinc-500 uppercase tracking-widest block mb-1">Process Status</label>
-                            <select name="status" className="bg-transparent border-none text-xs font-headline font-bold uppercase text-admin-secondary py-1 pl-0 pr-8 focus:ring-0 cursor-pointer outline-none appearance-none" defaultValue={lead.status}>
-                                <option value="new">New</option>
-                                <option value="contacted">Contacted</option>
-                                <option value="negotiating">Negotiating</option>
-                                <option value="sold">Sold</option>
-                                <option value="lost">Lost / Dormant</option>
+                        <div className="h-10 w-[1px] bg-white/5" />
+                        <div className="relative">
+                            <select 
+                                name="status" 
+                                className="bg-transparent text-sm font-black text-primary uppercase tracking-[0.2em] outline-none cursor-pointer appearance-none pr-8"
+                                defaultValue={lead.status}
+                            >
+                                <option value="new">PROTOCOL: NEW</option>
+                                <option value="contacted">PROTOCOL: CONTACTED</option>
+                                <option value="negotiating">PROTOCOL: NEGOTIATING</option>
+                                <option value="sold">PROTOCOL: CONVERTED</option>
+                                <option value="lost">PROTOCOL: DORMANT</option>
                             </select>
+                            <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none text-xl">expand_more</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <button formAction={deleteLeadAction} className="text-red-500 hover:text-red-400 text-[10px] font-headline font-bold tracking-widest uppercase px-4 hidden sm:block transition-colors">
-                            Delete Lead
-                        </button>
-                        <Link href="/admin/leads" className="text-zinc-500 hover:text-zinc-300 text-[10px] font-headline font-bold tracking-widest uppercase px-4 hidden sm:block">Discard Changes</Link>
-                        <button type="submit" className="bg-primary-container text-black px-10 py-3 font-headline font-black text-xs tracking-[0.2em] uppercase hover:bg-amber-500 transition-all active:scale-95 shadow-[0_0_20px_rgba(255,193,7,0.1)]">
-                            Commit &amp; Save Changes
-                        </button>
+
+                    <div className="flex items-center gap-6">
+                        <button formAction={deleteLeadAction} className="text-[9px] font-black text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em]">PURGE_LEAD</button>
+                        <MotionButton type="submit" className="px-12 h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 group/save overflow-hidden">
+                            COMMIT_PROTOCOL
+                        </MotionButton>
                     </div>
-                </footer>
+                </motion.footer>
             </form>
         </div>
     );

@@ -2,6 +2,7 @@ export const siteConfig = {
     contact: {
         phone: "+254 722 511 803",
         phoneFormatted: "+254722511803",
+        whatsapp: "https://wa.me/254722511803",
         email: "sales@konastoneautos.co.ke",
         address: "Moi Avenue",
         city: "Mombasa, Kenya",

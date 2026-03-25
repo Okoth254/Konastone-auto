@@ -17,21 +17,21 @@ export default function Footer() {
     const opacity = useTransform(scrollYProgress, [0, 1], [0.45, 1]);
 
     return (
-        <div ref={containerRef} className="relative h-[440px] md:h-[420px]">
-            <motion.footer style={{ y, opacity }} className="sticky bottom-0 pt-16 pb-8 bg-gray-900 dark:bg-header-dark border-t border-gray-800 transition-colors duration-300">
+        <div ref={containerRef} className="relative h-[460px] md:h-[420px]">
+            <motion.footer style={{ y, opacity }} className="safe-bottom sticky bottom-0 pt-16 pb-8 bg-gray-900 dark:bg-header-dark border-t border-gray-800 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="col-span-1 md:col-span-2">
                         <span className="font-display text-4xl text-primary tracking-wider mb-6 block">KONASTONE AUTOS</span>
                         <p className="text-gray-400 mb-6 max-w-md">Premium automotive dealership in Mombasa offering high-quality imported and locally used vehicles with flexible financing options.</p>
                         <div className="flex space-x-4">
-                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                            <Link className="tap-highlight-none min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#" aria-label="Konastone Facebook">
                                 <span className="material-icons text-lg">facebook</span>
                             </Link>
-                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                            <Link className="tap-highlight-none min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#" aria-label="Konastone Instagram">
                                 <span className="material-icons text-lg">camera_alt</span>
                             </Link>
-                            <Link className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#">
+                            <Link className="tap-highlight-none min-h-[44px] min-w-[44px] w-11 h-11 rounded-full bg-gray-800 flex items-center justify-center text-white hover:bg-primary hover:text-gray-900 transition-colors" href="#" aria-label="Konastone TikTok">
                                 <span className="material-icons text-lg">music_note</span>
                             </Link>
                         </div>
@@ -56,10 +56,10 @@ export default function Footer() {
                     <div>
                         <h4 className="font-display text-xl text-white tracking-wide mb-6">QUICK LINKS</h4>
                         <ul className="space-y-2 text-sm text-slate-400 font-display transition-colors">
-                            <li><Link href="/inventory" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Current Inventory</Link></li>
-                            <li><Link href="/reviews" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Customer Reviews</Link></li>
-                            <li><Link href="/about" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">About Us</Link></li>
-                            <li><Link href="/about" className="hover:text-primary transition-colors flex items-center gap-2 before:content-['>'] before:text-primary/50">Contact Us</Link></li>
+                            <li><Link href="/inventory" className="tap-highlight-none min-h-[44px] inline-flex items-center hover:text-primary transition-colors gap-2 before:content-['>'] before:text-primary/50">Current Inventory</Link></li>
+                            <li><Link href="/reviews" className="tap-highlight-none min-h-[44px] inline-flex items-center hover:text-primary transition-colors gap-2 before:content-['>'] before:text-primary/50">Customer Reviews</Link></li>
+                            <li><Link href="/about" className="tap-highlight-none min-h-[44px] inline-flex items-center hover:text-primary transition-colors gap-2 before:content-['>'] before:text-primary/50">About Us</Link></li>
+                            <li><Link href="/about" className="tap-highlight-none min-h-[44px] inline-flex items-center hover:text-primary transition-colors gap-2 before:content-['>'] before:text-primary/50">Contact Us</Link></li>
                         </ul>
                     </div>
                 </div>

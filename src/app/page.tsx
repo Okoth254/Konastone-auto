@@ -81,7 +81,7 @@ export default async function Home() {
         <>
             {/* Hero Section */}
             <section className="flex flex-col lg:flex-row min-h-[600px]">
-                <div className="lg:w-[60%] relative overflow-hidden h-[400px] lg:h-auto">
+                <div className="lg:w-[60%] relative overflow-hidden h-[52vh] min-h-[360px] lg:h-auto">
                     <Image
                         alt="Luxury car at dusk in Mombasa"
                         className="absolute inset-0 w-full h-full object-cover"
@@ -93,7 +93,7 @@ export default async function Home() {
                     <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
                         <div className="space-y-8">
                             <AnimatedHeroText />
-                            <MagneticButton href="/inventory" label="EXPLORE FLEET" />
+                            <MagneticButton href="/inventory" label="EXPLORE FLEET" className="w-full sm:w-auto justify-center" />
                         </div>
                     </div>
                 </div>
@@ -104,7 +104,7 @@ export default async function Home() {
             </section>
 
             {/* Browse By Brand section */}
-            <section className="relative bg-[#1A1A1A] py-16 overflow-hidden animate-scroll-reveal" >
+            <section className="section-pad relative bg-[#1A1A1A] overflow-hidden animate-scroll-reveal" >
                 <div className="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
                 <div className="page-shell relative z-10">
                     <div className="text-center mb-12">
@@ -125,7 +125,7 @@ export default async function Home() {
             </section>
 
             {/* Stats Section */}
-            <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
+            <section className="bg-gray-50 dark:bg-[#151515] py-12 md:py-14 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
                 <div className="page-shell">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                         {siteConfig.stats.map((stat, idx) => (
@@ -142,7 +142,7 @@ export default async function Home() {
             </section>
 
             {/* Featured Listings Section */}
-            <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300 animate-scroll-reveal" >
+            <section className="section-pad bg-white dark:bg-background-dark transition-colors duration-300 animate-scroll-reveal" >
                 <div className="page-shell">
                     <div className="flex justify-between items-end mb-10">
                         <div>
@@ -226,7 +226,7 @@ export default async function Home() {
             </section>
 
             {/* Why Choose Konastone */}
-            <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
+            <section className="section-pad bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
                 <div className="page-shell">
                     <div className="text-center mb-16">
                         <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">WHY CHOOSE KONASTONE</h2>
