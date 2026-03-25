@@ -19,14 +19,14 @@ export default function Header() {
                         <Link className="shrink-0 flex items-center" href="/" onClick={closeMenu}>
                             <span className="font-display text-4xl text-primary tracking-wider">KONASTONE AUTOS</span>
                         </Link>
-                        <nav className="hidden md:ml-10 md:flex md:space-x-8">
-                            <Link href="/inventory" className={`px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors ${pathname === '/inventory' ? 'text-primary' : 'text-gray-900 dark:text-white hover:text-primary dark:hover:text-primary'}`}>
+                        <nav className="hidden md:ml-10 md:flex md:space-x-1 p-1 bg-gray-100 dark:bg-surface-dark border border-gray-200 dark:border-border-subtle rounded-full shadow-inner items-center">
+                            <Link href="/inventory" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all duration-300 ${pathname?.startsWith('/inventory') ? 'bg-primary text-background-dark shadow-md' : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'}`}>
                                 Inventory
                             </Link>
-                            <Link href="/about" className={`px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors ${pathname === '/about' ? 'text-primary' : 'text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary'}`}>
+                            <Link href="/about" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all duration-300 ${pathname?.startsWith('/about') ? 'bg-primary text-background-dark shadow-md' : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'}`}>
                                 About Us
                             </Link>
-                            <Link href="/reviews" className={`px-3 py-2 rounded-md text-sm font-medium uppercase tracking-wide transition-colors ${pathname === '/reviews' ? 'text-primary' : 'text-gray-500 dark:text-gray-300 hover:text-primary dark:hover:text-primary'}`}>
+                            <Link href="/reviews" className={`px-5 py-2 rounded-full text-sm font-bold uppercase tracking-widest transition-all duration-300 ${pathname?.startsWith('/reviews') ? 'bg-primary text-background-dark shadow-md' : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'}`}>
                                 Reviews
                             </Link>
                         </nav>

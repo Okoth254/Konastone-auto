@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { updateReviewStatus, deleteReview } from "../actions";
 
 export default async function ReviewModerationDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -25,7 +25,6 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
     const deleteReviewAction = async () => {
         "use server";
         await deleteReview(id);
-        redirect('/admin/reviews');
     };
 
     return (

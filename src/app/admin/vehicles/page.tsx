@@ -190,8 +190,8 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                         </div>
                                     </div>
                                     <div className="mt-4 flex gap-2">
-                                        <Link href={`/admin/vehicles/edit/${vehicle.id}`} className="flex-1 bg-zinc-800 hover:bg-admin-secondary hover:text-on-secondary transition-colors text-center py-2 text-xs font-bold uppercase tracking-widest text-zinc-300">Edit</Link>
-                                        <Link href={`/admin/vehicles/${vehicle.id}`} className="flex-1 border border-zinc-700 hover:border-zinc-400 transition-colors text-center py-2 text-xs font-bold uppercase tracking-widest text-zinc-300">View Specs</Link>
+                                        <Link href={`/admin/vehicles/edit/${vehicle.id}`} className="btn-sweep relative overflow-hidden flex-1 bg-zinc-800 hover:bg-admin-secondary hover:text-on-secondary transition-colors text-center py-2 text-xs font-bold uppercase tracking-widest text-zinc-300 z-10"><span className="relative z-10 pointer-events-none">Edit</span></Link>
+                                        <Link href={`/admin/vehicles/${vehicle.id}`} className="btn-sweep relative overflow-hidden flex-1 border border-zinc-700 hover:border-zinc-400 text-zinc-300 transition-colors text-center py-2 text-xs font-bold uppercase tracking-widest z-10"><span className="relative z-10 pointer-events-none">View Specs</span></Link>
                                     </div>
                                 </div>
                             </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 import { addTimelineNote, updateLeadStatus, deleteLead } from "../actions";
 
 export default async function LeadDetailView({ params }: { params: Promise<{ id: string }> }) {
@@ -28,7 +28,6 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
     const deleteLeadAction = async () => {
         "use server";
         await deleteLead(id);
-        redirect('/admin/leads');
     };
 
     return (

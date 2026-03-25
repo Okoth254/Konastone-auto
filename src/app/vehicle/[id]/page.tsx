@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import ImageGallery from "@/components/vehicle/ImageGallery";
 import FinanceCalculator from "@/components/vehicle/FinanceCalculator";
 import LeadForm from "@/components/vehicle/LeadForm";
+import ShareButton from "@/components/vehicle/ShareButton"; // Added ShareButton import
 import { siteConfig } from "@/config/site";
 import VehicleImage from "@/components/inventory/VehicleImage";
 
@@ -155,25 +156,20 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-3 mt-auto pt-4">
-                        <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-accent-red text-white font-bold shadow-lg hover:bg-opacity-80 transition-colors">
-                            <span className="material-symbols-outlined text-white">call</span>
-                            Call Now
-                        </a>
-                        <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="w-full flex items-center justify-center gap-2 rounded-full h-12 bg-primary text-background-dark font-bold shadow-lg hover:bg-yellow-500 transition-colors">
-                            <span className="material-symbols-outlined text-background-dark">chat</span>
-                            WhatsApp
-                        </a>
-                        <div className="flex gap-3">
-                            <button className="flex-1 flex items-center justify-center gap-2 rounded-full h-10 border border-border-subtle hover:bg-border-subtle transition-colors text-sm font-medium text-slate-300">
-                                <span className="material-symbols-outlined text-[18px] text-accent-teal">favorite_border</span>
-                                Save
-                            </button>
-                            <button className="flex-1 flex items-center justify-center gap-2 rounded-full h-10 border border-border-subtle hover:bg-border-subtle transition-colors text-sm font-medium text-slate-300">
-                                <span className="material-symbols-outlined text-[18px] text-accent-teal">compare_arrows</span>
-                                Compare
-                            </button>
+                    
+                    {/* Sticky Mobile CTA Bar / Desktop Button Stack */}
+                    <div className="fixed bottom-0 left-0 w-full p-4 bg-background-dark/95 backdrop-blur-md border-t border-border-subtle z-40 md:relative md:bg-transparent md:backdrop-filter-none md:border-none md:p-0 flex flex-col gap-3 mt-auto md:pt-4">
+                        <div className="flex gap-3 md:flex-col">
+                            <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="flex-1 flex items-center justify-center gap-2 rounded-full h-12 bg-accent-red text-white font-bold shadow-lg transition-colors btn-sweep animate-pulse-ring">
+                                <span className="material-symbols-outlined text-white">call</span>
+                                Call Now
+                            </a>
+                            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 rounded-full h-12 bg-primary text-background-dark font-bold shadow-lg transition-colors btn-sweep animate-wiggle group">
+                                <span className="material-symbols-outlined text-background-dark group-hover:animate-wiggle">chat</span>
+                                WhatsApp
+                            </a>
                         </div>
+                        <ShareButton title={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} />
                     </div>
                 </div>
             </div>

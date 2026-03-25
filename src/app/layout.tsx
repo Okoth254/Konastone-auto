@@ -3,6 +3,7 @@ import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import ScrollRevealScript from "@/components/layout/ScrollRevealScript";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -82,14 +83,15 @@ export default function RootLayout({
         />
       </head>
       <body className={`
-        ${playfair.variable} ${lato.variable} 
+        ${playfair.variable} ${lato.variable}
         bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-body antialiased
       `}>
         <Header />
-        <main className="min-h-screen">
+        <main className="grow flex flex-col pt-[72px]">
           {children}
         </main>
         <Footer />
+        <ScrollRevealScript />
       </body>
     </html>
   );

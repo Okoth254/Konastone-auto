@@ -38,4 +38,5 @@ export async function deleteReview(id: string) {
     
     revalidatePath('/admin/reviews');
     revalidatePath('/reviews');
+    redirect('/admin/reviews');
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
+import AnimatedCounter from "@/components/home/AnimatedCounter";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -81,10 +82,15 @@ export default async function AdminDashboard() {
               <span className="material-symbols-outlined text-admin-secondary">directions_car</span>
             </div>
             <div className="flex items-end gap-3">
-              <h3 className="text-5xl font-headline font-black">{inventoryCount || 0}</h3>
+              <h3 className="text-5xl font-headline font-black">
+                <AnimatedCounter text={(inventoryCount || 0).toString()} />
+              </h3>
+              <span className="text-cyan-400 text-sm font-headline font-bold mb-1">UNITS</span>
             </div>
-            <div className="mt-6 w-full bg-surface-container-lowest h-[2px]">
-              <div className="bg-admin-secondary h-full" style={{ width: '100%' }}></div>
+            <div className="mt-6 flex gap-1">
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className={`h-4 w-1 ${i < 3 ? 'bg-cyan-400' : 'bg-cyan-400/20'} animate-fade-up`} style={{ animationDelay: `${i * 100}ms` }}></div>
+              ))}
             </div>
           </div>
           <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -100,15 +106,15 @@ export default async function AdminDashboard() {
               <span className="material-symbols-outlined text-primary-container">leaderboard</span>
             </div>
             <div className="flex items-end gap-3">
-              <h3 className="text-5xl font-headline font-black">{activeLeadsCount || 0}</h3>
+              <h3 className="text-5xl font-headline font-black">
+                <AnimatedCounter text={(activeLeadsCount || 0).toString()} />
+              </h3>
               <span className="text-primary-container text-sm font-headline font-bold mb-1">OPEN</span>
             </div>
             <div className="mt-6 flex gap-1">
-              <div className="h-4 w-1 bg-primary-container"></div>
-              <div className="h-4 w-1 bg-primary-container"></div>
-              <div className="h-4 w-1 bg-primary-container"></div>
-              <div className="h-4 w-1 bg-primary-container/20"></div>
-              <div className="h-4 w-1 bg-primary-container/20"></div>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className={`h-4 w-1 ${i < 3 ? 'bg-primary-container' : 'bg-primary-container/20'} animate-fade-up`} style={{ animationDelay: `${(i * 100) + 200}ms` }}></div>
+              ))}
             </div>
           </div>
         </div>
@@ -121,15 +127,15 @@ export default async function AdminDashboard() {
               <span className="material-symbols-outlined text-zinc-500">rate_review</span>
             </div>
             <div className="flex items-end gap-3">
-              <h3 className="text-5xl font-headline font-black">{pendingReviewsCount || 0}</h3>
+              <h3 className="text-5xl font-headline font-black">
+                <AnimatedCounter text={(pendingReviewsCount || 0).toString()} />
+              </h3>
               <span className="text-zinc-500 text-xs font-headline font-medium mb-1">AWAITING</span>
             </div>
             <div className="mt-6 grid grid-cols-5 gap-1">
-              <div className="h-1 bg-admin-secondary"></div>
-              <div className="h-1 bg-admin-secondary"></div>
-              <div className="h-1 bg-admin-secondary"></div>
-              <div className="h-1 bg-admin-secondary"></div>
-              <div className="h-1 bg-admin-secondary/20"></div>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <div key={i} className={`h-1 ${i < 4 ? 'bg-admin-secondary' : 'bg-admin-secondary/20'} animate-fade-up`} style={{ animationDelay: `${(i * 100) + 400}ms` }}></div>
+              ))}
             </div>
           </div>
         </div>

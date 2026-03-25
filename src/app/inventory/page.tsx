@@ -121,7 +121,7 @@ export default async function Inventory({
                                     )}
                                     {inTransit && (
                                         <>
-                                            <div className="absolute top-3 left-3 bg-accent text-background-dark px-3 py-1 rounded font-display tracking-widest text-lg font-bold shadow-md uppercase">
+                                            <div className="absolute top-3 left-3 bg-accent text-background-dark px-3 py-1 rounded font-display tracking-widest text-lg font-bold shadow-md uppercase animate-pulse-ring-accent">
                                                 IN TRANSIT
                                             </div>
                                             <div className="absolute top-3 right-3 bg-background-dark/90 text-accent px-2 py-1 rounded font-mono text-xs font-bold border border-accent/30 shadow-md">

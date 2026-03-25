@@ -2,6 +2,7 @@
 
 import { createClient } from "@/utils/supabase/server";
 import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
 export async function addTimelineNote(leadId: string, formData: FormData) {
     const supabase = await createClient();
@@ -71,5 +72,5 @@ export async function deleteLead(leadId: string) {
     }
 
     revalidatePath('/admin/leads');
-    // We cannot redirect from a server action without importing `redirect`
+    redirect('/admin/leads');
 }

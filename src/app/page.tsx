@@ -6,6 +6,7 @@ import { Vehicle } from "@/types/database";
 import HeroSearchForm from "@/components/home/HeroSearchForm";
 import { siteConfig } from "@/config/site";
 import VehicleImage from "@/components/inventory/VehicleImage";
+import AnimatedCounter from "@/components/home/AnimatedCounter";
 
 export const metadata: Metadata = {
   title: 'Premium Car Dealership in Mombasa, Kenya',
@@ -100,14 +101,14 @@ export default async function Home() {
             </section>
 
             {/* Browse By Brand section */}
-            <section className="relative bg-[#1A1A1A] py-16 overflow-hidden" >
+            <section className="relative bg-[#1A1A1A] py-16 overflow-hidden animate-scroll-reveal" >
                 <div className="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
                     <div className="text-center mb-12">
                         <h2 className="font-display text-5xl text-primary tracking-widest mb-2">BROWSE BY BRAND</h2>
                         <p className="text-gray-400 font-body text-lg">Select from our curated collection of premium automotive brands</p>
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6 justify-items-center">
+                    <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-4 lg:grid-cols-6 gap-6 md:justify-items-center snap-x snap-mandatory scrollbar-hide">
                         {makesError ? (
                             <div className="col-span-full text-gray-500 text-center py-8">
                                 <span className="material-symbols-outlined text-4xl mb-2">error</span>
@@ -116,7 +117,7 @@ export default async function Home() {
                         ) : uniqueMakes.length > 0 ? uniqueMakes.map((make, idx) => {
                             const brandInfo = brandLogoMap[make];
                             return (
-                                <Link key={idx} className="group glass-dark rounded-2xl w-32 h-32 flex flex-col items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href={`/inventory?make=${make.toLowerCase()}`}>
+                                <Link key={idx} className="shrink-0 snap-center group glass-dark rounded-2xl w-32 h-32 flex flex-col items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href={`/inventory?make=${make.toLowerCase()}`}>
                                     {brandInfo ? (
                                         <Image alt={brandInfo.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brandInfo.src} width={64} height={64} />
                                     ) : (
@@ -132,13 +133,15 @@ export default async function Home() {
             </section>
 
             {/* Stats Section */}
-            <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300" >
+            <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                         {siteConfig.stats.map((stat, idx) => (
                             <div key={idx} className={`flex flex-col items-center ${idx === 4 ? "col-span-2 md:col-span-1" : ""}`}>
                                 <span className="material-icons text-secondary text-5xl mb-3">{stat.icon}</span>
-                                <h3 className="font-display text-2xl text-gray-900 dark:text-white">{stat.value}</h3>
+                                <h3 className="font-display text-2xl text-gray-900 dark:text-white">
+                                    <AnimatedCounter text={stat.value} />
+                                </h3>
                                 <p className="text-sm text-gray-500 dark:text-gray-400 uppercase tracking-wide">{stat.label}</p>
                             </div>
                         ))}
@@ -147,15 +150,15 @@ export default async function Home() {
             </section>
 
             {/* Featured Listings Section */}
-            <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300" >
+            <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300 animate-scroll-reveal" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-end mb-10">
                         <div>
                             <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">FEATURED LISTINGS</h2>
                             <p className="text-gray-500 dark:text-gray-400 mt-2">Premium hand-picked vehicles ready for immediate delivery.</p>
                         </div>
-                        <Link className="hidden md:flex items-center text-primary hover:text-yellow-400 font-medium transition-colors" href="/inventory">
-                            View All Inventory <span className="material-icons ml-1">arrow_forward</span>
+                        <Link className="hidden md:flex items-center px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
+                            View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
                         </Link>
                     </div>
 
@@ -195,7 +198,7 @@ export default async function Home() {
                                             </div>
                                         )}
                                         {car.status === 'in_transit' && (
-                                            <div className="absolute top-4 left-4 bg-accent text-background-dark text-xs font-bold px-3 py-1 rounded uppercase tracking-wider">
+                                            <div className="absolute top-4 left-4 bg-accent text-background-dark text-xs font-bold px-3 py-1 rounded uppercase tracking-wider animate-pulse-ring-accent">
                                                 In Transit
                                             </div>
                                         )}
@@ -222,16 +225,16 @@ export default async function Home() {
                         })}
                     </div>
 
-                    <div className="mt-10 text-center md:hidden">
-                        <Link className="inline-flex items-center text-primary font-medium" href="/inventory">
-                            View All Inventory <span className="material-icons ml-1">arrow_forward</span>
+                    <div className="mt-10 flex justify-center md:hidden">
+                        <Link className="inline-flex items-center px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
+                            View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
                         </Link>
                     </div>
                 </div>
             </section>
 
             {/* Why Choose Konastone */}
-            <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300" >
+            <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center mb-16">
                         <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">WHY CHOOSE KONASTONE</h2>
