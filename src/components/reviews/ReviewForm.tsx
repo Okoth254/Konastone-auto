@@ -5,7 +5,7 @@ import { supabase } from "@/lib/supabase";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionInput from "@/components/ui/MotionInput";
 import { motion, AnimatePresence } from "framer-motion";
-import MotionBadge from "@/components/ui/MotionBadge";
+
 
 export default function ReviewForm() {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +18,14 @@ export default function ReviewForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState("");
+
+    const stepLabels = ["Identity", "Rating", "Feedback"];
+
+    const getActiveStep = () => {
+        if (!name) return 1;
+        if (!comment) return 2;
+        return 3;
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -76,7 +84,33 @@ export default function ReviewForm() {
 
             <AnimatePresence>
                 {isOpen && (
-                    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+                        {/* Step Progress Bar */}
+                        <motion.div
+                            initial={{ opacity: 0, y: -20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="fixed top-6 left-1/2 -translate-x-1/2 z-200 flex items-center gap-3 bg-surface-dark/80 backdrop-blur-xl px-6 py-3 rounded-full border border-white/10 shadow-2xl"
+                        >
+                            {stepLabels.map((label, i) => {
+                                const stepNum = i + 1;
+                                const isActive = stepNum === getActiveStep();
+                                const isComplete = stepNum < getActiveStep();
+                                return (
+                                    <div key={label} className="flex items-center gap-2">
+                                        <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-black transition-all ${
+                                            isComplete ? "bg-primary text-black" :
+                                            isActive ? "bg-primary/20 text-primary border border-primary/50" :
+                                            "bg-white/5 text-slate-600"
+                                        }`}>
+                                            {isComplete ? "✓" : stepNum}
+                                        </div>
+                                        <span className={`text-[8px] font-black uppercase tracking-widest ${isActive ? "text-primary" : "text-slate-600"}`}>{label}</span>
+                                        {i < stepLabels.length - 1 && <div className={`w-6 h-0.5 rounded-full ${isComplete ? "bg-primary" : "bg-white/10"}`} />}
+                                    </div>
+                                );
+                            })}
+                        </motion.div>
+
                         <motion.div 
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
@@ -91,7 +125,7 @@ export default function ReviewForm() {
                             exit={{ opacity: 0, scale: 0.9, y: 30 }}
                             className="relative bg-surface-dark border border-border-subtle rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] w-full max-w-xl overflow-hidden flex flex-col max-h-[90vh]"
                         >
-                            <div className="flex justify-between items-center p-10 border-b border-white/5 bg-white/[0.02]">
+                            <div className="flex justify-between items-center p-10 border-b border-white/5 bg-white/2">
                                 <div className="space-y-1">
                                     <h3 className="text-3xl font-heading text-slate-100 uppercase tracking-tighter leading-none">Experience Intake</h3>
                                     <p className="text-[10px] text-slate-500 font-black uppercase tracking-[0.4em]">Customer Performance Log</p>

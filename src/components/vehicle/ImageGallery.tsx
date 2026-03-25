@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
 import useEmblaCarousel from "embla-carousel-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useMotionValue } from "framer-motion";
 
 interface ImageGalleryProps {
     images: string[];
@@ -14,15 +14,38 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
     const [mainViewportRef, emblaMainApi] = useEmblaCarousel({ 
         loop: true,
         duration: 40,
-        dragFree: false
+        dragFree: false,
+        startIndex: 0,
+        watchDrag: true,
+        watchFocus: true
     });
     const [thumbViewportRef, emblaThumbsApi] = useEmblaCarousel({
-        containScroll: "keepSnaps",
+        containScroll: "trimSnaps",
         dragFree: true,
-        slidesToScroll: 1
+        slidesToScroll: 1,
+        startIndex: 0
     });
 
     const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+    const lightboxX = useMotionValue(0);
+
+    // Keyboard navigation for lightbox
+    useEffect(() => {
+        if (lightboxIndex === null) return;
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setLightboxIndex(null);
+            if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                setLightboxIndex((prev) => (prev !== null ? (prev - 1 + images.length) % images.length : null));
+            }
+            if (e.key === "ArrowRight") {
+                e.preventDefault();
+                setLightboxIndex((prev) => (prev !== null ? (prev + 1) % images.length : null));
+            }
+        };
+        window.addEventListener("keydown", handleKeyDown);
+        return () => window.removeEventListener("keydown", handleKeyDown);
+    }, [lightboxIndex, images.length]);
 
     const onThumbClick = useCallback(
         (index: number) => {
@@ -34,28 +57,39 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
 
     const onSelect = useCallback(() => {
         if (!emblaMainApi || !emblaThumbsApi) return;
-        setSelectedIndex(emblaMainApi.selectedScrollSnap());
-        emblaThumbsApi.scrollTo(emblaMainApi.selectedScrollSnap());
+        const newIndex = emblaMainApi.selectedScrollSnap();
+        setSelectedIndex(newIndex);
+        emblaThumbsApi.scrollTo(newIndex, true);
     }, [emblaMainApi, emblaThumbsApi]);
 
     useEffect(() => {
         if (!emblaMainApi) return;
         
-        emblaMainApi.on("select", onSelect);
-        emblaMainApi.on("reInit", onSelect);
+        const handleSelect = () => {
+            onSelect();
+        };
+
+        emblaMainApi.on("select", handleSelect);
+        emblaMainApi.on("reInit", handleSelect);
         
+        // Initial sync after a short delay to ensure carousels are ready
         const timer = setTimeout(() => {
-            if (emblaMainApi.internalEngine()) {
-                onSelect();
-            }
-        }, 0);
+            handleSelect();
+        }, 100);
 
         return () => {
             clearTimeout(timer);
-            emblaMainApi.off("select", onSelect);
-            emblaMainApi.off("reInit", onSelect);
+            emblaMainApi.off("select", handleSelect);
+            emblaMainApi.off("reInit", handleSelect);
         };
     }, [emblaMainApi, onSelect]);
+
+    // Also sync when emblaThumbsApi becomes available
+    useEffect(() => {
+        if (!emblaThumbsApi || !emblaMainApi) return;
+        const newIndex = emblaMainApi.selectedScrollSnap();
+        emblaThumbsApi.scrollTo(newIndex, true);
+    }, [emblaThumbsApi, emblaMainApi]);
 
     if (!images || images.length === 0) return null;
 
@@ -68,17 +102,26 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                         {images.map((src, index) => (
                             <div 
                                 key={`${src}-${index}`} 
-                                className="flex-[0_0_100%] min-w-0 relative aspect-video" 
+                                className="flex-[0_0_100%] min-w-0 relative aspect-video overflow-hidden" 
                                 onClick={() => setLightboxIndex(index)}
                             >
-                                <Image
-                                    src={src}
-                                    alt={`Vehicle View ${index + 1}`}
-                                    fill
-                                    priority={index === 0}
-                                    className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/gallery:scale-105"
-                                    sizes="(max-width: 768px) 100vw, 80vw"
-                                />
+                                <motion.div
+                                    animate={{ 
+                                        scale: index === selectedIndex ? 1 : 0.95,
+                                        opacity: index === selectedIndex ? 1 : 0.7 
+                                    }}
+                                    transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                                    className="absolute inset-0"
+                                >
+                                    <Image
+                                        src={src}
+                                        alt={`Vehicle View ${index + 1}`}
+                                        fill
+                                        priority={index === 0}
+                                        className="object-cover transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/gallery:scale-105"
+                                        sizes="(max-width: 768px) 100vw, 80vw"
+                                    />
+                                </motion.div>
                                 <div className="absolute inset-0 bg-linear-to-t from-background-dark/40 to-transparent opacity-0 group-hover/gallery:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
                                     <motion.div 
                                         initial={{ scale: 0.8, opacity: 0 }}
@@ -131,25 +174,35 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
             <div className="overflow-hidden" ref={thumbViewportRef}>
                 <div className="flex gap-4 px-1">
                     {images.map((src, index) => (
-                        <motion.div
-                            key={`thumb-${src}-${index}`}
-                            onClick={() => onThumbClick(index)}
-                            whileHover={{ y: -4 }}
-                            whileTap={{ scale: 0.95 }}
-                            className={`flex-[0_0_22%] min-w-[120px] aspect-video relative rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-500 ease-[0.16,1,0.3,1] ${
-                                index === selectedIndex 
-                                ? "border-primary opacity-100 shadow-[0_12px_24px_-8px_rgba(255,191,41,0.4)]" 
-                                : "border-transparent opacity-40 hover:opacity-100 grayscale hover:grayscale-0"
-                            }`}
-                        >
-                            <Image
-                                src={src}
-                                alt={`Thumbnail ${index + 1}`}
-                                fill
-                                className="object-cover"
-                                sizes="150px"
+                        <div key={`thumb-${src}-${index}`} className="flex flex-col gap-2">
+                            <motion.div
+                                onClick={() => onThumbClick(index)}
+                                whileHover={{ y: -4 }}
+                                whileTap={{ scale: 0.95 }}
+                                className={`flex-[0_0_22%] min-w-[120px] aspect-video relative rounded-2xl overflow-hidden cursor-pointer border-2 transition-all duration-500 ease-[0.16,1,0.3,1] ${
+                                    index === selectedIndex 
+                                    ? "border-primary opacity-100 shadow-[0_12px_24px_-8px_rgba(255,191,41,0.4)]" 
+                                    : "border-transparent opacity-40 hover:opacity-100 grayscale hover:grayscale-0"
+                                }`}
+                            >
+                                <Image
+                                    src={src}
+                                    alt={`Thumbnail ${index + 1}`}
+                                    fill
+                                    className="object-cover"
+                                    sizes="150px"
+                                />
+                            </motion.div>
+                            {/* Snap indicator */}
+                            <motion.div 
+                                animate={{ 
+                                    width: index === selectedIndex ? "100%" : "0%",
+                                    opacity: index === selectedIndex ? 1 : 0
+                                }}
+                                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                                className="h-0.5 bg-primary rounded-full mx-auto"
                             />
-                        </motion.div>
+                        </div>
                     ))}
                 </div>
             </div>
@@ -178,16 +231,38 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
                             animate={{ scale: 1, opacity: 1, y: 0 }}
                             exit={{ scale: 0.9, opacity: 0, y: 40 }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="relative w-full max-w-7xl aspect-video rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,191,41,0.1)]"
+                            className="relative w-full max-w-7xl aspect-video rounded-3xl overflow-hidden shadow-[0_0_120px_rgba(255,191,41,0.1)] cursor-grab active:cursor-grabbing"
                             onClick={(e) => e.stopPropagation()}
+                            drag="x"
+                            dragConstraints={{ left: 0, right: 0 }}
+                            dragElastic={0.3}
+                            style={{ x: lightboxX }}
+                            onDragEnd={(_, info) => {
+                                if (info.offset.x > 100 || info.velocity.x > 500) {
+                                    setLightboxIndex((prev) => (prev !== null ? (prev - 1 + images.length) % images.length : null));
+                                } else if (info.offset.x < -100 || info.velocity.x < -500) {
+                                    setLightboxIndex((prev) => (prev !== null ? (prev + 1) % images.length : null));
+                                }
+                            }}
                         >
-                            <Image
-                                src={images[lightboxIndex]}
-                                alt="Full View"
-                                fill
-                                className="object-contain"
-                                priority
-                            />
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={lightboxIndex}
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute inset-0"
+                                >
+                                    <Image
+                                        src={images[lightboxIndex]}
+                                        alt="Full View"
+                                        fill
+                                        className="object-contain"
+                                        priority
+                                    />
+                                </motion.div>
+                            </AnimatePresence>
                         </motion.div>
 
                         {/* Lightbox Navigation */}

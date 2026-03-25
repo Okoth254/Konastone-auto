@@ -34,7 +34,7 @@ export function SystemEventStream({ events }: { events: TimelineEvent[] }) {
             className="bg-surface-dark/60 backdrop-blur-3xl p-8 border border-white/5 rounded-[2.5rem] font-mono text-[10px] leading-relaxed h-[450px] overflow-y-auto relative group scrollbar-hide"
         >
             {/* Scanned Line Overlay */}
-            <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(transparent_0%,rgba(255,191,41,0.1)_50%,transparent_100%)] bg-[length:100%_4px]" />
+            <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(transparent_0%,rgba(255,191,41,0.1)_50%,transparent_100%)] bg-size-[100%_4px]" />
             
             <div className="space-y-4 relative z-10">
                 <AnimatePresence initial={false} mode="popLayout">
@@ -45,7 +45,7 @@ export function SystemEventStream({ events }: { events: TimelineEvent[] }) {
                             animate={{ opacity: 1, x: 0, filter: "blur(0px)" }}
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.4, delay: i * 0.05 }}
-                            className="flex gap-4 group/entry border-b border-white/[0.02] pb-3 last:border-0"
+                            className="flex gap-4 group/entry border-b border-white/2 pb-3 last:border-0"
                         >
                             <div className="flex flex-col items-center gap-1 shrink-0 pt-1">
                                 <span className="text-slate-700 font-black">[{new Date(event.created_at).toLocaleTimeString('en-US', { hour12: false }).substring(0, 8)}]</span>

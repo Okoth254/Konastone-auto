@@ -58,7 +58,7 @@ export default function AboutPage() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 + (i * 0.1) }}
-                            className="bg-surface-dark/40 backdrop-blur-xl px-8 py-5 rounded-[2rem] border border-white/5 flex flex-col items-center gap-2 hover:border-primary/30 transition-all group"
+                            className="bg-surface-dark/40 backdrop-blur-xl px-8 py-5 rounded-4xl border border-white/5 flex flex-col items-center gap-2 hover:border-primary/30 transition-all group"
                         >
                             <span className="material-symbols-outlined text-primary text-3xl group-hover:scale-110 transition-transform">{feature.icon}</span>
                             <div className="text-center">
@@ -153,7 +153,7 @@ export default function AboutPage() {
                         transition={{ delay: i * 0.1 }}
                         className="bg-surface-dark/40 backdrop-blur-xl p-10 rounded-[2.5rem] border border-white/5 hover:border-primary/20 transition-all group flex flex-col items-center text-center gap-6"
                     >
-                        <div className="w-20 h-20 rounded-2xl bg-white/[0.02] flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-white/5 shadow-inner">
+                        <div className="w-20 h-20 rounded-2xl bg-white/2 flex items-center justify-center text-primary group-hover:scale-110 transition-transform border border-white/5 shadow-inner">
                             <span className="material-symbols-outlined text-4xl">{stack.icon}</span>
                         </div>
                         <div>

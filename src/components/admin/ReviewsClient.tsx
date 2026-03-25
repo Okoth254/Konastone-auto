@@ -128,7 +128,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
-                                    <tr className="bg-white/[0.02] border-b border-white/5 text-slate-500 text-[9px] font-black uppercase tracking-[0.4em]">
+                                    <tr className="bg-white/2 border-b border-white/5 text-slate-500 text-[9px] font-black uppercase tracking-[0.4em]">
                                         <th className="px-10 py-6">Registry_ID</th>
                                         <th className="px-10 py-6">Identity</th>
                                         <th className="px-10 py-6">Asset_Link</th>
@@ -144,7 +144,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
                                             transition={{ delay: index * 0.05 }}
-                                            className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-all group cursor-pointer"
+                                            className="border-b border-white/2 hover:bg-white/2 transition-all group cursor-pointer"
                                         >
                                             <td className="px-10 py-6 font-mono text-[10px] text-slate-600 uppercase tracking-tighter">
                                                 {review.id.substring(0, 8)}

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
-import { formatCurrency } from "@/utils/format";
 import * as motion from "framer-motion/client";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionBadge from "@/components/ui/MotionBadge";
@@ -84,13 +83,13 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                 <div className="flex items-center gap-4 bg-surface-dark/40 backdrop-blur-xl p-2 rounded-2xl border border-white/5">
                     <div className="relative group">
                         <button className="h-12 px-6 flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all min-w-[200px]">
-                            {currentSort === 'price_asc' ? 'VALUATION: LOW-HIGH' : currentSort === 'price_desc' ? 'VALUATION: HIGH-LOW' : 'CHRONO: NEWEST'}
+                            {currentSort === 'price_asc' ? 'VALUATION: LOW-HIGH' : currentSort === 'price_desc' ? 'VALUATION: HIGH-LOW' : 'SORT: NEWEST'}
                             <span className="material-symbols-outlined text-sm">filter_list</span>
                         </button>
                         <div className="absolute top-full right-0 mt-2 w-full bg-surface-dark border border-white/10 rounded-2xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 shadow-2xl">
-                            <Link href={getSortLink('newest')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/[0.02] hover:text-primary border-b border-white/5 transition-all">Newest First</Link>
-                            <Link href={getSortLink('price_desc')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/[0.02] hover:text-primary border-b border-white/5 transition-all">Highest Valuation</Link>
-                            <Link href={getSortLink('price_asc')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/[0.02] hover:text-primary transition-all">Lowest Valuation</Link>
+                            <Link href={getSortLink('newest')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/2 hover:text-primary border-b border-white/5 transition-all">Newest First</Link>
+                            <Link href={getSortLink('price_desc')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/2 hover:text-primary border-b border-white/5 transition-all">Highest Valuation</Link>
+                            <Link href={getSortLink('price_asc')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/2 hover:text-primary transition-all">Lowest Valuation</Link>
                         </div>
                     </div>
                     <div className="w-10 h-10 border-l border-white/5 flex items-center justify-center">
@@ -148,7 +147,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 overflow-hidden relative group"
+                        className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-4xl border border-white/5 overflow-hidden relative group"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent-teal/5 blur-3xl" />
                         <div className="flex items-center gap-3 mb-6 relative z-10">
@@ -173,7 +172,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                 <section className="flex-1">
                     <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8">
                         {vehicles?.map((vehicle, i) => {
-                             const imgs = (vehicle as any).vehicle_images as { public_url: string; is_main: boolean; sort_order: number }[] | undefined;
+                             const imgs = (vehicle as { vehicle_images?: { public_url: string; is_main: boolean; sort_order: number }[] }).vehicle_images;
                              const imgSrc = imgs?.find(img => img.is_main)?.public_url 
                                 || imgs?.sort((a,b) => a.sort_order - b.sort_order)[0]?.public_url
                                 || 'https://placehold.co/800x600/1a1a1a/444444?text=No+Image';
@@ -184,9 +183,9 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: i * 0.05 + 0.3 }}
-                                    className="bg-surface-dark/40 backdrop-blur-xl flex flex-col group border border-white/5 rounded-[2.5rem] overflow-hidden hover:border-primary/40 transition-all duration-700"
+                                    className="bg-surface-dark/40 backdrop-blur-xl flex flex-col group border border-white/5 rounded-4xl overflow-hidden hover:border-primary/40 transition-all duration-700"
                                 >
-                                    <div className="relative aspect-[16/10] overflow-hidden">
+                                    <div className="relative aspect-16/10 overflow-hidden">
                                         <Image 
                                             fill 
                                             alt={vehicle.model} 
@@ -238,7 +237,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                                 <span className="text-[11px] font-black text-slate-200 uppercase truncate">{vehicle.engine_type || 'N/A'}</span>
                                             </div>
                                             <div className="flex flex-col gap-1">
-                                                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">TELEM_DIST</span>
+                                                <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">MILEAGE</span>
                                                 <span className="text-[11px] font-black text-slate-200 uppercase">{Intl.NumberFormat('en-US').format(vehicle.mileage || 0)} KM</span>
                                             </div>
                                             <div className="flex flex-col gap-1">

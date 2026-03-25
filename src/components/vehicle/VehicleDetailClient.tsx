@@ -8,7 +8,7 @@ import FinanceCalculator from "./FinanceCalculator";
 import LeadForm from "./LeadForm";
 import ShareButton from "./ShareButton";
 import VehicleImage from "@/components/inventory/VehicleImage";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionBadge from "@/components/ui/MotionBadge";
 
@@ -51,10 +51,46 @@ export default function VehicleDetailClient({
 }: VehicleDetailClientProps) {
     const [isSpecsOpen, setIsSpecsOpen] = useState(true);
     const [scrolled, setScrolled] = useState(false);
+    const [activeSection, setActiveSection] = useState<string>("gallery");
+
+    const galleryRef = useRef<HTMLDivElement>(null);
+    const specsRef = useRef<HTMLDivElement>(null);
+    const financeRef = useRef<HTMLDivElement>(null);
+    const inquiryRef = useRef<HTMLDivElement>(null);
+
+    const scrollToSection = (section: string) => {
+        const refs: Record<string, React.RefObject<HTMLDivElement | null>> = {
+            gallery: galleryRef,
+            specs: specsRef,
+            finance: financeRef,
+            inquiry: inquiryRef,
+        };
+        refs[section]?.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    };
 
     useEffect(() => {
-        const handleScroll = () => setScrolled(window.scrollY > 400);
-        window.addEventListener("scroll", handleScroll);
+        const handleScroll = () => {
+            setScrolled(window.scrollY > 400);
+            
+            // Determine active section
+            const sections = [
+                { key: "gallery", ref: galleryRef },
+                { key: "specs", ref: specsRef },
+                { key: "finance", ref: financeRef },
+                { key: "inquiry", ref: inquiryRef },
+            ];
+            for (let i = sections.length - 1; i >= 0; i--) {
+                const { key, ref } = sections[i];
+                if (ref.current) {
+                    const rect = ref.current.getBoundingClientRect();
+                    if (rect.top <= 200) {
+                        setActiveSection(key);
+                        break;
+                    }
+                }
+            }
+        };
+        window.addEventListener("scroll", handleScroll, { passive: true });
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
@@ -115,8 +151,21 @@ export default function VehicleDetailClient({
                         className="fixed top-20 left-0 w-full z-50 pointer-events-none hidden lg:flex justify-center"
                     >
                         <div className="bg-background-dark/80 backdrop-blur-2xl border border-white/10 rounded-full p-1 shadow-2xl pointer-events-auto flex items-center gap-1">
-                            {['Gallery', 'Specs', 'Finance', 'Inquiry'].map((label) => (
-                                <button key={label} className="px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-primary hover:bg-white/5 transition-all">
+                            {[
+                                { label: 'Gallery', key: 'gallery' },
+                                { label: 'Specs', key: 'specs' },
+                                { label: 'Finance', key: 'finance' },
+                                { label: 'Inquiry', key: 'inquiry' },
+                            ].map(({ label, key }) => (
+                                <button 
+                                    key={key} 
+                                    onClick={() => scrollToSection(key)}
+                                    className={`px-6 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${
+                                        activeSection === key 
+                                            ? "text-primary bg-white/10" 
+                                            : "text-slate-400 hover:text-primary hover:bg-white/5"
+                                    }`}
+                                >
                                     {label}
                                 </button>
                             ))}
@@ -140,7 +189,7 @@ export default function VehicleDetailClient({
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
                 {/* Left Column: Gallery */}
-                <motion.div variants={itemVariants} className="lg:col-span-8">
+                <motion.div variants={itemVariants} className="lg:col-span-8" ref={galleryRef}>
                     <ImageGallery images={images} />
                 </motion.div>
 
@@ -152,9 +201,10 @@ export default function VehicleDetailClient({
                         {vehicle.is_featured && (
                             <MotionBadge 
                                 icon="stars" 
-                                text="Verified Premium Selection"
                                 className="bg-primary/10 text-primary border-primary/20"
-                            />
+                            >
+                                Verified Premium Selection
+                            </MotionBadge>
                         )}
                         <div className="space-y-1">
                             <h1 className="text-4xl md:text-6xl font-heading tracking-tighter text-slate-100 uppercase leading-[0.9]">
@@ -214,7 +264,7 @@ export default function VehicleDetailClient({
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                 {/* Main Content Area */}
-                <div className="lg:col-span-2 flex flex-col gap-10">
+                <div className="lg:col-span-2 flex flex-col gap-10" ref={specsRef}>
                     {/* Brand Promises */}
                     <motion.div variants={itemVariants} className="bg-surface-dark/40 backdrop-blur-md rounded-3xl p-10 grid grid-cols-1 md:grid-cols-3 gap-10 border border-border-subtle shadow-xl">
                         {siteConfig.promises.map((promise) => (
@@ -223,7 +273,7 @@ export default function VehicleDetailClient({
                                     <span className="material-symbols-outlined text-3xl">{promise.icon}</span>
                                 </div>
                                 <div className="space-y-2">
-                                    <h4 className="font-bold text-xs text-slate-100 tracking-[0.1em] uppercase">{promise.title}</h4>
+                                    <h4 className="font-bold text-xs text-slate-100 tracking-widest uppercase">{promise.title}</h4>
                                     <p className="text-[11px] text-slate-500 leading-relaxed font-medium px-4">{promise.description}</p>
                                 </div>
                             </div>
@@ -254,7 +304,7 @@ export default function VehicleDetailClient({
                         <motion.div 
                             initial={false}
                             animate={{ height: isSpecsOpen ? "auto" : 0, opacity: isSpecsOpen ? 1 : 0 }}
-                            className="overflow-hidden bg-background-dark/20 rounded-[2rem] border border-border-subtle"
+                            className="overflow-hidden bg-background-dark/20 rounded-4xl border border-border-subtle"
                         >
                             <div className="grid grid-cols-2 md:grid-cols-3 gap-px bg-border-subtle/30">
                                 {specData.map((spec) => (
@@ -307,8 +357,12 @@ export default function VehicleDetailClient({
                 {/* Right Sidebar: Sticky interactions */}
                 <div className="flex flex-col gap-10">
                     <motion.div variants={itemVariants} className="sticky top-28 space-y-10">
-                        <FinanceCalculator price={vehicle.price} />
-                        <LeadForm vehicleId={vehicle.id} />
+                        <div ref={financeRef}>
+                            <FinanceCalculator price={vehicle.price} />
+                        </div>
+                        <div ref={inquiryRef}>
+                            <LeadForm vehicleId={vehicle.id} />
+                        </div>
                     </motion.div>
                 </div>
             </div>
@@ -336,8 +390,8 @@ export default function VehicleDetailClient({
                                 transition={{ delay: idx * 0.1 }}
                                 className="flex-[0_0_85%] min-w-0 md:flex-[0_0_45%] lg:flex-none snap-center"
                             >
-                                <Link href={`/vehicle/${sim.id}`} className="ui-card block bg-surface-dark rounded-[2rem] overflow-hidden group border border-border-subtle hover:border-primary/40 transition-all shadow-2xl h-full">
-                                    <div className="aspect-[16/10] overflow-hidden relative">
+                                <Link href={`/vehicle/${sim.id}`} className="ui-card block bg-surface-dark rounded-4xl overflow-hidden group border border-border-subtle hover:border-primary/40 transition-all shadow-2xl h-full">
+                                    <div className="aspect-16/10 overflow-hidden relative">
                                         <VehicleImage
                                             alt={`${sim.make} ${sim.model}`}
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"

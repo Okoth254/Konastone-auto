@@ -13,12 +13,11 @@ export default function AdminSidebar() {
     // Close sidebar on route change for mobile
     // We use a safe check to avoid cascading renders warning
     useEffect(() => {
-        let mounted = true;
-        if (mounted && isOpen) {
-            setIsOpen(false);
+        if (isOpen) {
+            const timer = setTimeout(() => setIsOpen(false), 0);
+            return () => clearTimeout(timer);
         }
-        return () => { mounted = false; };
-    }, [pathname]);
+    }, [pathname, isOpen]);
 
     const navItems = [
         { name: "Dashboard", href: "/admin", icon: "dashboard", exact: true },
@@ -34,7 +33,7 @@ export default function AdminSidebar() {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={() => setIsOpen(!isOpen)}
-                className="xl:hidden fixed top-6 right-6 z-[100] w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-2xl shadow-primary/20 border border-white/20 active:scale-95 transition-transform"
+                className="xl:hidden fixed top-6 right-6 z-100 w-14 h-14 rounded-2xl bg-primary text-black flex items-center justify-center shadow-2xl shadow-primary/20 border border-white/20 active:scale-95 transition-transform"
             >
                 <span className="material-symbols-outlined font-black">
                     {isOpen ? 'close' : 'menu'}
@@ -61,8 +60,8 @@ export default function AdminSidebar() {
                 ${isOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}
             `}>
                 {/* Tactical Status Indicators */}
-                <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/20 to-transparent" />
-                <div className="absolute top-0 right-0 h-full w-[1px] bg-gradient-to-b from-white/10 via-transparent to-transparent" />
+                <div className="absolute top-0 left-0 w-full h-[2px] bg-linear-to-r from-transparent via-primary/20 to-transparent" />
+                <div className="absolute top-0 right-0 h-full w-px bg-linear-to-b from-white/10 via-transparent to-transparent" />
 
                 <div className="px-10 mb-16 relative">
                     <div className="flex items-center gap-4 mb-3">
@@ -72,7 +71,7 @@ export default function AdminSidebar() {
                         </div>
                         <div>
                             <h1 className="text-white font-heading font-black tracking-tighter text-2xl uppercase italic leading-none">
-                                KONA<span className="text-primary">CORE</span>
+                                KONASTONE<span className="text-primary">CORE</span>
                             </h1>
                             <p className="text-[7px] text-slate-500 font-black tracking-[0.5em] uppercase mt-1">Registry_Alpha_v3</p>
                         </div>
@@ -127,7 +126,7 @@ export default function AdminSidebar() {
                             <motion.div 
                                 whileHover={{ y: -2, scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}
-                                className="w-full h-14 rounded-2xl bg-gradient-to-br from-primary to-amber-500 text-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 cursor-pointer"
+                                className="w-full h-14 rounded-2xl bg-linear-to-br from-primary to-amber-500 text-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 cursor-pointer"
                             >
                                 <span className="material-symbols-outlined font-black">add</span>
                                 <span className="text-[10px] font-black uppercase tracking-[0.2em]">New_Asset</span>
@@ -137,7 +136,7 @@ export default function AdminSidebar() {
                 </div>
 
                 <div className="mt-auto px-6 space-y-3">
-                    <div className="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent mb-6" />
+                    <div className="h-px w-full bg-linear-to-r from-transparent via-white/5 to-transparent mb-6" />
                     
                     <Link
                         href="/admin/settings"

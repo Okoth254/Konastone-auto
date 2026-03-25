@@ -89,7 +89,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                     </div>
 
                     {/* Telemetry Annex */}
-                    <div className="absolute bottom-16 right-16 bg-surface-dark/40 backdrop-blur-3xl p-8 rounded-[2rem] border border-white/10 hidden lg:block">
+                    <div className="absolute bottom-16 right-16 bg-surface-dark/40 backdrop-blur-3xl p-8 rounded-4xl border border-white/10 hidden lg:block">
                         <div className="flex flex-col gap-6 w-48">
                             <div className="space-y-1">
                                 <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">VALUATION</p>
@@ -109,7 +109,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                         { label: 'ENGINE & TELEMETRY', icon: 'settings_prolong', value: vehicle.engine_type, sub: vehicle.power || 'ACTIVE', color: 'primary' },
                         { label: 'TRANSMISSION_ID', icon: 'grid_guides', value: vehicle.transmission, sub: `MIL: ${vehicle.mileage || 0} KM`, color: 'secondary' },
                         { label: 'AESTHETIC_PROFILE', icon: 'palette', value: vehicle.exterior_color, sub: `INT: ${vehicle.interior_color || 'SLATE'}`, color: 'neutral' },
-                        { label: 'PROTOCOL_TAGS', icon: 'token', value: vehicle.tags?.[0] || 'STND', sub: `${vehicle.tags?.length || 0} MODULES`, color: 'primary' }
+                        { label: 'PROTOCOL_TAGS', icon: 'token', value: vehicle.tags?.[0] || 'STD_CONFIG', sub: `${vehicle.tags?.length || 0} MODULES`, color: 'primary' }
                     ].map((card, i) => (
                         <motion.div 
                             key={card.label}
@@ -119,10 +119,10 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                             className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 group hover:border-white/20 transition-all duration-500"
                         >
                             <div className="flex justify-between items-start mb-8">
-                                <div className="w-12 h-12 rounded-2xl bg-white/[0.02] flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform">
+                                <div className="w-12 h-12 rounded-2xl bg-white/2 flex items-center justify-center border border-white/5 group-hover:scale-110 transition-transform">
                                     <span className="material-symbols-outlined text-2xl text-slate-400 group-hover:text-primary transition-colors">{card.icon}</span>
                                 </div>
-                                <div className="h-[1px] w-12 bg-white/10 mt-6" />
+                                <div className="h-px w-12 bg-white/10 mt-6" />
                             </div>
                             <div className="space-y-1">
                                 <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">{card.label}</p>
@@ -140,7 +140,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                     viewport={{ once: true }}
                     className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 overflow-hidden"
                 >
-                    <div className="px-10 py-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                    <div className="px-10 py-8 border-b border-white/5 flex justify-between items-center bg-white/2">
                         <h2 className="font-heading font-black text-2xl tracking-tighter uppercase text-white">Technical identification Matrix</h2>
                         <div className="flex items-center gap-3">
                             <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">DB_ID: CORE_{vehicle.id.substring(0,6)}</span>
@@ -158,8 +158,8 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                                     { label: 'FUEL_PROFILE', value: vehicle.fuel_type || 'PETROL' },
                                     { label: 'REG_COUNTRY', value: 'KENYA (OPERATIONAL)' },
                                     { label: 'CHASSIS_CODE', value: vehicle.chassis_no || 'TBD' }
-                                ].map((row, i) => (
-                                    <tr key={row.label} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors group">
+                                ].map((row) => (
+                                    <tr key={row.label} className="border-b border-white/5 hover:bg-white/2 transition-colors group">
                                         <td className="px-10 py-6 text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] w-1/3">{row.label}</td>
                                         <td className="px-10 py-6 text-white font-mono font-black tracking-widest group-hover:text-primary transition-colors">{row.value}</td>
                                         <td className="px-10 py-6 text-right">

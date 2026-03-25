@@ -76,13 +76,18 @@ const MotionWrapper = forwardRef<HTMLButtonElement | HTMLAnchorElement, MotionBu
         };
 
         if (href) {
+            const { name, value, type, ...anchorRest } = rest as any;
+            const anchorMotionProps = {
+                ...motionProps,
+                ...anchorRest
+            };
             return (
                 <Link href={href} passHref legacyBehavior>
                     <motion.a 
                         ref={ref as any}
                         target={target}
                         rel={rel}
-                        {...motionProps}
+                        {...anchorMotionProps}
                     >
                         {content}
                     </motion.a>

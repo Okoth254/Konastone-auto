@@ -126,10 +126,10 @@ export default async function AdminDashboard() {
             className="col-span-12 lg:col-span-8 flex flex-col gap-6"
         >
           <div className="flex justify-between items-center px-2">
-            <h4 className="font-heading font-black tracking-[0.1em] text-sm uppercase flex items-center gap-3 text-white">
-              <span className="w-8 h-[2px] bg-primary"></span>
-              Live Telemetry Stream
-            </h4>
+            <h4 className="font-heading font-black tracking-widest text-sm uppercase flex items-center gap-3 text-white">
+                               <span className="w-8 h-[2px] bg-primary"></span>
+                               Live Telemetry Stream
+                            </h4>
             <Link href="/admin/vehicles" className="text-[10px] font-black tracking-[0.3em] text-slate-500 hover:text-primary transition-all group flex items-center gap-2">
               VIEW ARCHIVES
               <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
@@ -139,7 +139,7 @@ export default async function AdminDashboard() {
           <div className="bg-surface-dark/40 backdrop-blur-xl rounded-[2.5rem] border border-white/5 overflow-hidden">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02]">
+                <tr className="border-b border-white/5 bg-white/2">
                   <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Registry_ID</th>
                   <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Specification</th>
                   <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Core_State</th>
@@ -153,7 +153,7 @@ export default async function AdminDashboard() {
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 + (i * 0.05) }}
-                    className="border-b border-white/5 hover:bg-white/[0.02] transition-all group cursor-pointer"
+                    className="border-b border-white/5 hover:bg-white/2 transition-all group cursor-pointer"
                   >
                     <td className="px-8 py-5 font-mono text-primary text-xs uppercase tracking-tight">{vehicle.vin?.substring(0, 12).toUpperCase() || vehicle.id.substring(0, 8).toUpperCase()}</td>
                     <td className="px-8 py-5 font-heading text-white font-bold tracking-tight">{vehicle.model.toUpperCase()}</td>
@@ -185,7 +185,7 @@ export default async function AdminDashboard() {
             className="col-span-12 lg:col-span-4 space-y-6"
         >
           <div className="flex items-center gap-3 px-2">
-            <h4 className="font-heading font-black tracking-[0.1em] text-sm uppercase text-white">SYSLOG_FEED</h4>
+            <h4 className="font-heading font-black tracking-widest text-sm uppercase text-white">SYSLOG_FEED</h4>
             <span className="text-[8px] bg-red-500/10 text-red-500 border border-red-500/20 px-2 py-0.5 rounded-full font-black animate-pulse">INTERNAL_COMMS</span>
           </div>
           <SystemEventStream events={timelineEvents || []} />
@@ -234,7 +234,7 @@ export default async function AdminDashboard() {
           <div className="flex-1 space-y-8 flex flex-col justify-center">
             {[
               { label: "New Inquiries", value: leadStats['new'] || 0, color: "bg-primary" },
-              { label: "Active Nego", value: leadStats['negotiating'] || 0, color: "bg-accent-teal" },
+              { label: "Active Negotiating", value: leadStats['negotiating'] || 0, color: "bg-accent-teal" },
               { label: "Conversions & Arch", value: (leadStats['sold'] || 0) + (leadStats['lost'] || 0), color: "bg-slate-700" }
             ].map((stat, i) => {
               const total = allLeads?.length || 1;

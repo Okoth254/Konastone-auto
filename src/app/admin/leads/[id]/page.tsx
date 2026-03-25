@@ -7,12 +7,13 @@ import * as motion from "framer-motion/client";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionBadge from "@/components/ui/MotionBadge";
 import { formatCurrency } from "@/utils/format";
+import { Lead, LeadTimelineEvent, Vehicle } from "@/types/database";
 
 export default async function LeadDetailView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const supabase = await createClient();
 
-    const { data: lead, error } = await supabase
+    const { data: leadData, error } = await supabase
         .from('leads')
         .select(`
             *,
@@ -22,11 +23,13 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
         .eq('id', id)
         .single();
 
+    const lead = leadData as (Lead & { vehicles: Vehicle, lead_timeline_events: LeadTimelineEvent[] }) | null;
+
     if (error || !lead) {
         notFound();
     }
 
-    const timeline = lead.lead_timeline_events?.sort((a: { created_at: string }, b: { created_at: string }) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
+    const timeline = (lead.lead_timeline_events as LeadTimelineEvent[])?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
     
     const deleteLeadAction = async () => {
         "use server";
@@ -45,13 +48,13 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         <span className="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">west</span>
                     </Link>
                     <div className="space-y-1">
-                        <h2 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">
-                            LEAD: <span className="text-primary">{lead.name.split(' ')[0]}</span> {lead.name.split(' ').slice(1).join(' ')}
-                        </h2>
+                            <h2 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">
+                                LEAD: <span className="text-primary">{lead.name?.split(' ')[0] || ''}</span> {lead.name?.split(' ').slice(1).join(' ') || ''}
+                            </h2>
                         <div className="flex items-center gap-3">
                             <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">UID: {lead.id.substring(0, 12).toUpperCase()}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-800" />
-                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">CHNL: {lead.source?.toUpperCase() || 'DIRECT_WEB'}</span>
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">SOURCE: {lead.source?.toUpperCase() || 'DIRECT_WEB'}</span>
                         </div>
                     </div>
                 </div>
@@ -133,11 +136,11 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                     </div>
                                     
                                     <div className="flex gap-4">
-                                        <div className="bg-white/[0.02] border border-white/5 px-4 py-2 rounded-xl">
+                                        <div className="bg-white/2 border border-white/5 px-4 py-2 rounded-xl">
                                             <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Valuation</p>
                                             <p className="text-sm font-heading font-black text-white tracking-widest whitespace-nowrap">KSH {formatCurrency(lead.vehicles.price || 0).split('KSh')[1]}</p>
                                         </div>
-                                        <div className="bg-white/[0.02] border border-white/5 px-4 py-2 rounded-xl">
+                                        <div className="bg-white/2 border border-white/5 px-4 py-2 rounded-xl">
                                             <p className="text-[8px] font-black text-slate-500 uppercase mb-1">State</p>
                                             <p className="text-sm font-heading font-black text-accent-teal uppercase tracking-widest">{lead.vehicles.status.toUpperCase()}</p>
                                         </div>
@@ -170,7 +173,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 <span className="material-symbols-outlined text-accent-teal">no_crash</span>
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Trade_In_Profile</p>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <div className="p-6 rounded-2xl bg-white/2 border border-white/5">
                                 <p className="text-sm font-black font-heading text-white uppercase italic">
                                     {lead.trade_in_year ? `${lead.trade_in_year} ` : ''}{lead.trade_in_make ? `${lead.trade_in_make} ` : ''}{lead.trade_in_model || 'NONE_SPECIFIED'}
                                 </p>
@@ -190,12 +193,12 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 <span className="material-symbols-outlined text-primary">account_balance</span>
                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Procurement_Plan</p>
                             </div>
-                            <div className="p-6 rounded-2xl bg-white/[0.02] border border-white/5">
+                            <div className="p-6 rounded-2xl bg-white/2 border border-white/5">
                                 <p className="text-sm font-black font-heading text-white uppercase italic">
                                     {lead.finance_status ? lead.finance_status.toUpperCase() : 'CASH_PROTOCOL'}
                                 </p>
                                 <p className="text-[10px] font-black font-mono text-slate-500 mt-2 uppercase tracking-widest">
-                                    {lead.expected_purchase_date || 'IMMEDIATE_EXECUTION'}
+                                    {(lead as unknown as Record<string, unknown>).expected_purchase_date as string || 'IMMEDIATE_EXECUTION'}
                                 </p>
                             </div>
                         </motion.div>
@@ -210,7 +213,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         transition={{ delay: 0.5 }}
                         className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] h-[800px] flex flex-col overflow-hidden sticky top-32"
                     >
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/[0.02]">
+                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/2">
                             <h2 className="font-heading font-black text-xl tracking-tighter uppercase text-white">interaction_Log</h2>
                             <div className="flex gap-1">
                                 {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />)}
@@ -218,9 +221,9 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-10 space-y-10 relative scrollbar-hide">
-                            <div className="absolute left-[51px] top-10 bottom-10 w-[1px] bg-slate-800/50" />
+                            <div className="absolute left-[51px] top-10 bottom-10 w-px bg-slate-800/50" />
                             
-                            {timeline.length > 0 ? timeline.map((event: any, i: number) => (
+                            {timeline.length > 0 ? timeline.map((event: LeadTimelineEvent, i: number) => (
                                 <motion.div 
                                     key={event.id}
                                     initial={{ opacity: 0, x: -10 }}
@@ -232,7 +235,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                     <div className="space-y-2">
                                         <p className="text-[9px] font-black font-mono text-slate-600 uppercase tracking-widest">{new Date(event.created_at).toLocaleString()}</p>
                                         <p className="text-[11px] font-black text-slate-200 uppercase tracking-widest group-hover/evt:text-primary transition-colors">{event.event_type.replace(/_/g, ' ')}</p>
-                                        <div className="p-4 rounded-xl bg-white/[0.02] border border-white/5 border-l-2 border-l-slate-800 group-hover/evt:border-l-primary transition-all">
+                                        <div className="p-4 rounded-xl bg-white/2 border border-white/5 border-l-2 border-l-slate-800 group-hover/evt:border-l-primary transition-all">
                                             <p className="text-[11px] text-slate-400 italic font-medium leading-relaxed">&quot;{event.description}&quot;</p>
                                         </div>
                                     </div>
@@ -251,7 +254,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 <textarea 
                                     name="note" 
                                     required 
-                                    className="w-full bg-white/[0.02] border border-white/10 rounded-[1.5rem] p-6 text-[11px] font-mono text-white placeholder:text-slate-600 outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
+                                    className="w-full bg-white/2 border border-white/10 rounded-3xl p-6 text-[11px] font-mono text-white placeholder:text-slate-600 outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
                                     placeholder="APPEND_INTEL_NOTE..."
                                 />
                                 <button type="submit" className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-primary text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl shadow-primary/20">
@@ -268,7 +271,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                 <motion.footer 
                     initial={{ y: 100 }}
                     animate={{ y: 0 }}
-                    className="fixed bottom-0 left-0 lg:left-80 right-0 bg-surface-dark/80 backdrop-blur-3xl border-t border-white/5 px-10 py-6 z-[60] flex items-center justify-between"
+                    className="fixed bottom-0 left-0 lg:left-80 right-0 bg-surface-dark/80 backdrop-blur-3xl border-t border-white/5 px-10 py-6 z-60 flex items-center justify-between"
                 >
                     <div className="flex items-center gap-12">
                         <div className="space-y-2">
@@ -279,7 +282,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 ))}
                             </div>
                         </div>
-                        <div className="h-10 w-[1px] bg-white/5" />
+                        <div className="h-10 w-px bg-white/5" />
                         <div className="relative">
                             <select 
                                 name="status" 

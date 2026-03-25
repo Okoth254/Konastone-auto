@@ -24,7 +24,7 @@ export default function FinanceCalculator({ price }: { price: number }) {
     };
 
     return (
-        <div className="bg-surface-dark rounded-[2rem] p-8 border border-border-subtle shadow-2xl relative overflow-hidden group">
+        <div className="bg-surface-dark rounded-4xl p-8 border border-border-subtle shadow-2xl relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-32 h-32 bg-accent-teal/5 blur-3xl rounded-full" />
             
             <h3 className="text-2xl font-heading tracking-tight mb-8 flex items-center gap-3 text-slate-100">

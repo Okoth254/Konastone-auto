@@ -1,12 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import { saveVehicle, deleteVehicle } from "../../actions";
 import { useState, useRef } from "react";
+import { saveVehicle, deleteVehicle } from "@/app/admin/vehicles/actions";
 import Image from "next/image";
 import { Reorder, motion, AnimatePresence } from "framer-motion";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionBadge from "@/components/ui/MotionBadge";
+import { Vehicle } from "@/types/database";
 
 interface ExistingImage {
     id: string;
@@ -28,10 +29,10 @@ const containerVars = {
 
 const itemVars = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as any } }
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] } }
 };
 
-export default function VehicleForm({ vehicle, vehicleId, existingImages }: { vehicle: any, vehicleId: string, existingImages: ExistingImage[] }) {
+export default function VehicleForm({ vehicle, vehicleId, existingImages }: { vehicle: Partial<Vehicle> | null, vehicleId: string, existingImages: ExistingImage[] }) {
     const isNew = vehicleId === 'new';
     const [status, setStatus] = useState(vehicle?.status || 'available');
     
@@ -78,7 +79,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
             <input type="hidden" name="existing_image_order" value={keepImages.map((img) => img.id).join(',')} />
             
             {/* Cinematic Header */}
-            <header className="sticky top-0 z-[100] bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-6 px-10">
+            <header className="sticky top-0 z-100 bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-6 px-10">
                 <div className="max-w-[1600px] mx-auto flex items-center justify-between">
                     <div className="flex items-center gap-8">
                         <Link href="/admin/vehicles">
@@ -133,7 +134,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         <motion.section variants={itemVars} className="space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">01</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Asset_Identity</h2>
                             </div>
                             
@@ -154,7 +155,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             <select 
                                                 name={field.name} 
                                                 defaultValue={field.defaultValue}
-                                                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
+                                                className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                                             >
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
                                             </select>
@@ -164,7 +165,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                                 name={field.name}
                                                 defaultValue={field.defaultValue}
                                                 required
-                                                className="w-full bg-white/[0.03] border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all"
+                                                className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all"
                                             />
                                         )}
                                         <div className="absolute inset-x-0 bottom-0 h-[2px] bg-primary scale-x-0 group-focus-within:scale-x-100 transition-transform duration-500" />
@@ -177,7 +178,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         <motion.section variants={itemVars} className="space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">02</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Propulsion_Metrics</h2>
                             </div>
 
@@ -188,7 +189,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                     { label: 'Transmission', name: 'transmission', type: 'select', options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
                                     { label: 'Drive_Protocol', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD'], defaultValue: vehicle?.drivetrain }
                                 ].map((field) => (
-                                    <div key={field.name} className="bg-white/[0.02] border border-white/5 rounded-3xl p-6 hover:bg-white/[0.04] transition-all">
+                                    <div key={field.name} className="bg-white/2 border border-white/5 rounded-3xl p-6 hover:bg-white/4 transition-all">
                                         <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}</label>
                                         {field.type === 'select' ? (
                                             <select name={field.name} defaultValue={field.defaultValue} className="w-full bg-transparent text-xl font-heading font-black text-white outline-none cursor-pointer">
@@ -206,11 +207,11 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         <motion.section variants={itemVars} className="space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">03</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-white/10 to-transparent" />
+                                <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Visual_Assets</h2>
                             </div>
 
-                            <div className="bg-white/[0.02] border border-white/5 rounded-[3rem] p-10">
+                            <div className="bg-white/2 border border-white/5 rounded-[3rem] p-10">
                                 <div className="flex justify-between items-center mb-10">
                                     <div>
                                         <p className="text-[10px] font-black text-white uppercase tracking-widest mb-2 italic">Gallery_Management</p>
@@ -254,10 +255,20 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
                                             className={`relative aspect-video rounded-3xl overflow-hidden border-2 border-dashed transition-all group cursor-pointer ${!mainImageUrl && mainImageIndex === idx ? 'border-primary' : 'border-white/10 hover:border-white/20'}`}
                                         >
-                                            <img src={preview.url} alt="Preview" className="w-full h-full object-cover" />
+                                            <Image unoptimized fill src={preview.url} alt="Preview" className="object-cover" />
                                             <div className="absolute top-4 left-4">
                                                 <MotionBadge color="neutral" className="text-[8px] font-black bg-white/10 text-white">NEW_UPLOAD</MotionBadge>
                                             </div>
+                                            <button
+                                                type="button"
+                                                onClick={(e) => { e.stopPropagation(); removeNewImage(idx); }}
+                                                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                                            >
+                                                <span className="material-symbols-outlined text-sm">close</span>
+                                            </button>
+                                            {!mainImageUrl && mainImageIndex === idx && (
+                                                <div className="absolute inset-0 border-2 border-primary rounded-3xl pointer-events-none" />
+                                            )}
                                             {!mainImageUrl && mainImageIndex === idx && (
                                                 <div className="absolute bottom-4 right-4">
                                                     <MotionBadge color="primary" className="text-[8px] font-black">COVER_STRATEGY</MotionBadge>
@@ -299,7 +310,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                             </div>
 
                             {/* State Panel */}
-                            <div className="bg-white/[0.03] border border-white/5 rounded-[3.5rem] p-12 space-y-10">
+                            <div className="bg-white/3 border border-white/5 rounded-[3.5rem] p-12 space-y-10">
                                 <div>
                                     <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">Operational_State</label>
                                     <div className="flex items-center justify-between">

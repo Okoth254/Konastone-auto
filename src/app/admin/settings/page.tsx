@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { createClient } from "@/utils/supabase/server";
+import CollapsibleSection from "@/components/ui/CollapsibleSection";
 
 export default async function AdminSettingsPage() {
     const supabase = await createClient();
@@ -21,14 +22,7 @@ export default async function AdminSettingsPage() {
             </div>
 
             {/* Business Information */}
-            <section className="bg-surface-container p-8 border-l-4 border-primary-container space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="font-headline font-black text-xs tracking-widest uppercase flex items-center gap-2">
-                        <span className="material-symbols-outlined text-primary-container text-sm">store</span>
-                        Business Information
-                    </h2>
-                    <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">READ-ONLY · Edit in /src/config/site.ts</span>
-                </div>
+            <CollapsibleSection title="Business Information" icon="store" defaultOpen>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[
                         { label: "Business Name", value: "Konastone Autos", icon: "business" },
@@ -54,17 +48,10 @@ export default async function AdminSettingsPage() {
                         {" "}and redeploy.
                     </p>
                 </div>
-            </section>
+            </CollapsibleSection>
 
             {/* Finance Configuration */}
-            <section className="bg-surface-container p-8 border-l-4 border-amber-500/40 space-y-6">
-                <div className="flex items-center justify-between">
-                    <h2 className="font-headline font-black text-xs tracking-widest uppercase flex items-center gap-2">
-                        <span className="material-symbols-outlined text-amber-400 text-sm">account_balance</span>
-                        Finance Calculator Config
-                    </h2>
-                    <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">READ-ONLY · Edit in /src/config/site.ts</span>
-                </div>
+            <CollapsibleSection title="Finance Calculator Config" icon="account_balance" iconColor="text-amber-400">
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="glass-dark px-5 py-4 border border-zinc-800">
                         <p className="text-[10px] text-zinc-500 font-bold uppercase tracking-widest">Interest Rate</p>
@@ -82,14 +69,10 @@ export default async function AdminSettingsPage() {
                         <p className="text-[10px] text-zinc-600 mt-1">Months</p>
                     </div>
                 </div>
-            </section>
+            </CollapsibleSection>
 
             {/* Database Telemetry */}
-            <section className="bg-surface-container p-8 border-l-4 border-cyan-500/40 space-y-6">
-                <h2 className="font-headline font-black text-xs tracking-widest uppercase flex items-center gap-2">
-                    <span className="material-symbols-outlined text-cyan-400 text-sm">database</span>
-                    Database Telemetry
-                </h2>
+            <CollapsibleSection title="Database Telemetry" icon="database" iconColor="text-cyan-400" borderColor="border-cyan-500/40">
                 <div className="grid grid-cols-3 gap-4">
                     {[
                         { label: "Vehicles", value: vehicleCount ?? 0, icon: "directions_car", href: "/admin/vehicles" },
@@ -103,14 +86,10 @@ export default async function AdminSettingsPage() {
                         </Link>
                     ))}
                 </div>
-            </section>
+            </CollapsibleSection>
 
             {/* Quick Links */}
-            <section className="bg-surface-container p-8 border-l-4 border-zinc-700 space-y-6">
-                <h2 className="font-headline font-black text-xs tracking-widest uppercase flex items-center gap-2">
-                    <span className="material-symbols-outlined text-zinc-400 text-sm">open_in_new</span>
-                    External Administration
-                </h2>
+            <CollapsibleSection title="External Administration" icon="open_in_new" iconColor="text-zinc-400" borderColor="border-zinc-700">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {[
                         { label: "Supabase Dashboard", desc: "Manage database, auth, and storage", href: "https://supabase.com/dashboard", icon: "storage" },
@@ -129,7 +108,7 @@ export default async function AdminSettingsPage() {
                         </a>
                     ))}
                 </div>
-            </section>
+            </CollapsibleSection>
 
             {/* Schema Migration Notice */}
             <section className="bg-zinc-950 border border-amber-500/30 p-6 flex items-start gap-4">

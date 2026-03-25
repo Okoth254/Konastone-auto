@@ -29,7 +29,7 @@ export default function ShareButton({ title }: { title: string }) {
             <MotionButton 
                 onClick={handleShare}
                 variant="outline"
-                className="w-full h-14 border-white/10 text-slate-400 hover:text-white hover:bg-white/5 h-14 text-[10px] font-black uppercase tracking-widest group"
+                className="w-full h-14 border-white/10 text-slate-400 hover:text-white hover:bg-white/5 text-[10px] font-black uppercase tracking-widest group"
             >
                 <div className="flex items-center justify-center gap-3">
                     <span className="material-symbols-outlined text-[20px] text-accent-teal group-hover:scale-110 transition-transform">

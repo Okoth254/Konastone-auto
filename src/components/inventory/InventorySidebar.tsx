@@ -7,6 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import MotionBadge from "@/components/ui/MotionBadge";
 import MotionSheet from "@/components/ui/MotionSheet";
 import MotionButton from "@/components/ui/MotionButton";
+import Tooltip from "@/components/ui/Tooltip";
 
 
 export default function InventorySidebar() {
@@ -228,15 +229,17 @@ export default function InventorySidebar() {
                             <span className="text-primary/50">→</span>
                             <span>{maxYear}</span>
                         </div>
-                        <input
-                            className="w-full accent-primary h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
-                            type="range"
-                            min="2010"
-                            max="2025"
-                            step="1"
-                            value={minYear}
-                            onChange={(e) => setMinYear(e.target.value)}
-                        />
+                        <Tooltip content={`Min Year: ${minYear}`} side="top">
+                            <input
+                                className="w-full accent-primary h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
+                                type="range"
+                                min="2010"
+                                max="2025"
+                                step="1"
+                                value={minYear}
+                                onChange={(e) => setMinYear(e.target.value)}
+                            />
+                        </Tooltip>
                     </div>
 
                     <div className="h-px bg-border-color/50 my-2"></div>
@@ -249,15 +252,17 @@ export default function InventorySidebar() {
                             <span className="text-primary/50">→</span>
                             <span>{formatPrice(maxPrice)}</span>
                         </div>
-                        <input
-                            className="w-full accent-primary h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
-                            type="range"
-                            min="1000000"
-                            max="15000000"
-                            step="500000"
-                            value={maxPrice}
-                            onChange={(e) => setMaxPrice(e.target.value)}
-                        />
+                        <Tooltip content={`Max: KES ${formatPrice(maxPrice)}`} side="top">
+                            <input
+                                className="w-full accent-primary h-1.5 bg-zinc-800 rounded-lg appearance-none cursor-pointer"
+                                type="range"
+                                min="1000000"
+                                max="15000000"
+                                step="500000"
+                                value={maxPrice}
+                                onChange={(e) => setMaxPrice(e.target.value)}
+                            />
+                        </Tooltip>
                     </div>
 
                     <MotionButton

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useScroll, useTransform, Variants, AnimatePresence } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion";
 import { useRef, useMemo } from "react";
 import Link from "next/link";
 import { format, isToday, isYesterday, isThisWeek, parseISO } from "date-fns";
@@ -52,7 +52,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
             else groups['Older'].push(lead);
         });
 
-        return Object.entries(groups).filter(([_, items]) => items.length > 0);
+        return Object.entries(groups).filter(([, items]) => items.length > 0);
     }, [leads]);
 
     const itemVariants: Variants = {
@@ -175,7 +175,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                                     <div className="flex flex-col items-end">
                                                         <motion.div 
                                                             whileHover={{ x: 10 }}
-                                                            className="w-16 h-16 rounded-full bg-white/[0.02] border border-white/5 flex items-center justify-center text-primary shadow-inner group-hover/card:border-primary/50 transition-colors"
+                                                            className="w-16 h-16 rounded-full bg-white/2 border border-white/5 flex items-center justify-center text-primary shadow-inner group-hover/card:border-primary/50 transition-colors"
                                                         >
                                                             <span className="material-symbols-outlined text-3xl font-black">arrow_forward_ios</span>
                                                         </motion.div>

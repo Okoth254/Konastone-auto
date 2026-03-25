@@ -588,7 +588,7 @@ Avoid excessive motion:
 
 - **Refine options:**
   - Normalize card internal padding scale across breakpoints.
-  - Increase body text line-height to improve scanability on mobile.
+  - Increase body text line-height to improve scannability on mobile.
 
 ### Sub-screen: review modal (`ReviewForm`)
 

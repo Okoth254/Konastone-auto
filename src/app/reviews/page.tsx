@@ -40,7 +40,7 @@ async function ReviewContent() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ delay: idx * 0.05 }}
-                        className="break-inside-avoid bg-surface-dark/40 backdrop-blur-md rounded-[2rem] p-8 border border-white/5 hover:border-primary/30 transition-all group overflow-hidden relative"
+                        className="break-inside-avoid bg-surface-dark border border-white/5 rounded-4xl p-12 relative overflow-hidden group hover:border-primary/20 transition-all"
                     >
                         <div className="absolute top-0 right-0 w-24 h-24 bg-primary/5 blur-2xl rounded-full" />
                         
@@ -56,7 +56,7 @@ async function ReviewContent() {
                         </div>
                         
                         <p className="text-slate-300 font-medium mb-8 text-sm leading-relaxed italic relative">
-                            "{review.comment}"
+                            &quot;{review.comment}&quot;
                         </p>
                         
                         <div className="flex items-center gap-4 border-t border-white/5 pt-6 mt-auto">

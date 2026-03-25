@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ScrollRevealScript from "@/components/layout/ScrollRevealScript";
+import { LazyMotion, domAnimation } from "framer-motion";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -86,12 +87,14 @@ export default function RootLayout({
         ${playfair.variable} ${lato.variable}
         bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-body antialiased
       `}>
-        <Header />
-        <main className="grow flex flex-col pt-[72px]">
-          {children}
-        </main>
-        <Footer />
-        <ScrollRevealScript />
+        <LazyMotion features={domAnimation}>
+          <Header />
+          <main className="grow flex flex-col pt-[72px]">
+            {children}
+          </main>
+          <Footer />
+          <ScrollRevealScript />
+        </LazyMotion>
       </body>
     </html>
   );

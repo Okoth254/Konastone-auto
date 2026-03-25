@@ -5,19 +5,26 @@ export interface Vehicle {
     year: number;
     price: number;
     mileage: number;
-    fuel_type: 'Petrol' | 'Diesel' | 'Hybrid' | 'Electric';
+    fuel_type?: 'Petrol' | 'Diesel' | 'Hybrid' | 'Electric';
     transmission: 'Automatic' | 'Manual';
-    drive_type: '2WD' | '4WD' | 'AWD' | null;
-    color: string | null;
-    body_type: 'SUV' | 'Sedan' | 'Hatchback' | 'Wagon' | 'Truck' | null;
+    drive_type?: '2WD' | '4WD' | 'AWD' | null;
+    color?: string | null;
+    body_type?: 'SUV' | 'Sedan' | 'Hatchback' | 'Wagon' | 'Truck' | null;
     status: 'available' | 'reserved' | 'sold' | 'in_transit';
     description: string | null;
     folder_name: string;
     is_featured: boolean;
+    main_image_url?: string | null;
     
+    // CRM/Form Alignment
+    vin: string;
+    body_style: string;
+    exterior_color: string;
+    engine_type: string;
+    power: string;
+    drivetrain: string;
+
     // Extended Technical Specs
-    vin?: string | null;
-    chassis_number?: string | null;
     engine_code?: string | null;
     fuel_system?: string | null;
     power_kw?: number | null;
@@ -25,6 +32,7 @@ export interface Vehicle {
     length_mm?: number | null;
     width_mm?: number | null;
     weight_kg?: number | null;
+    chassis_number?: string | null;
 
     created_at: string;
     updated_at: string;
@@ -45,6 +53,10 @@ export interface Lead {
     client_message: string | null;
     
     // Extended CRM Fields
+    name?: string;
+    email?: string;
+    phone?: string;
+    source?: string;
     location?: string | null;
     trade_in_make?: string | null;
     trade_in_model?: string | null;
