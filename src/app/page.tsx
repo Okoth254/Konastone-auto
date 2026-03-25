@@ -7,6 +7,9 @@ import HeroSearchForm from "@/components/home/HeroSearchForm";
 import { siteConfig } from "@/config/site";
 import VehicleImage from "@/components/inventory/VehicleImage";
 import AnimatedCounter from "@/components/home/AnimatedCounter";
+import { AnimatedHeroText } from "@/components/home/AnimatedHeroText";
+import { BrandCarousel } from "@/components/home/BrandCarousel";
+import { StaggeredGrid } from "@/components/home/StaggeredGrid";
 
 export const metadata: Metadata = {
   title: 'Premium Car Dealership in Mombasa, Kenya',
@@ -87,11 +90,7 @@ export default async function Home() {
                         sizes="(max-width: 1024px) 100vw, 60vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-t lg:bg-linear-to-r from-black/80 to-transparent flex items-end lg:items-center p-8 lg:p-16">
-                        <h1 className="font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg">
-                            DRIVE YOUR<br />
-                            <span className="text-primary">DREAM.</span><br />
-                            OWN IT TODAY.
-                        </h1>
+                        <AnimatedHeroText />
                     </div>
                 </div>
                 <div className="lg:w-[40%] bg-gray-100 dark:bg-surface-dark p-8 lg:p-12 flex flex-col justify-center border-l border-gray-200 dark:border-gray-800 transition-colors duration-300">
@@ -108,27 +107,16 @@ export default async function Home() {
                         <h2 className="font-display text-5xl text-primary tracking-widest mb-2">BROWSE BY BRAND</h2>
                         <p className="text-gray-400 font-body text-lg">Select from our curated collection of premium automotive brands</p>
                     </div>
-                    <div className="flex overflow-x-auto pb-8 -mx-4 px-4 md:mx-0 md:px-0 md:grid md:grid-cols-4 lg:grid-cols-6 gap-6 md:justify-items-center snap-x snap-mandatory scrollbar-hide">
-                        {makesError ? (
-                            <div className="col-span-full text-gray-500 text-center py-8">
-                                <span className="material-symbols-outlined text-4xl mb-2">error</span>
-                                <p>Unable to load brands at the moment.</p>
-                            </div>
-                        ) : uniqueMakes.length > 0 ? uniqueMakes.map((make, idx) => {
-                            const brandInfo = brandLogoMap[make];
-                            return (
-                                <Link key={idx} className="shrink-0 snap-center group glass-dark rounded-2xl w-32 h-32 flex flex-col items-center justify-center border border-transparent hover:border-secondary transition-all duration-300 shadow-lg" href={`/inventory?make=${make.toLowerCase()}`}>
-                                    {brandInfo ? (
-                                        <Image alt={brandInfo.alt} className="w-16 h-16 object-contain opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0 transition-all duration-300" src={brandInfo.src} width={64} height={64} />
-                                    ) : (
-                                        <span className="text-white font-display text-xl uppercase opacity-60 group-hover:opacity-100 transition-opacity">{make}</span>
-                                    )}
-                                </Link>
-                            );
-                        }) : (
-                            <div className="col-span-full text-gray-500">No brands available at the moment.</div>
-                        )}
-                    </div>
+                    {makesError ? (
+                        <div className="text-gray-500 text-center py-8">
+                            <span className="material-symbols-outlined text-4xl mb-2">error</span>
+                            <p>Unable to load brands at the moment.</p>
+                        </div>
+                    ) : uniqueMakes.length > 0 ? (
+                        <BrandCarousel makes={uniqueMakes} brandLogoMap={brandLogoMap} />
+                    ) : (
+                        <div className="text-gray-500 text-center">No brands available at the moment.</div>
+                    )}
                 </div>
             </section>
 
@@ -162,7 +150,7 @@ export default async function Home() {
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <StaggeredGrid vehicles={featuredVehicles} isSupabaseConfigured={!!isSupabaseConfigured} featuredError={featuredError}>
                         {!isSupabaseConfigured && (
                             <div className="col-span-full border border-yellow-500/50 bg-yellow-500/10 p-6 rounded-lg text-yellow-500 text-center flex flex-col items-center justify-center gap-2">
                                 <span className="material-symbols-outlined text-4xl">warning</span>
@@ -223,7 +211,7 @@ export default async function Home() {
                                 </div>
                             );
                         })}
-                    </div>
+                    </StaggeredGrid>
 
                     <div className="mt-10 flex justify-center md:hidden">
                         <Link className="inline-flex items-center px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">

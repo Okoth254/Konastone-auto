@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import AnimatedCounter from "@/components/home/AnimatedCounter";
+import { VehicleDistributionChart } from "@/components/admin/VehicleDistributionChart";
 
 export default async function AdminDashboard() {
   const supabase = await createClient();
@@ -216,42 +217,15 @@ export default async function AdminDashboard() {
       
       {/* System Visualization Placeholder */}
       <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-        <div className="bg-surface-container h-64 border border-white/5 relative overflow-hidden flex flex-col items-center justify-center p-8">
-          <div className="relative text-center z-10 w-full">
-            <p className="text-xs font-headline font-bold tracking-[0.3em] text-zinc-500 mb-2">INVENTORY_DISTRIBUTION</p>
-            <div className="h-px w-24 bg-primary-container mx-auto mb-6"></div>
-            
-            {/* Simple Bar Chart replacement */}
-            <div className="space-y-4 w-full max-w-sm mx-auto">
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-[10px] font-headline font-bold text-zinc-400 uppercase tracking-widest">
-                  <span>Available</span>
-                  <span>{vehicleStats['available'] || 0}</span>
-                </div>
-                <div className="w-full bg-surface-container-highest h-2">
-                  <div className="bg-primary-container h-full transition-all duration-1000" style={{ width: `${Math.min(100, ((vehicleStats['available'] || 0) / Math.max(1, inventoryCount || 1)) * 100)}%` }}></div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-[10px] font-headline font-bold text-zinc-400 uppercase tracking-widest">
-                  <span>In Transit</span>
-                  <span>{vehicleStats['in_transit'] || 0}</span>
-                </div>
-                <div className="w-full bg-surface-container-highest h-2">
-                  <div className="bg-admin-secondary h-full transition-all duration-1000" style={{ width: `${Math.min(100, ((vehicleStats['in_transit'] || 0) / Math.max(1, inventoryCount || 1)) * 100)}%` }}></div>
-                </div>
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex justify-between text-[10px] font-headline font-bold text-zinc-400 uppercase tracking-widest">
-                  <span>Sold / Reserved</span>
-                  <span>{(vehicleStats['sold'] || 0) + (vehicleStats['reserved'] || 0)}</span>
-                </div>
-                <div className="w-full bg-surface-container-highest h-2">
-                  <div className="bg-zinc-500 h-full transition-all duration-1000" style={{ width: `${Math.min(100, (((vehicleStats['sold'] || 0) + (vehicleStats['reserved'] || 0)) / Math.max(1, inventoryCount || 1)) * 100)}%` }}></div>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div className="bg-surface-container border border-white/5 relative overflow-hidden p-6 flex flex-col">
+          <p className="text-xs font-headline font-bold tracking-[0.3em] text-zinc-500 mb-1">INVENTORY_DISTRIBUTION</p>
+          <div className="h-px w-24 bg-primary-container mb-4" />
+          <VehicleDistributionChart
+            available={vehicleStats['available'] || 0}
+            inTransit={vehicleStats['in_transit'] || 0}
+            sold={vehicleStats['sold'] || 0}
+            reserved={vehicleStats['reserved'] || 0}
+          />
         </div>
         
         <div className="bg-surface-container h-64 border border-white/5 relative overflow-hidden flex flex-col items-center justify-center p-8">

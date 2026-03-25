@@ -1,9 +1,24 @@
+"use client";
+
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { useRef } from "react";
 
 export default function Footer() {
+    const containerRef = useRef(null);
+    const { scrollYProgress } = useScroll({
+        target: containerRef,
+        offset: ["start end", "end end"]
+    });
+    
+    // As the footer enters the viewport, it moves from Y:-100px to Y:0, creating a slower parallax reveal
+    const y = useTransform(scrollYProgress, [0, 1], ["-100px", "0px"]);
+    const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
+
     return (
-        <footer className="bg-gray-900 dark:bg-header-dark border-t border-gray-800 pt-16 pb-8 transition-colors duration-300">
+        <div ref={containerRef} className="bg-gray-900 dark:bg-header-dark border-t border-gray-800 overflow-hidden relative">
+            <motion.footer style={{ y, opacity }} className="pt-16 pb-8 transition-colors duration-300">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                     <div className="col-span-1 md:col-span-2">
@@ -56,6 +71,7 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-        </footer>
+            </motion.footer>
+        </div>
     );
 }
