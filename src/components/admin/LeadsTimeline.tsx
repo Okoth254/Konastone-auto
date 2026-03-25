@@ -13,7 +13,11 @@ interface Lead {
         year: number;
         make: string;
         model: string;
-    } | null;
+    } | {
+        year: number;
+        make: string;
+        model: string;
+    }[] | null;
 }
 
 interface LeadsTimelineProps {
@@ -72,7 +76,9 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
 
             <div className="space-y-16">
                 {leads.map((lead) => {
-                    const vehicleData = lead.vehicles;
+                    const vehicleData = Array.isArray(lead.vehicles)
+                        ? lead.vehicles[0]
+                        : lead.vehicles;
                     const vehicleName = vehicleData
                         ? `${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`
                         : "General Inquiry";
