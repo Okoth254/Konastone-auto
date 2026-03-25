@@ -30,13 +30,13 @@ export default async function Reviews() {
     }
 
     return (
-        <div className="layout-content-container flex flex-col max-w-[1200px] flex-1 w-full mx-auto px-4 sm:px-10 py-8 relative z-10">
+        <div className="page-shell layout-content-container flex flex-col max-w-[1200px] flex-1 w-full py-8 relative z-10">
             {/* Header Section */}
             <div className="flex flex-col gap-2 mb-10">
                 <div className="inline-block bg-secondary/20 text-secondary border border-secondary/50 px-3 py-1 text-xs font-bold tracking-widest uppercase self-start rounded-sm mb-2">
                     CUSTOMER FEEDBACK
                 </div>
-                <h1 className="text-white text-5xl md:text-7xl font-display tracking-wider leading-none font-bold uppercase">VOICES OF PRECISION</h1>
+                <h1 className="text-white text-4xl sm:text-5xl md:text-7xl font-display tracking-wider leading-none font-bold uppercase">VOICES OF PRECISION</h1>
             </div>
 
             {/* Featured Review (Hero) */}
@@ -99,7 +99,7 @@ export default async function Reviews() {
             <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6 mb-16">
                 {reviews.length > 0 ? (
                     reviews.map((review) => (
-                        <div key={review.id} className="break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
+                        <div key={review.id} className="ui-card break-inside-avoid bg-surface-dark bg-opacity-80 backdrop-blur-sm rounded-lg p-6 border border-secondary/10 hover:border-primary/50 transition-colors group">
                             <div className="flex justify-between items-start mb-4">
                                 <div className="flex gap-1 text-primary">
                                     {[...Array(5)].map((_, i) => (

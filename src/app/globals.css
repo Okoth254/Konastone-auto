@@ -1,5 +1,12 @@
 @import "tailwindcss";
 
+:root {
+  --motion-fast: 180ms;
+  --motion-base: 280ms;
+  --motion-slow: 420ms;
+  --ease-premium: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 @theme {
   --color-primary: #FFC107;
   --color-secondary: #26C6DA;
@@ -185,4 +192,100 @@
 .scroll-reveal.visible {
   opacity: 1;
   transform: translateY(0);
-}
+}
+
+/* Shared UI refinement system (non-breaking, color-safe) */
+.page-shell {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: 1rem;
+}
+
+@media (min-width: 640px) {
+  .page-shell {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .page-shell {
+    padding-inline: 2.5rem;
+  }
+}
+
+.ui-card {
+  border-radius: 0.75rem;
+  transition: transform var(--motion-base) var(--ease-premium), box-shadow var(--motion-base) var(--ease-premium), border-color var(--motion-base) var(--ease-premium);
+}
+
+.ui-card:hover {
+  transform: translateY(-2px);
+}
+
+.btn-premium {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  transition: transform var(--motion-fast) var(--ease-premium), box-shadow var(--motion-base) var(--ease-premium), opacity var(--motion-fast) linear, background-color var(--motion-base) var(--ease-premium), color var(--motion-base) var(--ease-premium), border-color var(--motion-base) var(--ease-premium);
+}
+
+.btn-premium:hover {
+  transform: translateY(-2px);
+}
+
+.btn-premium:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-premium:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--color-primary) 70%, white 30%);
+  outline-offset: 2px;
+}
+
+.btn-premium-primary {
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+  color: var(--color-primary);
+  border: 1px solid color-mix(in srgb, var(--color-primary) 36%, transparent);
+}
+
+.btn-premium-primary:hover {
+  color: var(--color-background-dark);
+}
+
+.btn-premium-ghost {
+  background: transparent;
+  color: rgb(212 212 216);
+  border: 1px solid rgb(63 63 70);
+}
+
+.btn-premium-ghost:hover {
+  border-color: rgb(113 113 122);
+  color: rgb(244 244 245);
+}
+
+.safe-bottom {
+  padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .scroll-reveal,
+  .scroll-reveal.visible {
+    opacity: 1;
+    transform: none;
+  }
+}

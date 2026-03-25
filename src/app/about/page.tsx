@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 export default function About() {
     return (
-        <div className="flex-1 flex flex-col w-full py-12 gap-16 max-w-[1440px] mx-auto px-4 md:px-8">
+        <div className="page-shell flex-1 flex flex-col w-full py-12 gap-16">
             <section className="flex flex-col items-center text-center gap-6 max-w-3xl mx-auto">
                 <span className="inline-flex items-center gap-2 px-3 py-1 rounded text-xs font-bold bg-accent/10 text-accent border border-accent/20 font-mono">
                     <span className="material-symbols-outlined text-[16px]">verified</span>
@@ -70,7 +70,7 @@ export default function About() {
                         <h4 className="text-xl font-display tracking-wider mb-2 text-white">PHONE / WHATSAPP</h4>
                         <p className="text-lg font-mono text-slate-300 group-hover:text-primary transition-colors">+254 722 511 803</p>
                     </div>
-                    <button className="mt-4 px-6 py-2 border border-primary/20 text-primary text-sm font-display tracking-wider hover:bg-primary hover:text-background-dark transition-colors w-full">
+                    <button className="btn-premium mt-4 px-6 py-2 border border-primary/20 text-primary text-sm font-display tracking-wider hover:bg-primary hover:text-background-dark transition-colors w-full">
                         CALL US
                     </button>
                 </div>
@@ -84,7 +84,7 @@ export default function About() {
                         <h4 className="text-xl font-display tracking-wider mb-2 text-white">EMAIL ADDRESS</h4>
                         <p className="text-sm font-mono text-slate-300 group-hover:text-primary transition-colors break-all">info@konastoneautos.com</p>
                     </div>
-                    <button className="mt-4 px-6 py-2 border border-primary/20 text-primary text-sm font-display tracking-wider hover:bg-primary hover:text-background-dark transition-colors w-full">
+                    <button className="btn-premium mt-4 px-6 py-2 border border-primary/20 text-primary text-sm font-display tracking-wider hover:bg-primary hover:text-background-dark transition-colors w-full">
                         SEND EMAIL
                     </button>
                 </div>

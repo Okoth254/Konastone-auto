@@ -55,7 +55,7 @@ export function InventoryMotionGrid({ vehicles, isSupabaseConfigured }: Props) {
                             layout
                             variants={card}
                             exit={{ opacity: 0, scale: 0.9 }}
-                            className={`group bg-card-bg rounded-lg overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-colors flex flex-col h-full shadow-lg`}
+                            className={`ui-card group bg-card-bg rounded-lg overflow-hidden ${isNewArrival ? 'border-t-4 border-primary border-x border-b hover:border-primary/50' : inTransit ? 'border border-border-color hover:border-accent/50 relative' : 'border border-border-color hover:border-slate-400'} transition-colors flex flex-col h-full shadow-lg`}
                         >
                             {inTransit && <div className="absolute top-0 left-0 w-full h-1 bg-accent z-20" />}
                             <div className="relative aspect-4/3 overflow-hidden bg-background-dark">
@@ -101,7 +101,7 @@ export function InventoryMotionGrid({ vehicles, isSupabaseConfigured }: Props) {
                                     </div>
                                 </div>
                                 <div className="flex gap-3 pt-2">
-                                    <Link href={`/vehicle/${vehicle.id}`} className="flex items-center justify-center flex-1 h-10 rounded border border-border-color hover:border-white text-white hover:bg-white/5 transition-colors text-sm font-medium uppercase tracking-wider">View Details</Link>
+                                    <Link href={`/vehicle/${vehicle.id}`} className="btn-premium flex items-center justify-center flex-1 h-10 rounded border border-border-color hover:border-white text-white hover:bg-white/5 transition-colors text-sm font-medium uppercase tracking-wider">View Details</Link>
                                 </div>
                             </div>
                         </motion.div>

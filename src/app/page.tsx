@@ -106,7 +106,7 @@ export default async function Home() {
             {/* Browse By Brand section */}
             <section className="relative bg-[#1A1A1A] py-16 overflow-hidden animate-scroll-reveal" >
                 <div className="absolute inset-0 scanline opacity-30 pointer-events-none"></div>
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                <div className="page-shell relative z-10">
                     <div className="text-center mb-12">
                         <h2 className="font-display text-5xl text-primary tracking-widest mb-2">BROWSE BY BRAND</h2>
                         <p className="text-gray-400 font-body text-lg">Select from our curated collection of premium automotive brands</p>
@@ -126,7 +126,7 @@ export default async function Home() {
 
             {/* Stats Section */}
             <section className="bg-gray-50 dark:bg-[#151515] py-12 border-y border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="page-shell">
                     <div className="grid grid-cols-2 md:grid-cols-5 gap-8 text-center">
                         {siteConfig.stats.map((stat, idx) => (
                             <div key={idx} className={`flex flex-col items-center ${idx === 4 ? "col-span-2 md:col-span-1" : ""}`}>
@@ -143,13 +143,13 @@ export default async function Home() {
 
             {/* Featured Listings Section */}
             <section className="py-20 bg-white dark:bg-background-dark transition-colors duration-300 animate-scroll-reveal" >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="page-shell">
                     <div className="flex justify-between items-end mb-10">
                         <div>
                             <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">FEATURED LISTINGS</h2>
                             <p className="text-gray-500 dark:text-gray-400 mt-2">Premium hand-picked vehicles ready for immediate delivery.</p>
                         </div>
-                        <Link className="hidden md:flex items-center px-6 py-2 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
+                        <Link className="hidden md:flex items-center px-6 py-2 rounded-full text-primary hover:text-background-dark btn-sweep btn-premium btn-premium-primary font-medium uppercase tracking-wider transition-colors" href="/inventory">
                             View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
                         </Link>
                     </div>
@@ -181,7 +181,7 @@ export default async function Home() {
                             const imagePath = `/images/inventory/${car.folder_name}/1.jpeg`;
 
                             return (
-                                <div key={car.id} className="bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
+                                <div key={car.id} className="ui-card bg-gray-50 dark:bg-surface-dark rounded-xl overflow-hidden border border-gray-200 dark:border-gray-800 shadow-sm hover:shadow-lg transition-all group">
                                     <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
                                         <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                         {car.status === 'available' && (
@@ -208,7 +208,7 @@ export default async function Home() {
                                                 <p className="font-display text-3xl text-primary">KES {car.price.toLocaleString()}</p>
                                             </div>
                                         </div>
-                                        <Link className="mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href="#">
+                                        <Link className="btn-premium mt-4 flex items-center justify-center w-full bg-[#25D366] hover:bg-[#1da851] text-white py-3 px-4 rounded font-medium transition-colors" href="#">
                                             <span className="material-icons mr-2">whatsapp</span> Inquire on WhatsApp
                                         </Link>
                                     </div>
@@ -218,7 +218,7 @@ export default async function Home() {
                     </StaggeredGrid>
 
                     <div className="mt-10 flex justify-center md:hidden">
-                        <Link className="inline-flex items-center px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
+                        <Link className="btn-premium inline-flex items-center px-6 py-3 bg-primary/10 border border-primary/30 rounded-full text-primary hover:text-background-dark btn-sweep font-medium uppercase tracking-wider transition-colors" href="/inventory">
                             View Inventory <span className="material-symbols-outlined ml-2 text-[18px]">arrow_forward</span>
                         </Link>
                     </div>
@@ -227,34 +227,34 @@ export default async function Home() {
 
             {/* Why Choose Konastone */}
             <section className="py-20 bg-gray-100 dark:bg-[#1A1A1A] border-t border-gray-200 dark:border-gray-800 transition-colors duration-300 animate-scroll-reveal" >
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="page-shell">
                     <div className="text-center mb-16">
                         <h2 className="font-display text-5xl text-gray-900 dark:text-white tracking-wide">WHY CHOOSE KONASTONE</h2>
                         <div className="w-24 h-1 bg-primary mx-auto mt-6"></div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                        <div className="bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
+                        <div className="ui-card bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="material-icons text-primary text-3xl">local_offer</span>
                             </div>
                             <h3 className="font-display text-2xl text-gray-900 dark:text-white mb-3 tracking-wide">COMPETITIVE PRICES</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm">We offer the best market rates for premium vehicles, ensuring you get maximum value for your investment.</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
+                        <div className="ui-card bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="material-icons text-primary text-3xl">bolt</span>
                             </div>
                             <h3 className="font-display text-2xl text-gray-900 dark:text-white mb-3 tracking-wide">FAST PAYMENT</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm">Selling to us? Experience instant payment processing once the valuation and paperwork are complete.</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
+                        <div className="ui-card bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="material-icons text-primary text-3xl">verified_user</span>
                             </div>
                             <h3 className="font-display text-2xl text-gray-900 dark:text-white mb-3 tracking-wide">QUALITY ASSURED</h3>
                             <p className="text-gray-600 dark:text-gray-400 text-sm">Every vehicle undergoes a rigorous multi-point inspection by our certified mechanics before listing.</p>
                         </div>
-                        <div className="bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
+                        <div className="ui-card bg-white dark:bg-surface-dark p-8 rounded-xl border border-gray-200 dark:border-gray-800 text-center hover:-translate-y-2 transition-transform duration-300 shadow-sm">
                             <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
                                 <span className="material-icons text-primary text-3xl">support_agent</span>
                             </div>

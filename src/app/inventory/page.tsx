@@ -69,10 +69,10 @@ export default async function Inventory({
     }
 
     return (
-        <div className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-10 py-8 gap-8">
+        <div className="page-shell flex-1 flex flex-col py-6 md:py-8 gap-6 md:gap-8">
             {/* Page Title Area */}
             <div className="flex flex-col gap-2">
-                <h1 className="text-white text-6xl font-display leading-tight tracking-wider uppercase">VEHICLE INVENTORY</h1>
+                <h1 className="text-white text-4xl sm:text-5xl lg:text-6xl font-display leading-tight tracking-wider uppercase">VEHICLE INVENTORY</h1>
                 <div className="inline-flex items-center">
                     <span className="text-accent text-sm font-bold tracking-widest px-3 py-1 bg-accent/10 border border-accent/30 rounded uppercase">{vehicles.length} VEHICLES AVAILABLE</span>
                 </div>

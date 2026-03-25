@@ -62,7 +62,7 @@ export default function ReviewForm() {
             <div className="text-center mt-16">
                 <button
                     onClick={() => setIsOpen(true)}
-                    className="inline-flex items-center gap-2 bg-primary text-background-dark hover:bg-yellow-400 px-8 py-4 rounded font-display tracking-widest text-lg transition-colors shadow-[0_4px_14px_rgba(234,179,8,0.3)] hover:shadow-[0_6px_20px_rgba(234,179,8,0.4)]"
+                    className="btn-premium inline-flex items-center gap-2 bg-primary text-background-dark hover:bg-yellow-400 px-8 py-4 rounded font-display tracking-widest text-lg transition-colors shadow-[0_4px_14px_rgba(234,179,8,0.3)] hover:shadow-[0_6px_20px_rgba(234,179,8,0.4)]"
                 >
                     <span className="material-symbols-outlined font-bold text-background-dark">rate_review</span>
                     SHARE YOUR EXPERIENCE
@@ -75,7 +75,7 @@ export default function ReviewForm() {
             {isOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsOpen(false)}></div>
-                    <div className="relative bg-surface-dark border border-border-subtle rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
+                    <div className="ui-card safe-bottom relative bg-surface-dark border border-border-subtle rounded-xl shadow-2xl w-full max-w-lg overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="flex justify-between items-center p-6 border-b border-border-subtle">
                             <h3 className="text-2xl font-display text-slate-100 tracking-wider">Write a Review</h3>
                             <button onClick={() => setIsOpen(false)} className="text-slate-400 hover:text-white transition-colors">
@@ -135,7 +135,7 @@ export default function ReviewForm() {
                                     <button
                                         disabled={isSubmitting}
                                         type="submit"
-                                        className="w-full bg-primary text-background-dark font-bold py-3 rounded-lg mt-2 hover:bg-yellow-500 transition-colors disabled:bg-primary/50 flex items-center justify-center"
+                                        className="btn-premium w-full bg-primary text-background-dark font-bold py-3 rounded-lg mt-2 hover:bg-yellow-500 transition-colors disabled:bg-primary/50 flex items-center justify-center"
                                     >
                                         {isSubmitting ? <div className="w-5 h-5 border-2 border-background-dark border-t-transparent rounded-full animate-spin"></div> : "Submit Review"}
                                     </button>

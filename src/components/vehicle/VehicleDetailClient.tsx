@@ -89,7 +89,7 @@ export default function VehicleDetailClient({
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="flex-1 flex flex-col max-w-[1440px] mx-auto w-full px-4 md:px-8 py-6 gap-8 relative z-10"
+            className="page-shell flex-1 flex flex-col py-6 gap-8 relative z-10"
         >
             {/* Breadcrumbs */}
             <motion.nav variants={itemVariants} className="flex flex-wrap gap-2 text-sm text-slate-500">
@@ -107,7 +107,7 @@ export default function VehicleDetailClient({
                 </motion.div>
 
                 {/* Right Column: Key Info & CTA */}
-                <motion.div variants={itemVariants} className="lg:col-span-4 bg-surface-dark rounded-2xl p-6 flex flex-col gap-6 border border-border-subtle shadow-2xl relative">
+                <motion.div variants={itemVariants} className="ui-card lg:col-span-4 bg-surface-dark rounded-2xl p-6 flex flex-col gap-6 border border-border-subtle shadow-2xl relative">
                     <div className="space-y-2">
                         {vehicle.is_featured && (
                             <motion.span 
@@ -148,7 +148,7 @@ export default function VehicleDetailClient({
                             whileHover={{ scale: 1.02, y: -2 }}
                             whileTap={{ scale: 0.98 }}
                             href={`tel:${siteConfig.contact.phoneFormatted}`} 
-                            className="flex items-center justify-center gap-3 rounded-xl h-14 bg-accent-red text-white font-black uppercase tracking-widest shadow-lg transition-all btn-sweep"
+                            className="btn-premium flex items-center justify-center gap-3 rounded-xl h-14 bg-accent-red text-white font-black uppercase tracking-widest shadow-lg transition-all btn-sweep"
                         >
                             <span className="material-symbols-outlined">call</span>
                             Direct Inquiry
@@ -158,7 +158,7 @@ export default function VehicleDetailClient({
                             whileTap={{ scale: 0.98 }}
                             href={whatsappLink} 
                             target="_blank" 
-                            className="flex items-center justify-center gap-3 rounded-xl h-14 bg-primary text-background-dark font-black uppercase tracking-widest shadow-lg transition-all btn-sweep"
+                            className="btn-premium flex items-center justify-center gap-3 rounded-xl h-14 bg-primary text-background-dark font-black uppercase tracking-widest shadow-lg transition-all btn-sweep"
                         >
                             <span className="material-symbols-outlined">chat</span>
                             WhatsApp Executive
@@ -172,7 +172,7 @@ export default function VehicleDetailClient({
                 {/* Main Content Area */}
                 <div className="lg:col-span-2 flex flex-col gap-8">
                     {/* Brand Promises */}
-                    <motion.div variants={itemVariants} className="bg-surface-dark/50 backdrop-blur-sm rounded-2xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8 border border-border-subtle shadow-xl">
+                    <motion.div variants={itemVariants} className="ui-card bg-surface-dark/50 backdrop-blur-sm rounded-2xl p-8 grid grid-cols-1 md:grid-cols-3 gap-8 border border-border-subtle shadow-xl">
                         {siteConfig.promises.map((promise) => (
                             <div key={promise.id} className="flex flex-col items-center text-center gap-4 group">
                                 <div className="w-14 h-14 rounded-2xl bg-background-dark flex items-center justify-center text-primary border border-border-subtle group-hover:border-primary/50 group-hover:bg-primary/5 transition-all rotate-3 group-hover:rotate-0">
@@ -281,7 +281,7 @@ export default function VehicleDetailClient({
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
                             >
-                                <Link href={`/vehicle/${sim.id}`} className="block bg-surface-dark rounded-2xl overflow-hidden group border border-border-subtle hover:border-primary/50 transition-all shadow-xl hover:shadow-primary/5">
+                                <Link href={`/vehicle/${sim.id}`} className="ui-card block bg-surface-dark rounded-2xl overflow-hidden group border border-border-subtle hover:border-primary/50 transition-all shadow-xl hover:shadow-primary/5">
                                     <div className="aspect-16/10 overflow-hidden relative">
                                         <VehicleImage
                                             alt={`${sim.make} ${sim.model}`}
@@ -309,14 +309,14 @@ export default function VehicleDetailClient({
                 initial={{ y: 100 }}
                 animate={{ y: 0 }}
                 transition={{ delay: 1, type: "spring", damping: 25 }}
-                className="fixed bottom-0 left-0 w-full p-4 bg-background-dark/95 backdrop-blur-xl border-t border-white/5 z-60 md:hidden shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
+                className="safe-bottom fixed bottom-0 left-0 w-full p-4 bg-background-dark/95 backdrop-blur-xl border-t border-white/5 z-60 md:hidden shadow-[0_-10px_40px_rgba(0,0,0,0.5)]"
             >
                 <div className="flex gap-3">
-                    <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="flex-1 flex items-center justify-center gap-2 rounded-xl h-14 bg-accent-red text-white font-black uppercase tracking-widest shadow-lg btn-sweep text-xs">
+                    <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="btn-premium flex-1 flex items-center justify-center gap-2 rounded-xl h-14 bg-accent-red text-white font-black uppercase tracking-widest shadow-lg btn-sweep text-xs">
                         <span className="material-symbols-outlined text-lg">call</span>
                         Call Now
                     </a>
-                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-2 rounded-xl h-14 bg-primary text-background-dark font-black uppercase tracking-widest shadow-lg btn-sweep text-xs">
+                    <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="btn-premium flex-1 flex items-center justify-center gap-2 rounded-xl h-14 bg-primary text-background-dark font-black uppercase tracking-widest shadow-lg btn-sweep text-xs">
                         <span className="material-symbols-outlined text-lg">chat</span>
                         WhatsApp
                     </a>

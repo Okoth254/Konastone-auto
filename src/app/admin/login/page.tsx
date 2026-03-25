@@ -30,7 +30,7 @@ export default function AdminLogin() {
             {/* Background Grid */}
             <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #4f4632 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
             
-            <div className="w-full max-w-md bg-surface-container-high border-t-2 border-primary-container p-8 relative z-10 shadow-2xl">
+            <div className="ui-card w-full max-w-md bg-surface-container-high border-t-2 border-primary-container p-8 relative z-10 shadow-2xl">
                 <div className="mb-8 text-center">
                     <span className="font-headline text-[10px] tracking-[0.3em] text-admin-secondary uppercase block mb-2">AUTH_GATEWAY // SECURE</span>
                     <h1 className="font-headline text-5xl tracking-tighter text-white uppercase flex items-center justify-center gap-2">
@@ -73,7 +73,7 @@ export default function AdminLogin() {
                     <button 
                         type="submit" 
                         disabled={loading}
-                        className="w-full bg-primary-container text-black font-headline font-black text-lg tracking-widest uppercase py-4 hover:bg-amber-400 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                        className="btn-premium w-full bg-primary-container text-black font-headline font-black text-lg tracking-widest uppercase py-4 hover:bg-amber-400 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
                     >
                         {loading ? 'AUTHENTICATING...' : 'INITIATE ACCESS'}
                     </button>

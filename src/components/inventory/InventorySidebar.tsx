@@ -95,7 +95,7 @@ export default function InventorySidebar() {
                 <span className="font-heading tracking-wide text-slate-200">Refine Search</span>
                 <button 
                     onClick={() => setIsOpen(true)}
-                    className="flex items-center gap-2 px-6 py-2 bg-surface-dark border border-border-subtle rounded-full text-slate-300 btn-sweep shadow-lg"
+                    className="btn-premium flex items-center gap-2 px-6 py-2 bg-surface-dark border border-border-subtle rounded-full text-slate-300 btn-sweep shadow-lg"
                 >
                     <span className="material-symbols-outlined text-[18px]">tune</span>
                     Filters
@@ -104,7 +104,7 @@ export default function InventorySidebar() {
 
             {/* Desktop Sidebar */}
             <aside className="hidden lg:flex w-full lg:w-[280px] shrink-0 flex-col gap-6">
-                <div className="bg-card-bg lg:border lg:border-border-color lg:rounded-lg p-5 flex flex-col gap-5 shadow-2xl relative">
+                <div className="ui-card bg-card-bg lg:border lg:border-border-color lg:rounded-lg p-5 flex flex-col gap-5 shadow-2xl relative">
                     {/* Mobile Header & Close Button */}
                     <div className="flex justify-between items-center lg:hidden mb-2">
                         <h3 className="text-white font-display text-xl tracking-wider uppercase">Filters</h3>
@@ -220,7 +220,7 @@ export default function InventorySidebar() {
 
                     <button
                         onClick={applyFilters}
-                        className="w-full mt-4 h-12 rounded bg-primary text-card-bg transition-colors font-display tracking-widest uppercase text-lg font-bold shadow-lg hover:shadow-primary/50 btn-sweep"
+                        className="btn-premium w-full mt-4 h-12 rounded bg-primary text-card-bg transition-colors font-display tracking-widest uppercase text-lg font-bold shadow-lg hover:shadow-primary/50 btn-sweep"
                     >
                         Apply Filters
                     </button>
@@ -242,7 +242,7 @@ export default function InventorySidebar() {
                             onDragEnd={(_, info) => {
                                 if (info.offset.y > 130 || info.velocity.y > 700) setIsOpen(false);
                             }}
-                            className="mt-auto max-h-[85vh] overflow-y-auto rounded-t-3xl border-t border-border-subtle bg-card-bg p-5 flex flex-col gap-5 shadow-2xl relative w-full"
+                            className="safe-bottom mt-auto max-h-[85vh] overflow-y-auto rounded-t-3xl border-t border-border-subtle bg-card-bg p-5 flex flex-col gap-5 shadow-2xl relative w-full"
                         >
                             <div className="w-12 h-1.5 rounded-full bg-slate-600/70 mx-auto -mt-1 mb-1" />
 
@@ -358,7 +358,7 @@ export default function InventorySidebar() {
 
                             <button
                                 onClick={applyFilters}
-                                className="w-full mt-4 h-12 rounded bg-primary text-card-bg transition-colors font-display tracking-widest uppercase text-lg font-bold shadow-lg hover:shadow-primary/50 btn-sweep"
+                                className="btn-premium w-full mt-4 h-12 rounded bg-primary text-card-bg transition-colors font-display tracking-widest uppercase text-lg font-bold shadow-lg hover:shadow-primary/50 btn-sweep"
                             >
                                 Apply Filters
                             </button>
