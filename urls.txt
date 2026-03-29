@@ -1,0 +1,5 @@
+bmw: https://cdn.worldvectorlogo.com/logos/bmw-1.svg
+toyota: https://cdn.worldvectorlogo.com/logos/toyota-1.svg
+subaru: https://cdn.worldvectorlogo.com/logos/subaru.svg
+daihatsu: https://cdn.worldvectorlogo.com/logos/daihatsu.svg
+volkswagen: https://cdn.worldvectorlogo.com/logos/volkswagen-1.svg

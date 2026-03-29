@@ -15,7 +15,7 @@ export function AnimatedHeroText() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: "easeOut" }}
-            className="font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg max-sm:text-5xl"
+            className="relative font-display text-6xl lg:text-8xl text-white leading-none tracking-tight drop-shadow-lg max-sm:text-5xl"
         >
             <motion.span
                 initial={{ opacity: 0, x: -20 }}

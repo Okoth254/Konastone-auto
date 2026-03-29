@@ -38,6 +38,7 @@ export default function Header() {
   const closeMenu = () => setMobileMenuOpen(false);
 
   return (
+    <>
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
@@ -56,6 +57,7 @@ export default function Header() {
             whileHover={{ scale: 1.02 }}
           >
             KONA<span className="text-primary">STONE</span>
+            <span className="text-gray-400 font-normal ml-1">AUTOS</span>
           </motion.span>
           <motion.div
             className="absolute -bottom-1 left-0 h-0.5 bg-primary"
@@ -134,6 +136,8 @@ export default function Header() {
         </button>
       </nav>
 
+    </motion.header>
+
       {/* Mobile Menu */}
       <AnimatePresence>
         {mobileMenuOpen && (
@@ -151,7 +155,7 @@ export default function Header() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 16 }}
               transition={{ type: "spring", damping: 24, stiffness: 220 }}
-              className="safe-bottom fixed inset-0 z-50 md:hidden bg-black/95 backdrop-blur-2xl pt-24"
+              className="safe-bottom fixed inset-0 z-40 md:hidden bg-black/95 backdrop-blur-2xl pt-24"
             >
               <div className="flex flex-col gap-6 p-6 overflow-y-auto h-full">
                 {/* Mobile Nav Links */}
@@ -213,6 +217,6 @@ export default function Header() {
           </>
         )}
       </AnimatePresence>
-    </motion.header>
+    </>
   );
 }

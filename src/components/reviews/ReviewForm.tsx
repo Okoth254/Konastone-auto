@@ -203,7 +203,7 @@ export default function ReviewForm() {
                                                 onChange={(e) => setComment(e.target.value)} 
                                                 rows={4} 
                                                 className="w-full bg-background-dark/50 border border-white/5 rounded-2xl p-6 text-sm text-slate-100 focus:outline-none focus:border-primary/30 transition-all font-medium placeholder:text-slate-800 resize-none" 
-                                                placeholder="Document your journey with Konastone..."
+                                                placeholder="Document your journey with Konastone Autos..."
                                             />
                                         </div>
 

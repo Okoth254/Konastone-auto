@@ -152,7 +152,7 @@ export default function InventorySidebar() {
 
 
             <aside className="hidden lg:flex w-full lg:w-[280px] shrink-0 flex-col gap-6">
-                <div className="ui-card bg-card-bg lg:border lg:border-border-color lg:rounded-lg p-5 flex flex-col gap-5 shadow-2xl relative">
+                <div className="glass-card p-5 flex flex-col gap-5 relative">
                     <div className="flex justify-between items-center mb-2">
                         <h3 className="text-white font-headline text-lg tracking-widest uppercase">FILTERS</h3>
                         {activeFilterCount > 0 && (

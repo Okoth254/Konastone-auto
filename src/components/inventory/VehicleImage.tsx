@@ -8,9 +8,11 @@ interface VehicleImageProps {
     alt: string;
     className?: string;
     hideOnError?: boolean;
+    loading?: "lazy" | "eager";
+    priority?: boolean;
 }
 
-export default function VehicleImage({ src, alt, className, hideOnError = false }: VehicleImageProps) {
+export default function VehicleImage({ src, alt, className, hideOnError = false, loading = "lazy", priority = false }: VehicleImageProps) {
     const [imageError, setImageError] = useState(false);
 
     if (imageError) {
@@ -30,6 +32,8 @@ export default function VehicleImage({ src, alt, className, hideOnError = false 
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{ objectFit: 'cover' }}
+            loading={priority ? undefined : loading}
+            priority={priority || loading === "eager"}
             onError={() => setImageError(true)}
         />
     );

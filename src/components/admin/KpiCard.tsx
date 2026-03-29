@@ -34,7 +34,7 @@ export default function KpiCard({
     const glows = {
         primary: "bg-primary/5",
         secondary: "bg-accent-teal/5",
-        neutral: "bg-white/[0.02]"
+        neutral: "bg-white/2"
     };
 
     return (
@@ -43,7 +43,7 @@ export default function KpiCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -5 }}
-            className={`relative overflow-hidden bg-surface-dark/40 backdrop-blur-xl border-l-4 p-8 rounded-[2rem] group transition-all duration-500 hover:bg-surface-dark/60 ${colors[variant]}`}
+            className={`relative overflow-hidden bg-surface-dark/40 backdrop-blur-xl border-l-4 p-8 rounded-4xl group transition-all duration-500 hover:bg-surface-dark/60 ${colors[variant]}`}
         >
             {/* Background Glow */}
             <div className={`absolute -right-4 -bottom-4 w-32 h-32 blur-3xl transition-colors duration-500 opacity-20 group-hover:opacity-40 ${glows[variant]}`} />
@@ -63,7 +63,7 @@ export default function KpiCard({
                             </div>
                         )}
                     </div>
-                    <div className="w-12 h-12 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div className="w-12 h-12 rounded-2xl bg-white/2 border border-white/5 flex items-center justify-center group-hover:scale-110 transition-transform">
                         <span className="material-symbols-outlined text-2xl">{icon}</span>
                     </div>
                 </div>

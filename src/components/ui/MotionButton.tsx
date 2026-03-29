@@ -70,34 +70,35 @@ const MotionWrapper = forwardRef<HTMLButtonElement | HTMLAnchorElement, MotionBu
         const motionProps = {
             whileHover: isDisabled ? {} : { y: -2 },
             whileTap: isDisabled ? {} : { scale: 0.98 },
-            transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] as any },
+            transition: { duration: 0.18, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] },
             className: classes,
             ...rest,
         };
 
         if (href) {
-            const { name, value, type, ...anchorRest } = rest as any;
-            const anchorMotionProps = {
-                ...motionProps,
-                ...anchorRest
-            };
             return (
-                <Link href={href} passHref legacyBehavior>
-                    <motion.a 
-                        ref={ref as any}
+                <motion.div
+                    whileHover={isDisabled ? {} : { y: -2 }}
+                    whileTap={isDisabled ? {} : { scale: 0.98 }}
+                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                    className={classes}
+                >
+                    <Link 
+                        href={href}
+                        ref={ref as React.Ref<HTMLAnchorElement>}
                         target={target}
                         rel={rel}
-                        {...anchorMotionProps}
+                        className="flex items-center justify-center gap-2 w-full h-full"
                     >
                         {content}
-                    </motion.a>
-                </Link>
+                    </Link>
+                </motion.div>
             );
         }
 
         return (
             <motion.button
-                ref={ref as any}
+                ref={ref as React.Ref<HTMLButtonElement>}
                 disabled={isDisabled}
                 aria-disabled={isDisabled}
                 {...motionProps}

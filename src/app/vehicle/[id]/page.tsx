@@ -16,11 +16,11 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         .eq('id', id)
         .single();
 
-    if (!vehicle) return { title: 'Vehicle Not Found' };
+    if (!vehicle) return { title: 'Vehicle Not Found | Konastone Autos' };
 
     return {
         title: `${vehicle.year} ${vehicle.make} ${vehicle.model} | Konastone Autos`,
-        description: vehicle.description || `View details for the ${vehicle.year} ${vehicle.make} ${vehicle.model} at Konastone Autos.`,
+        description: vehicle.description || `View details for the ${vehicle.year} ${vehicle.make} ${vehicle.model} at Konastone Autos. Premium vehicles with flexible financing options.`,
         openGraph: {
             images: [`/images/inventory/${vehicle.folder_name}/1.jpeg`],
         },
@@ -30,7 +30,8 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 export default async function VehicleDetail({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const supabase = await createClient();
-    
+
+    // Fetch vehicle with all details
     const { data: vehicle } = await supabase
         .from('vehicles')
         .select('*')
@@ -39,29 +40,41 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
 
     if (!vehicle) notFound();
 
-    // Fetch additional images
-    const { data: imagesData } = await supabase
-        .from('vehicle_images')
-        .select('public_url')
-        .eq('vehicle_id', id)
-        .order('id', { ascending: true });
 
-    let images = imagesData?.map((img: { public_url: string }) => img.public_url) || [];
-    
+    // Build image list from local filesystem (numbered JPEGs in the vehicle's folder)
+    const { readdirSync } = await import('fs');
+    const { join } = await import('path');
+    let images: string[] = [];
+    try {
+        const folderPath = join(process.cwd(), 'public', 'images', 'inventory', vehicle.folder_name);
+        const files = readdirSync(folderPath)
+            .filter((f: string) => /\.(jpe?g|png|webp)$/i.test(f))
+            .sort((a: string, b: string) => {
+                // Numeric sort: 1.jpeg, 2.jpeg, ... 10.jpeg (not 1, 10, 2)
+                const numA = parseInt(a.replace(/\D/g, ''), 10);
+                const numB = parseInt(b.replace(/\D/g, ''), 10);
+                return numA - numB;
+            });
+        images = files.map((f: string) => `/images/inventory/${vehicle.folder_name}/${f}`);
+    } catch {
+        // folder doesn't exist yet — fallback to first image
+    }
+
     if (images.length === 0) {
         images = [`/images/inventory/${vehicle.folder_name}/1.jpeg`];
     }
 
+
     // Fetch features
     const { data: features } = await supabase
         .from('vehicle_features')
-        .select('*')
+        .select('feature_name')
         .eq('vehicle_id', id);
 
     // Fetch similar vehicles
     const { data: similarVehicles } = await supabase
         .from('vehicles')
-        .select('*')
+        .select('id, make, model, year, price, mileage, fuel_type, transmission, folder_name, status, is_featured')
         .neq('id', id)
         .eq('make', vehicle.make)
         .limit(3);
@@ -70,9 +83,7 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
     const whatsappLink = `https://wa.me/${siteConfig.contact.phoneFormatted}?text=${whatsappMessage}`;
 
     return (
-        <div className="bg-gray-50 dark:bg-[#151515] transition-colors duration-300 min-h-screen selection:bg-primary selection:text-background-dark">
-            <div className="scanline" />
-            
+        <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
                 '@context': 'https://schema.org',
                 '@type': 'Product',
@@ -90,11 +101,11 @@ export default async function VehicleDetail({ params }: { params: Promise<{ id: 
 
             <VehicleDetailClient 
                 vehicle={vehicle}
-                features={features || []}
+                features={features?.map(f => f.feature_name) || []}
                 similarVehicles={similarVehicles || []}
                 images={images}
                 whatsappLink={whatsappLink}
             />
-        </div>
+        </>
     );
 }

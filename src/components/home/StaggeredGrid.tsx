@@ -46,7 +46,7 @@ export function StaggeredGrid({ vehicles, isSupabaseConfigured, featuredError, c
                     >
 
                         <div className="relative h-64 overflow-hidden bg-gray-900 border-b border-gray-200 dark:border-gray-800">
-                            <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 [transition-timing-function:cubic-bezier(0.16,1,0.3,1)]" />
+                            <VehicleImage src={imagePath} alt={`${car.make} ${car.model}`} className="w-full h-full object-cover group-hover:scale-[1.04] transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]" />
 
 
                             {car.status === 'available' && (

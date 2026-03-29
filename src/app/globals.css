@@ -73,6 +73,23 @@
   --radius-DEFAULT: 0.5rem;
 }
 
+/* Prevent horizontal overflow from causing page-wide zoom-out on mobile */
+html, body {
+  overflow-x: hidden;
+  overscroll-behavior-x: none;
+}
+
+/* Scrollbar hide utility (not included by default in Tailwind v4) */
+@utility scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+@utility scrollbar-hide {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 @utility glass {
   background: rgba(37, 37, 37, 0.7);
   backdrop-filter: blur(10px);

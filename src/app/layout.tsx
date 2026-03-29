@@ -57,7 +57,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="dark relative">
       <head>
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
         <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
@@ -83,13 +83,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`
+      <body suppressHydrationWarning className={`
         ${playfair.variable} ${lato.variable}
-        bg-background-light dark:bg-background-dark text-gray-900 dark:text-white font-body antialiased
+        bg-background-dark text-(--color-text-primary) font-(--font-body) antialiased relative
       `}>
         <LazyMotion features={domAnimation}>
           <Header />
-          <main className="grow flex flex-col pt-[72px]">
+          <main className="relative grow flex flex-col pt-[72px]">
             {children}
           </main>
           <Footer />

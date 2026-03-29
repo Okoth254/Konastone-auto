@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { createClient } from "@/utils/supabase/server";
-import CollapsibleSection from "@/components/ui/CollapsibleSection";
+import CollapsibleSection from "../../../components/ui/CollapsibleSection";
 
 export default async function AdminSettingsPage() {
     const supabase = await createClient();
