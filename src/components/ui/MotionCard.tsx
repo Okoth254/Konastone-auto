@@ -26,7 +26,7 @@ export default function MotionCard({
           : {}
       }
       transition={{ type: "tween", duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
-      className={["ui-card", className].join(" ")}
+      className={["bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[2.5rem]", className].join(" ")}
       {...rest}
     >
       {children}

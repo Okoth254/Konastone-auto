@@ -51,7 +51,7 @@ export default function MotionSheet({
             animate={{ y: `${(1 - snapPoints[1]) * 100}%` }}
             exit={{ y: "100%" }}
             transition={{ type: "spring", stiffness: 280, damping: 30 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-surface-container border-t border-white/10 rounded-t-xl overflow-hidden"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-surface-dark/95 backdrop-blur-3xl border-t border-white/10 rounded-t-[2rem] overflow-hidden"
             style={{ height: `${snapPoints[1] * 100}vh` }}
           >
             {/* Drag Handle */}

@@ -8,7 +8,7 @@ const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (
-        <div className={`${spaceGrotesk.variable} bg-admin-surface text-on-surface font-body selection:bg-primary-container selection:text-on-primary-container min-h-screen dark flex w-full relative`}>
+        <div className={`${spaceGrotesk.variable} bg-background-dark text-on-surface font-body selection:bg-primary selection:text-black min-h-screen dark flex w-full relative`}>
             
             <AdminSidebar />
 
@@ -18,12 +18,12 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     {children}
                 </main>
                 
-                <footer className="w-full px-10 py-8 border-t border-zinc-900 bg-[#131313] flex flex-col md:flex-row justify-between items-center">
-                    <p className="text-zinc-500 font-headline text-[10px] uppercase tracking-widest">©{new Date().getFullYear()} KONASTONE AUTOS. ALL SYSTEMS OPERATIONAL.</p>
+                <footer className="w-full px-10 py-8 border-t border-white/5 bg-background-dark flex flex-col md:flex-row justify-between items-center">
+                    <p className="text-zinc-500 font-heading text-[10px] uppercase tracking-widest">©{new Date().getFullYear()} KONASTONE AUTOS. ALL SYSTEMS OPERATIONAL.</p>
                     <div className="flex gap-8 mt-4 md:mt-0">
-                        <a className="text-zinc-600 font-headline text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Privacy Policy</a>
-                        <a className="text-zinc-600 font-headline text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Terms of Service</a>
-                        <a className="text-zinc-600 font-headline text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Dealer Portal</a>
+                        <a className="text-zinc-600 font-heading text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Privacy Policy</a>
+                        <a className="text-zinc-600 font-heading text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Terms of Service</a>
+                        <a className="text-zinc-600 font-heading text-[10px] uppercase tracking-widest hover:text-zinc-300 transition-colors" href="#">Dealer Portal</a>
                     </div>
                 </footer>
             </div>

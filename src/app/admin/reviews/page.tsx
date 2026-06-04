@@ -1,5 +1,6 @@
 import { createClient } from "@/utils/supabase/server";
 import ReviewsClient from "@/components/admin/ReviewsClient";
+import * as motion from "framer-motion/client";
 
 export default async function ReviewsPage(props: { searchParams?: Promise<{ [key: string]: string | string[] | undefined }> }) {
     const searchParams = await props.searchParams;
@@ -7,7 +8,7 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
     const currentSort = searchParams?.sort as string | undefined;
 
     const supabase = await createClient();
-    
+
     // 1. Fetch counts & stats
     const { data: allReviews } = await supabase.from('customer_reviews').select('status');
     const pendingReviewsCount = allReviews?.filter(r => r.status === 'pending').length || 0;
@@ -50,38 +51,47 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
         .order('created_at', { ascending: true });
 
     return (
-        <div className="p-8 space-y-12 flex-1 w-full max-w-[1600px] mx-auto min-h-screen">
-            {/* Header Section */}
-            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                <div>
-                    <h1 className="text-5xl md:text-7xl font-black font-headline tracking-tighter text-on-surface uppercase mb-4 leading-[0.9]">
-                        Review <br />
-                        <span className="text-primary">Moderation</span>
-                    </h1>
-                    <div className="flex items-center gap-6">
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-zinc-600 uppercase tracking-widest">Total Network Logs</span>
-                            <span className="text-xl font-mono font-bold text-zinc-300">{totalReviewsCount.toString().padStart(3, '0')}</span>
+        <div className="p-10 space-y-12 min-h-screen">
+            <motion.header
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
+            >
+                <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                        <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
+                            REVIEW <span className="text-primary">MODERATION</span>
+                        </h1>
+                        <span className="hidden sm:inline-flex px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg text-[10px] font-black text-primary uppercase tracking-[0.2em]">Queue</span>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-6">
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
+                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">TOTAL_LOGS: {totalReviewsCount.toString().padStart(3, '0')}</span>
                         </div>
-                        <div className="w-px h-8 bg-zinc-800" />
-                        <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Critical Pending</span>
-                            <span className="text-xl font-mono font-bold text-amber-500">{pendingReviewsCount.toString().padStart(3, '0')}</span>
+                        <div className="flex items-center gap-2">
+                            <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(255,193,7,0.5)]" />
+                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">PENDING_REVIEW: {pendingReviewsCount.toString().padStart(3, '0')}</span>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 bg-surface-container-high/40 p-4 rounded-3xl border border-zinc-800">
-                    <span className="material-symbols-outlined text-zinc-600">info</span>
-                    <p className="text-[10px] font-medium text-zinc-500 leading-relaxed max-w-[200px] uppercase">
-                        Authorize or redact customer sentiment telemetry to ensure brand integrity.
-                    </p>
+                <div className="bg-surface-dark/40 backdrop-blur-xl p-6 rounded-[2rem] border border-white/5 flex items-start gap-4 max-w-sm">
+                    <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
+                        <span className="material-symbols-outlined text-primary">rate_review</span>
+                    </div>
+                    <div>
+                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Sentiment_Gate</p>
+                        <p className="text-[11px] font-medium text-slate-400 leading-relaxed uppercase tracking-widest">
+                            Authorize or redact customer sentiment telemetry to keep the public review stream clean.
+                        </p>
+                    </div>
                 </div>
-            </div>
+            </motion.header>
 
-            <ReviewsClient 
-                initialReviews={reviews || []} 
-                pendingReviews={pendingReviews || []} 
+            <ReviewsClient
+                initialReviews={reviews || []}
+                pendingReviews={pendingReviews || []}
             />
         </div>
     );

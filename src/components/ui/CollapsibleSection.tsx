@@ -15,8 +15,8 @@ interface CollapsibleSectionProps {
 export default function CollapsibleSection({
   title,
   icon,
-  iconColor = "text-primary-container",
-  borderColor = "border-l-primary-container",
+  iconColor = "text-primary",
+  borderColor = "border-primary/20",
   defaultOpen = false,
   children,
 }: CollapsibleSectionProps) {
@@ -24,14 +24,14 @@ export default function CollapsibleSection({
 
   return (
     <section
-      className={`bg-surface-container p-8 border-l-4 ${borderColor} space-y-6`}
+      className={`bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border ${borderColor} space-y-6`}
     >
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="w-full flex items-center justify-between cursor-pointer group"
       >
-        <h2 className="font-headline font-black text-xs tracking-widest uppercase flex items-center gap-2">
-          <span className={`material-symbols-outlined ${iconColor} text-sm`}>
+        <h2 className="font-heading font-black text-xs tracking-[0.3em] uppercase flex items-center gap-3 text-white">
+          <span className={`material-symbols-outlined ${iconColor} text-lg`}>
             {icon}
           </span>
           {title}

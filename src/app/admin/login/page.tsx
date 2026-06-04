@@ -26,71 +26,78 @@ export default function AdminLogin() {
     }
 
     return (
-        <div className="min-h-screen bg-surface flex flex-col items-center justify-center p-4 relative overflow-hidden font-body text-on-surface">
-            {/* Background Grid */}
-            <div className="absolute inset-0 pointer-events-none opacity-20" style={{ backgroundImage: 'radial-gradient(circle at 1px 1px, #4f4632 1px, transparent 0)', backgroundSize: '40px 40px' }}></div>
-            
-            <div className="ui-card w-full max-w-md bg-surface-container-high border-t-2 border-primary-container p-8 relative z-10 shadow-2xl">
-                <div className="mb-8 text-center">
-                    <span className="font-headline text-[10px] tracking-[0.3em] text-admin-secondary uppercase block mb-2">AUTH_GATEWAY // SECURE</span>
-                    <h1 className="font-headline text-5xl tracking-tighter text-white uppercase flex items-center justify-center gap-2">
-                        <span className="material-symbols-outlined text-4xl text-admin-secondary">lock</span>
-                        COMMAND<span className="text-zinc-500">CENTER</span>
-                    </h1>
-                </div>
+        <div className="min-h-screen bg-background-dark flex items-center justify-center p-6 relative overflow-hidden font-body text-on-surface">
+            <div className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(circle_at_1px_1px,rgba(255,193,7,0.18)_1px,transparent_0)] bg-size-[40px_40px]" />
+            <div className="absolute top-0 left-0 w-full h-[2px] bg-linear-to-r from-transparent via-primary/30 to-transparent" />
+            <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 blur-3xl rounded-full" />
+            <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-teal/5 blur-3xl rounded-full" />
 
-                <form onSubmit={handleLogin} className="space-y-6">
-                    <div>
-                        <label className="block font-headline text-xs tracking-widest text-zinc-400 uppercase mb-2">OPERATOR_ID (Email)</label>
-                        <input 
-                            type="email" 
-                            required
-                            className="w-full bg-surface-container border border-zinc-700 p-4 text-white font-mono text-sm focus:border-admin-secondary focus:ring-1 focus:ring-admin-secondary outline-none transition-all placeholder:text-zinc-600"
-                            placeholder="admin@konastone.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </div>
-                    <div>
-                        <label className="block font-headline text-xs tracking-widest text-zinc-400 uppercase mb-2">ACCESS_KEY (Password)</label>
-                        <input 
-                            type="password" 
-                            required
-                            className="w-full bg-surface-container border border-zinc-700 p-4 text-white font-mono text-sm focus:border-admin-secondary focus:ring-1 focus:ring-admin-secondary outline-none transition-all placeholder:text-zinc-600"
-                            placeholder="••••••••••••"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
-                    
-                    {error && (
-                        <div className="border border-red-500/50 bg-red-500/10 p-3 flex items-start gap-2 text-red-400 text-xs font-mono">
-                            <span className="material-symbols-outlined text-[14px]">error</span>
-                            <p>{error}</p>
+            <div className="w-full max-w-md bg-surface-dark/50 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-8 md:p-10 relative z-10 shadow-2xl shadow-black/40 overflow-hidden">
+                <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-3xl" />
+                <div className="relative z-10">
+                    <div className="mb-10 text-center">
+                        <div className="mx-auto mb-6 w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-2xl shadow-primary/10">
+                            <span className="material-symbols-outlined text-4xl text-primary">lock</span>
                         </div>
-                    )}
+                        <span className="font-heading text-[10px] tracking-[0.3em] text-accent-teal uppercase block mb-3 font-black">AUTH_GATEWAY // SECURE</span>
+                        <h1 className="font-heading text-5xl tracking-tighter text-white uppercase italic leading-none font-black">
+                            COMMAND<span className="text-primary">CENTER</span>
+                        </h1>
+                    </div>
 
-                    <button 
-                        type="submit" 
-                        disabled={loading}
-                        className="btn-premium w-full bg-primary-container text-black font-headline font-black text-lg tracking-widest uppercase py-4 hover:bg-amber-400 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
-                    >
-                        {loading ? 'AUTHENTICATING...' : 'INITIATE ACCESS'}
-                    </button>
-                </form>
+                    <form onSubmit={handleLogin} className="space-y-6">
+                        <div className="group relative">
+                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">OPERATOR_ID (Email)</label>
+                            <input
+                                type="email"
+                                required
+                                className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-mono text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-700"
+                                placeholder="admin@konastone.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </div>
+                        <div className="group relative">
+                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">ACCESS_KEY (Password)</label>
+                            <input
+                                type="password"
+                                required
+                                className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-mono text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-700"
+                                placeholder="Password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
 
-                <div className="mt-8 text-center border-t border-zinc-800 pt-6">
-                    <p className="font-mono text-[9px] text-zinc-600 uppercase tracking-widest">
-                        UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED AND MONITORED.
-                    </p>
+                        {error && (
+                            <div className="border border-red-500/40 bg-red-500/10 rounded-2xl p-4 flex items-start gap-3 text-red-400 text-xs font-mono">
+                                <span className="material-symbols-outlined text-[16px]">error</span>
+                                <p>{error}</p>
+                            </div>
+                        )}
+
+                        <button
+                            type="submit"
+                            disabled={loading}
+                            className="w-full h-14 rounded-2xl bg-primary text-black font-heading font-black text-[11px] tracking-[0.3em] uppercase hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+                        >
+                            <span className="material-symbols-outlined text-lg">shield_lock</span>
+                            {loading ? 'AUTHENTICATING...' : 'INITIATE ACCESS'}
+                        </button>
+                    </form>
+
+                    <div className="mt-8 text-center border-t border-white/5 pt-6">
+                        <p className="font-mono text-[9px] text-slate-600 uppercase tracking-widest">
+                            UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED AND MONITORED.
+                        </p>
+                    </div>
                 </div>
             </div>
-            
-            {/* System Info Decor */}
+
             <div className="absolute bottom-6 left-6 opacity-30 pointer-events-none hidden sm:block">
-                <div className="font-headline text-[10px] tracking-[0.4em] space-y-1 text-admin-secondary uppercase">
+                <div className="font-heading text-[10px] tracking-[0.4em] space-y-1 text-accent-teal uppercase font-black">
                     <p>VER: KONASTONE_CORE_V1.2</p>
-                    <p>NODE: US_EAST_1</p>
+                    <p>NODE: ADMIN_ALPHA</p>
                     <p>STATUS: ONLINE</p>
                 </div>
             </div>

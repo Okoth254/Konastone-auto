@@ -17,16 +17,16 @@ interface MotionButtonProps extends Omit<HTMLMotionProps<"button">, "children"> 
 
 const variantClasses: Record<Variant, string> = {
     primary:
-        "bg-primary-container/15 text-primary-container border border-primary-container/35 hover:bg-primary-container/25",
+        "bg-primary/15 text-primary border border-primary/35 hover:bg-primary hover:text-black hover:border-primary",
     secondary:
-        "bg-admin-secondary/15 text-admin-secondary border border-admin-secondary/35 hover:bg-admin-secondary/25",
+        "bg-accent-teal/15 text-accent-teal border border-accent-teal/35 hover:bg-accent-teal/25 hover:border-accent-teal/60",
     ghost:
-        "bg-transparent text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-zinc-100",
+        "bg-white/2 text-slate-300 border border-white/5 hover:border-white/15 hover:bg-white/5 hover:text-white",
     outline:
-        "bg-transparent text-zinc-300 border border-zinc-700 hover:border-zinc-500 hover:text-zinc-100",
+        "bg-transparent text-slate-300 border border-white/10 hover:border-primary/40 hover:text-primary hover:bg-primary/5",
     danger:
-        "bg-red-900/20 text-red-400 border border-red-800/40 hover:bg-red-900/35 hover:text-red-300",
-    icon: "bg-transparent text-zinc-400 border-0 p-2 hover:text-zinc-100",
+        "bg-red-500/10 text-red-400 border border-red-500/25 hover:bg-red-500/20 hover:text-red-300",
+    icon: "bg-white/2 text-slate-400 border border-white/5 p-2 hover:text-white hover:border-white/15",
 };
 
 const MotionWrapper = forwardRef<HTMLButtonElement | HTMLAnchorElement, MotionButtonProps>(
@@ -48,7 +48,7 @@ const MotionWrapper = forwardRef<HTMLButtonElement | HTMLAnchorElement, MotionBu
         const classes = [
             "btn-premium",
             variantClasses[variant],
-            "relative inline-flex items-center justify-center gap-2 px-4 font-headline font-black tracking-widest text-[10px] uppercase",
+            "relative inline-flex items-center justify-center gap-2 px-5 rounded-2xl font-heading font-black tracking-[0.2em] text-[10px] uppercase",
             isDisabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
             className,
         ].join(" ");

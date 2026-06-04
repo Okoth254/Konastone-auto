@@ -12,10 +12,10 @@ interface MotionBadgeProps {
 }
 
 const colorMap = {
-  primary: "bg-primary-container/15 text-primary-container border-primary-container/30",
-  secondary: "bg-admin-secondary/15 text-admin-secondary border-admin-secondary/30",
-  neutral: "bg-zinc-800 text-zinc-400 border-zinc-700",
-  danger: "bg-red-900/20 text-red-400 border-red-800/40",
+  primary: "bg-primary/15 text-primary border-primary/30",
+  secondary: "bg-accent-teal/15 text-accent-teal border-accent-teal/30",
+  neutral: "bg-white/5 text-slate-400 border-white/10",
+  danger: "bg-red-500/10 text-red-400 border-red-500/30",
   accent: "bg-accent-teal/15 text-accent-teal border-accent-teal/30",
 };
 
@@ -37,7 +37,7 @@ export default function MotionBadge({
         delay,
       }}
       className={[
-        "inline-flex items-center gap-1.5 px-2.5 py-0.5 text-[9px] font-headline font-black tracking-widest uppercase border rounded-xs",
+        "inline-flex items-center gap-1.5 px-3 py-1 text-[9px] font-heading font-black tracking-widest uppercase border rounded-full",
         colorMap[color],
         className,
       ].join(" ")}
