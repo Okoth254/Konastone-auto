@@ -30,7 +30,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
     }
 
     const timeline = (lead.lead_timeline_events as LeadTimelineEvent[])?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
-    
+
     const deleteLeadAction = async () => {
         "use server";
         await deleteLead(id);
@@ -38,12 +38,12 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
 
     return (
         <div className="flex-1 overflow-y-auto scrollbar-hide">
-            <motion.header 
+            <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="sticky top-0 z-50 flex justify-between items-center w-full px-10 py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
+                className="sticky top-0 z-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full px-4 py-4 sm:px-6 lg:px-10 lg:py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
             >
-                <div className="flex items-center gap-10">
+                <div className="flex items-center gap-4 lg:gap-10 w-full sm:w-auto">
                     <Link href="/admin/leads" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all group">
                         <span className="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">west</span>
                     </Link>
@@ -58,31 +58,31 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
                     </div>
                 </div>
-                
-                <div className="flex items-center gap-4">
-                    <MotionButton variant="ghost" className="w-12 h-12 p-0 rounded-xl border-white/5" href={`mailto:${lead.email}`}>
+
+                <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto">
+                    <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`mailto:${lead.email}`}>
                         <span className="material-symbols-outlined">mail</span>
                     </MotionButton>
                     {lead.phone && (
-                        <MotionButton variant="ghost" className="w-12 h-12 p-0 rounded-xl border-white/5" href={`tel:${lead.phone}`}>
+                        <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`tel:${lead.phone}`}>
                             <span className="material-symbols-outlined">call</span>
                         </MotionButton>
                     )}
-                    <MotionButton variant="outline" className="px-8 h-12 rounded-xl border-primary/20 text-primary">
+                    <MotionButton variant="outline" className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
                         PROTO_COMM
                     </MotionButton>
                 </div>
             </motion.header>
 
-            <div className="p-10 grid grid-cols-12 gap-10">
+            <div className="admin-page-shell grid grid-cols-12 gap-6 lg:gap-10">
                 {/* Information Core */}
                 <div className="col-span-12 xl:col-span-8 space-y-10">
                     {/* Identity Matrix */}
-                    <motion.section 
+                    <motion.section
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl p-10 rounded-[3rem] border border-white/5 relative overflow-hidden group"
+                        className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-10 rounded-[1.5rem] lg:rounded-[3rem] border border-white/5 relative overflow-hidden group"
                     >
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full" />
                         <div className="flex justify-between items-start mb-12 relative z-10">
@@ -93,7 +93,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                             <MotionBadge color="primary" icon="verified">IDENTITY_CONFIRMED</MotionBadge>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative z-10">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 relative z-10">
                             <div className="space-y-2">
                                 <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Primary Email</p>
                                 <p className="text-xl font-heading font-black text-white truncate">{lead.email}</p>
@@ -110,31 +110,31 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                     </motion.section>
 
                     {/* Target Asset Profile */}
-                    <motion.section 
+                    <motion.section
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 overflow-hidden group"
+                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[3rem] border border-white/5 overflow-hidden group"
                     >
                         {lead.vehicles ? (
                             <div className="grid grid-cols-1 md:grid-cols-5 min-h-[300px]">
-                                <div className="md:col-span-2 relative">
-                                    <Image 
-                                        fill 
-                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000" 
-                                        src={lead.vehicles.main_image_url || "/images/placeholders/car-hero.jpg"} 
-                                        alt="Target Asset" 
+                                <div className="md:col-span-2 relative min-h-[220px] md:min-h-0">
+                                    <Image
+                                        fill
+                                        className="object-cover grayscale group-hover:grayscale-0 transition-all duration-1000"
+                                        src={lead.vehicles.main_image_url || "/images/placeholders/car-hero.jpg"}
+                                        alt="Target Asset"
                                     />
                                     <div className="absolute inset-0 bg-linear-to-r from-surface-dark via-transparent to-transparent opacity-60" />
                                 </div>
-                                <div className="md:col-span-3 p-10 flex flex-col justify-center gap-6">
+                                <div className="md:col-span-3 p-5 sm:p-6 lg:p-10 flex flex-col justify-center gap-6">
                                     <div className="space-y-2">
                                         <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Target_Inventory</p>
-                                        <h3 className="text-4xl font-heading font-black text-white uppercase tracking-tighter italic">
+                                        <h3 className="text-3xl lg:text-4xl font-heading font-black text-white uppercase tracking-tighter italic">
                                             {lead.vehicles.year} {lead.vehicles.make} <br /> {lead.vehicles.model}
                                         </h3>
                                     </div>
-                                    
+
                                     <div className="flex gap-4">
                                         <div className="bg-white/2 border border-white/5 px-4 py-2 rounded-xl">
                                             <p className="text-[8px] font-black text-slate-500 uppercase mb-1">Valuation</p>
@@ -153,7 +153,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 </div>
                             </div>
                         ) : (
-                            <div className="p-12 text-center space-y-4">
+                            <div className="p-6 sm:p-8 lg:p-12 text-center space-y-4">
                                 <span className="material-symbols-outlined text-6xl text-slate-800">search_off</span>
                                 <h3 className="text-2xl font-heading font-black text-slate-600 uppercase italic">NO_TARGET_ASSET_LOCKED</h3>
                                 <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">User initiated general inquiry protocol</p>
@@ -162,12 +162,12 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                     </motion.section>
 
                     {/* Secondary Intel */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                        <motion.div 
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10">
+                        <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6"
+                            className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-8 rounded-[2.5rem] border border-white/5 space-y-6"
                         >
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-accent-teal">no_crash</span>
@@ -183,11 +183,11 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                             </div>
                         </motion.div>
 
-                        <motion.div 
+                        <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.4 }}
-                            className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-6"
+                            className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-8 rounded-[2.5rem] border border-white/5 space-y-6"
                         >
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-primary">account_balance</span>
@@ -207,24 +207,24 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
 
                 {/* Interaction Timeline */}
                 <div className="col-span-12 xl:col-span-4 h-full">
-                    <motion.section 
+                    <motion.section
                         initial={{ opacity: 0, scale: 0.98 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ delay: 0.5 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] h-[800px] flex flex-col overflow-hidden sticky top-32"
+                        className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[1.5rem] lg:rounded-[3rem] max-h-[70vh] lg:max-h-[800px] flex flex-col overflow-hidden lg:sticky lg:top-32"
                     >
-                        <div className="p-8 border-b border-white/5 flex justify-between items-center bg-white/2">
+                        <div className="p-5 sm:p-6 lg:p-8 border-b border-white/5 flex justify-between items-center bg-white/2">
                             <h2 className="font-heading font-black text-xl tracking-tighter uppercase text-white">interaction_Log</h2>
                             <div className="flex gap-1">
                                 {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />)}
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-10 space-y-10 relative scrollbar-hide">
+                        <div className="flex-1 overflow-y-auto p-5 sm:p-6 lg:p-10 space-y-10 relative scrollbar-hide">
                             <div className="absolute left-[51px] top-10 bottom-10 w-px bg-slate-800/50" />
-                            
+
                             {timeline.length > 0 ? timeline.map((event: LeadTimelineEvent, i: number) => (
-                                <motion.div 
+                                <motion.div
                                     key={event.id}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
@@ -249,11 +249,11 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
 
                         {/* Note Entry */}
-                        <div className="p-8 bg-surface-dark/60 border-t border-white/5">
+                        <div className="p-5 sm:p-6 lg:p-8 bg-surface-dark/60 border-t border-white/5">
                             <form action={addTimelineNote.bind(null, lead.id)} className="relative group/form">
-                                <textarea 
-                                    name="note" 
-                                    required 
+                                <textarea
+                                    name="note"
+                                    required
                                     className="w-full bg-white/2 border border-white/10 rounded-3xl p-6 text-[11px] font-mono text-white placeholder:text-slate-600 outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
                                     placeholder="APPEND_INTEL_NOTE..."
                                 />
@@ -268,12 +268,12 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
 
             {/* Global Control Bar */}
             <form action={updateLeadStatus.bind(null, lead.id)}>
-                <motion.footer 
+                <motion.footer
                     initial={{ y: 100 }}
                     animate={{ y: 0 }}
-                    className="fixed bottom-0 left-0 lg:left-80 right-0 bg-surface-dark/80 backdrop-blur-3xl border-t border-white/5 px-10 py-6 z-60 flex items-center justify-between"
+                    className="sticky lg:fixed bottom-0 left-0 lg:left-80 right-0 bg-surface-dark/90 backdrop-blur-3xl border-t border-white/5 px-4 py-4 sm:px-6 lg:px-10 lg:py-6 z-60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
                 >
-                    <div className="flex items-center gap-12">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4 lg:gap-8 w-full sm:w-auto">
                         <div className="space-y-2">
                             <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Pipeline_Status</p>
                             <div className="flex gap-1.5 h-1.5">
@@ -284,8 +284,8 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
                         <div className="h-10 w-px bg-white/5" />
                         <div className="relative">
-                            <select 
-                                name="status" 
+                            <select
+                                name="status"
                                 className="bg-transparent text-sm font-black text-primary uppercase tracking-[0.2em] outline-none cursor-pointer appearance-none pr-8"
                                 defaultValue={lead.status}
                             >
@@ -299,9 +299,9 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-6 w-full sm:w-auto justify-between sm:justify-end">
                         <button formAction={deleteLeadAction} className="text-[9px] font-black text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em]">PURGE_LEAD</button>
-                        <MotionButton type="submit" className="px-12 h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 group/save overflow-hidden">
+                        <MotionButton type="submit" className="px-6 sm:px-12 h-12 sm:h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 group/save overflow-hidden">
                             COMMIT_PROTOCOL
                         </MotionButton>
                     </div>

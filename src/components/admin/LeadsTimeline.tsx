@@ -81,7 +81,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
 
     if (!leads || leads.length === 0) {
         return (
-            <div className="p-12 text-center border-2 border-dashed border-zinc-800 rounded-[3rem] bg-surface-dark/40 backdrop-blur-xl">
+            <div className="p-6 sm:p-8 lg:p-12 text-center border-2 border-dashed border-zinc-800 rounded-[1.5rem] lg:rounded-[3rem] bg-surface-dark/40 backdrop-blur-xl">
                 <span className="material-symbols-outlined text-4xl text-zinc-700 mb-4 block">analytics</span>
                 <p className="text-zinc-500 font-black uppercase tracking-[0.3em] text-xs">No active telemetry available</p>
             </div>
@@ -89,7 +89,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
     }
 
     return (
-        <div ref={containerRef} className="relative pl-12 md:pl-32 py-16">
+        <div ref={containerRef} className="relative pl-8 sm:pl-12 md:pl-32 py-8 lg:py-16">
             {/* Animated Timeline Stroke */}
             <div className="absolute left-[54px] md:left-[96px] top-0 bottom-0 w-[2px] bg-zinc-800/50">
                 <motion.div 
@@ -98,7 +98,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                 />
             </div>
 
-            <div className="space-y-24">
+            <div className="space-y-12 lg:space-y-24">
                 {groupedLeads.map(([groupName, groupLeads]) => (
                     <div key={groupName} className="relative">
                         {/* Group Header */}
@@ -112,7 +112,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                             </motion.span>
                         </div>
 
-                        <div className="space-y-12">
+                        <div className="space-y-6 lg:space-y-12">
                             {groupLeads.map((lead, i) => {
                                 const vehicleData = Array.isArray(lead.vehicles) ? lead.vehicles[0] : lead.vehicles;
                                 const vehicleName = vehicleData
@@ -148,7 +148,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                         {/* Lead Card */}
                                         <Link 
                                             href={`/admin/leads/${lead.id}`}
-                                            className="flex-1 bg-surface-dark/40 backdrop-blur-xl border border-white/5 p-8 md:p-10 rounded-[2.5rem] hover:border-primary/40 hover:bg-surface-dark/60 transition-all duration-500 group/card relative overflow-hidden group-hover:translate-x-2"
+                                            className="flex-1 bg-surface-dark/40 backdrop-blur-xl border border-white/5 p-5 sm:p-6 md:p-10 rounded-[1.5rem] lg:rounded-[2.5rem] hover:border-primary/40 hover:bg-surface-dark/60 transition-all duration-500 group/card relative overflow-hidden lg:group-hover:translate-x-2"
                                         >
                                             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-[80px] pointer-events-none group-hover/card:bg-primary/10 transition-colors" />
                                             
@@ -163,7 +163,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                                         </motion.span>
                                                         <p className="md:hidden text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">{dateStr}</p>
                                                     </div>
-                                                    <h3 className="text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter leading-none group-hover/card:text-primary transition-colors">{lead.name}</h3>
+                                                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter leading-none group-hover/card:text-primary transition-colors">{lead.name}</h3>
                                                     <div className="flex items-center gap-3 text-slate-400">
                                                         <span className="material-symbols-outlined text-primary text-xl">directions_car</span>
                                                         <p className="text-lg font-heading tracking-tight">{vehicleName}</p>

@@ -51,19 +51,19 @@ export default async function AdminDashboard() {
     .limit(10);
 
   return (
-    <div className="p-10 space-y-12">
+    <div className="admin-page-shell admin-section-stack">
       {/* Header Section */}
       <motion.header 
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
-        className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6"
+        className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6"
       >
         <div>
-          <div className="flex items-center gap-3 mb-2">
-            <h2 className="text-5xl font-heading font-black tracking-tighter text-white uppercase italic">DASHBOARD</h2>
+          <div className="flex flex-wrap items-center gap-3 mb-2">
+            <h2 className="text-4xl sm:text-5xl font-heading font-black tracking-tighter text-white uppercase italic">DASHBOARD</h2>
             <span className="px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg text-[10px] font-black text-primary uppercase tracking-[0.2em]">Operational</span>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-accent-teal rounded-full animate-pulse shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
               <span className="text-slate-500 text-[9px] font-black tracking-[0.4em] uppercase">LINK_STATE: NOMINAL</span>
@@ -75,7 +75,7 @@ export default async function AdminDashboard() {
           </div>
         </div>
         
-        <div className="flex gap-4 bg-surface-dark p-4 rounded-2xl border border-white/5 shadow-inner">
+        <div className="flex flex-wrap gap-4 bg-surface-dark p-4 rounded-2xl border border-white/5 shadow-inner w-full sm:w-auto">
             <div className="text-right px-4 border-r border-white/5">
                 <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">LOCAL_TIME</p>
                 <p className="text-lg font-heading font-black text-white">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
@@ -88,7 +88,7 @@ export default async function AdminDashboard() {
       </motion.header>
       
       {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
         <KpiCard 
           label="INVENTORY_UNITS" 
           value={inventoryCount || 0} 
@@ -117,7 +117,7 @@ export default async function AdminDashboard() {
         />
       </div>
       
-      <div className="grid grid-cols-12 gap-10">
+      <div className="grid grid-cols-12 gap-6 lg:gap-10">
         {/* Inventory Stream */}
         <motion.div 
             initial={{ opacity: 0, y: 30 }}
@@ -136,14 +136,15 @@ export default async function AdminDashboard() {
             </Link>
           </div>
           
-          <div className="bg-surface-dark/40 backdrop-blur-xl rounded-[2.5rem] border border-white/5 overflow-hidden">
-            <table className="w-full text-left">
+          <div className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[2.5rem] border border-white/5 overflow-hidden">
+            <div className="admin-table-scroll">
+            <table className="w-full min-w-[720px] text-left">
               <thead>
                 <tr className="border-b border-white/5 bg-white/2">
-                  <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Registry_ID</th>
-                  <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Specification</th>
-                  <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Core_State</th>
-                  <th className="px-8 py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase text-right">Valuation</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Registry_ID</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Specification</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Core_State</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase text-right">Valuation</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
@@ -155,9 +156,9 @@ export default async function AdminDashboard() {
                     transition={{ delay: 0.5 + (i * 0.05) }}
                     className="border-b border-white/5 hover:bg-white/2 transition-all group cursor-pointer"
                   >
-                    <td className="px-8 py-5 font-mono text-primary text-xs uppercase tracking-tight">{vehicle.vin?.substring(0, 12).toUpperCase() || vehicle.id.substring(0, 8).toUpperCase()}</td>
-                    <td className="px-8 py-5 font-heading text-white font-bold tracking-tight">{vehicle.model.toUpperCase()}</td>
-                    <td className="px-8 py-5">
+                    <td className="px-4 py-4 lg:px-8 lg:py-5 font-mono text-primary text-xs uppercase tracking-tight">{vehicle.vin?.substring(0, 12).toUpperCase() || vehicle.id.substring(0, 8).toUpperCase()}</td>
+                    <td className="px-4 py-4 lg:px-8 lg:py-5 font-heading text-white font-bold tracking-tight">{vehicle.model.toUpperCase()}</td>
+                    <td className="px-4 py-4 lg:px-8 lg:py-5">
                       <span className={`inline-flex items-center px-4 py-1 text-[9px] font-black tracking-[0.15em] uppercase rounded-full border ${
                         vehicle.status === 'available' ? 'bg-accent-teal/10 text-accent-teal border-accent-teal/20' :
                         vehicle.status === 'in_transit' ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' :
@@ -166,7 +167,7 @@ export default async function AdminDashboard() {
                         {vehicle.status.replace('_', ' ')}
                       </span>
                     </td>
-                    <td className="px-8 py-5 font-heading font-black text-right text-white">
+                    <td className="px-4 py-4 lg:px-8 lg:py-5 font-heading font-black text-right text-white">
                         <span className="text-primary mr-1">$</span>
                         {Intl.NumberFormat('en-US').format(vehicle.price)}
                     </td>
@@ -174,6 +175,7 @@ export default async function AdminDashboard() {
                 ))}
               </tbody>
             </table>
+            </div>
           </div>
         </motion.div>
         
@@ -193,14 +195,14 @@ export default async function AdminDashboard() {
       </div>
       
       {/* Visual Analytics */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pb-10">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 pb-10">
         <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] p-10 flex flex-col group"
+            className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 admin-panel admin-panel-pad flex flex-col group"
         >
-          <div className="flex justify-between items-center mb-10">
+          <div className="flex justify-between items-center mb-6 lg:mb-10">
             <div>
               <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Inventory_Dist_Matrix</p>
               <div className="h-[2px] w-12 bg-accent-teal" />
@@ -221,9 +223,9 @@ export default async function AdminDashboard() {
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] p-10 flex flex-col group"
+            className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 admin-panel admin-panel-pad flex flex-col group"
         >
-          <div className="flex justify-between items-center mb-10">
+          <div className="flex justify-between items-center mb-6 lg:mb-10">
             <div>
               <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Lead_Funnel_Metrics</p>
               <div className="h-[2px] w-12 bg-primary" />

@@ -35,7 +35,7 @@ const itemVars = {
 export default function VehicleForm({ vehicle, vehicleId, existingImages }: { vehicle: Partial<Vehicle> | null, vehicleId: string, existingImages: ExistingImage[] }) {
     const isNew = vehicleId === 'new';
     const [status, setStatus] = useState(vehicle?.status || 'available');
-    
+
     // Image state management
     const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
     const [keepImages, setKeepImages] = useState<ExistingImage[]>(existingImages);
@@ -43,7 +43,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     const [mainImageUrl, setMainImageUrl] = useState<string>(vehicle?.main_image_url || '');
     const [mainImageIndex, setMainImageIndex] = useState(0);
     const [isDirty, setIsDirty] = useState(false);
-    
+
     const fileInputRef = useRef<HTMLInputElement>(null);
     const deleteAction = deleteVehicle.bind(null, vehicleId);
 
@@ -77,13 +77,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
             <input type="hidden" name="main_image_index" value={mainImageIndex.toString()} />
             <input type="hidden" name="deleted_image_ids" value={deletedIds.join(',')} />
             <input type="hidden" name="existing_image_order" value={keepImages.map((img) => img.id).join(',')} />
-            
+
             {/* Cinematic Header */}
-            <header className="sticky top-0 z-100 bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-6 px-10">
-                <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-8">
+            <header className="sticky top-0 z-100 bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-4 px-4 sm:px-6 lg:py-6 lg:px-10">
+                <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div className="flex items-center gap-4 sm:gap-8 w-full lg:w-auto">
                         <Link href="/admin/vehicles">
-                            <motion.div 
+                            <motion.div
                                 whileHover={{ x: -5 }}
                                 className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-slate-400 hover:text-white transition-colors"
                             >
@@ -100,11 +100,11 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                             </h1>
                         </div>
                     </div>
-                    
-                    <div className="flex items-center gap-4">
+
+                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto justify-between lg:justify-end">
                         <AnimatePresence>
                             {isDirty && (
-                                <motion.span 
+                                <motion.span
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
@@ -114,31 +114,31 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 </motion.span>
                             )}
                         </AnimatePresence>
-                        <MotionButton type="submit" variant="primary" className="px-10">
+                        <MotionButton type="submit" variant="primary" className="px-5 sm:px-10">
                             Push_Changes
                         </MotionButton>
                     </div>
                 </div>
             </header>
 
-            <main className="flex-1 py-16 px-10">
-                <motion.div 
+            <main className="flex-1 py-8 px-4 sm:px-6 lg:py-16 lg:px-10">
+                <motion.div
                     variants={containerVars}
                     initial="hidden"
                     animate="visible"
-                    className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-16"
+                    className="max-w-[1600px] mx-auto grid grid-cols-1 xl:grid-cols-12 gap-6 lg:gap-10"
                 >
                     {/* Primary Technical Form */}
-                    <div className="xl:col-span-8 space-y-20">
+                    <div className="xl:col-span-8 space-y-8 lg:space-y-14">
                         {/* 01. IDENTITY */}
-                        <motion.section variants={itemVars} className="space-y-10">
+                        <motion.section variants={itemVars} className="space-y-6 lg:space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">01</span>
                                 <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Asset_Identity</h2>
                             </div>
-                            
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10">
+
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-12 gap-y-6 lg:gap-y-10">
                                 {[
                                     { label: 'Manufacturer', name: 'make', defaultValue: vehicle?.make },
                                     { label: 'Model_Designation', name: 'model', defaultValue: vehicle?.model },
@@ -152,16 +152,16 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             {field.label}
                                         </label>
                                         {field.type === 'select' ? (
-                                            <select 
-                                                name={field.name} 
+                                            <select
+                                                name={field.name}
                                                 defaultValue={field.defaultValue}
                                                 className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                                             >
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
                                             </select>
                                         ) : (
-                                            <input 
-                                                type={field.type || 'text'} 
+                                            <input
+                                                type={field.type || 'text'}
                                                 name={field.name}
                                                 defaultValue={field.defaultValue}
                                                 required
@@ -175,28 +175,28 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         </motion.section>
 
                         {/* 02. TECHNICAL MATRICES */}
-                        <motion.section variants={itemVars} className="space-y-10">
+                        <motion.section variants={itemVars} className="space-y-6 lg:space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">02</span>
                                 <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Propulsion_Metrics</h2>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-6">
                                 {[
                                     { label: 'Engine_Type', name: 'engine_type', placeholder: 'e.g. 4.0L V8', defaultValue: vehicle?.engine_type },
                                     { label: 'Power_Output', name: 'power', placeholder: 'e.g. 500 HP', defaultValue: vehicle?.power },
                                     { label: 'Transmission', name: 'transmission', type: 'select', options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
                                     { label: 'Drive_Protocol', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD'], defaultValue: vehicle?.drivetrain }
                                 ].map((field) => (
-                                    <div key={field.name} className="bg-white/2 border border-white/5 rounded-3xl p-6 hover:bg-white/4 transition-all">
+                                    <div key={field.name} className="bg-white/2 border border-white/5 rounded-2xl lg:rounded-3xl p-5 sm:p-6 hover:bg-white/4 transition-all">
                                         <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}</label>
                                         {field.type === 'select' ? (
-                                            <select name={field.name} defaultValue={field.defaultValue} className="w-full bg-transparent text-xl font-heading font-black text-white outline-none cursor-pointer">
+                                            <select name={field.name} defaultValue={field.defaultValue} className="w-full bg-transparent text-lg sm:text-xl font-heading font-black text-white outline-none cursor-pointer">
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
                                             </select>
                                         ) : (
-                                            <input name={field.name} defaultValue={field.defaultValue} placeholder={field.placeholder} className="w-full bg-transparent text-xl font-heading font-black text-white outline-none placeholder:text-white/10" />
+                                            <input name={field.name} defaultValue={field.defaultValue} placeholder={field.placeholder} className="w-full bg-transparent text-lg sm:text-xl font-heading font-black text-white outline-none placeholder:text-white/10" />
                                         )}
                                     </div>
                                 ))}
@@ -204,15 +204,15 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                         </motion.section>
 
                         {/* 03. MEDIA PROTOCOL */}
-                        <motion.section variants={itemVars} className="space-y-10">
+                        <motion.section variants={itemVars} className="space-y-6 lg:space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">03</span>
                                 <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Visual_Assets</h2>
                             </div>
 
-                            <div className="bg-white/2 border border-white/5 rounded-[3rem] p-10">
-                                <div className="flex justify-between items-center mb-10">
+                            <div className="bg-white/2 border border-white/5 rounded-[1.5rem] lg:rounded-[3rem] p-5 sm:p-6 lg:p-10">
+                                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6 lg:mb-10">
                                     <div>
                                         <p className="text-[10px] font-black text-white uppercase tracking-widest mb-2 italic">Gallery_Management</p>
                                         <p className="text-[9px] text-slate-500 uppercase tracking-widest leading-relaxed">DRAG TO REORDER. TAP TO SET COVER IMAGE.</p>
@@ -223,13 +223,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                     <input ref={fileInputRef} name="gallery_images" type="file" accept="image/*" multiple onChange={handleFileChange} className="hidden" />
                                 </div>
 
-                                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
                                     <Reorder.Group axis="y" values={keepImages} onReorder={setKeepImages} className="contents">
                                         {keepImages.map((img) => (
                                             <Reorder.Item
                                                 key={img.id}
                                                 value={img}
-                                                className={`relative aspect-video rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border-2 transition-all ${mainImageUrl === img.public_url ? 'border-primary shadow-2xl shadow-primary/20' : 'border-white/5 hover:border-white/20'}`}
+                                                className={`relative aspect-video rounded-2xl lg:rounded-3xl overflow-hidden cursor-grab active:cursor-grabbing border-2 transition-all ${mainImageUrl === img.public_url ? 'border-primary shadow-2xl shadow-primary/20' : 'border-white/5 hover:border-white/20'}`}
                                                 onClick={() => setMainImageUrl(img.public_url)}
                                             >
                                                 <Image fill src={img.public_url} alt="Vehicle" className="object-cover" />
@@ -253,7 +253,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                         <div
                                             key={preview.url}
                                             onClick={() => { setMainImageIndex(idx); setMainImageUrl(''); }}
-                                            className={`relative aspect-video rounded-3xl overflow-hidden border-2 border-dashed transition-all group cursor-pointer ${!mainImageUrl && mainImageIndex === idx ? 'border-primary' : 'border-white/10 hover:border-white/20'}`}
+                                            className={`relative aspect-video rounded-2xl lg:rounded-3xl overflow-hidden border-2 border-dashed transition-all group cursor-pointer ${!mainImageUrl && mainImageIndex === idx ? 'border-primary' : 'border-white/10 hover:border-white/20'}`}
                                         >
                                             <Image unoptimized fill src={preview.url} alt="Preview" className="object-cover" />
                                             <div className="absolute top-4 left-4">
@@ -267,7 +267,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                                 <span className="material-symbols-outlined text-sm">close</span>
                                             </button>
                                             {!mainImageUrl && mainImageIndex === idx && (
-                                                <div className="absolute inset-0 border-2 border-primary rounded-3xl pointer-events-none" />
+                                                <div className="absolute inset-0 border-2 border-primary rounded-2xl lg:rounded-3xl pointer-events-none" />
                                             )}
                                             {!mainImageUrl && mainImageIndex === idx && (
                                                 <div className="absolute bottom-4 right-4">
@@ -276,10 +276,10 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             )}
                                         </div>
                                     ))}
-                                    
-                                    <div 
+
+                                    <div
                                         onClick={() => fileInputRef.current?.click()}
-                                        className="aspect-video rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-3 text-slate-600 hover:text-primary hover:border-primary/20 transition-all cursor-pointer group"
+                                        className="aspect-video rounded-2xl lg:rounded-3xl border-2 border-dashed border-white/5 flex flex-col items-center justify-center gap-3 text-slate-600 hover:text-primary hover:border-primary/20 transition-all cursor-pointer group"
                                     >
                                         <span className="material-symbols-outlined text-3xl transition-transform group-hover:scale-110">add_a_photo</span>
                                         <span className="text-[8px] font-black uppercase tracking-[0.3em]">Link_Asset</span>
@@ -290,40 +290,40 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                     </div>
 
                     {/* Operational Sidebar */}
-                    <aside className="xl:col-span-4 space-y-10">
-                        <motion.div variants={itemVars} className="sticky top-40 space-y-10">
+                    <aside className="xl:col-span-4 space-y-6 lg:space-y-10">
+                        <motion.div variants={itemVars} className="xl:sticky xl:top-40 space-y-6 lg:space-y-10">
                             {/* Valuation Panel */}
-                            <div className="bg-primary p-12 rounded-[3.5rem] relative overflow-hidden group">
-                                <div className="absolute top-0 right-0 p-10 opacity-10 group-hover:rotate-12 transition-transform">
+                            <div className="bg-primary p-5 sm:p-8 lg:p-10 rounded-[1.5rem] lg:rounded-[3rem] relative overflow-hidden group">
+                                <div className="absolute top-0 right-0 p-6 lg:p-10 opacity-10 group-hover:rotate-12 transition-transform">
                                     <span className="material-symbols-outlined text-9xl text-black">payments</span>
                                 </div>
                                 <label className="block text-[10px] font-black text-black uppercase tracking-[0.4em] mb-4">Asset_Valuation</label>
                                 <div className="flex items-baseline gap-3">
                                     <span className="text-xl font-heading font-black text-black/40 italic">KSH</span>
-                                    <input 
-                                        name="price" 
-                                        type="number" 
-                                        defaultValue={vehicle?.price} 
-                                        className="bg-transparent border-none p-0 text-6xl font-heading font-black text-black w-full outline-none focus:ring-0" 
+                                    <input
+                                        name="price"
+                                        type="number"
+                                        defaultValue={vehicle?.price}
+                                        className="bg-transparent border-none p-0 text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-black w-full outline-none focus:ring-0"
                                     />
                                 </div>
                             </div>
 
                             {/* State Panel */}
-                            <div className="bg-white/3 border border-white/5 rounded-[3.5rem] p-12 space-y-10">
+                            <div className="bg-white/3 border border-white/5 rounded-[1.5rem] lg:rounded-[3rem] p-5 sm:p-8 lg:p-10 space-y-6 lg:space-y-10">
                                 <div>
-                                    <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-8">Operational_State</label>
+                                    <label className="block text-[9px] font-black text-slate-500 uppercase tracking-[0.4em] mb-5 lg:mb-8">Operational_State</label>
                                     <div className="flex items-center justify-between">
                                         <div className="flex flex-col gap-1">
                                             <span className="text-xl font-heading font-black text-white uppercase italic tracking-tight">{status === 'available' ? 'DEPLOYED' : 'ARCHIVED'}</span>
                                             <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest">Global_Visibility_State</span>
                                         </div>
-                                        <button 
+                                        <button
                                             type="button"
                                             onClick={() => setStatus(status === 'available' ? 'sold' : 'available')}
                                             className={`w-20 h-10 rounded-full relative transition-all duration-500 ${status === 'available' ? 'bg-primary' : 'bg-slate-800'}`}
                                         >
-                                            <motion.div 
+                                            <motion.div
                                                 animate={{ x: status === 'available' ? 44 : 4 }}
                                                 className="absolute top-1 w-8 h-8 rounded-full bg-black shadow-lg"
                                             />
@@ -331,7 +331,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                     </div>
                                 </div>
 
-                                <div className="pt-10 border-t border-white/5 space-y-6">
+                                <div className="pt-6 lg:pt-10 border-t border-white/5 space-y-6">
                                     <div className="flex items-center gap-4 text-slate-500">
                                         <span className="material-symbols-outlined text-lg">verified</span>
                                         <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Integrity Check Passed</span>
@@ -343,7 +343,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 </div>
 
                                 {!isNew && (
-                                    <div className="pt-10 border-t border-white/5">
+                                    <div className="pt-6 lg:pt-10 border-t border-white/5">
                                         <button formAction={deleteAction} className="w-full py-5 rounded-2xl border border-red-500/10 bg-red-500/5 text-red-500 text-[10px] font-black uppercase tracking-widest hover:bg-red-500 hover:text-white transition-all duration-500">
                                             PURGE_ASSET_FROM_REGISTRY
                                         </button>

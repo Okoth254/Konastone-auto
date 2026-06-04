@@ -14,13 +14,13 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 
             {/* Main Canvas Context */}
             <div className="flex-1 flex flex-col min-h-screen xl:ml-72 transition-all duration-700">
-                <main className="flex-1 w-full overflow-hidden">
+                <main className="flex-1 w-full overflow-x-hidden overflow-y-visible">
                     {children}
                 </main>
                 
-                <footer className="w-full px-10 py-8 border-t border-white/5 bg-background-dark flex flex-col md:flex-row justify-between items-center">
+                <footer className="w-full px-4 py-6 sm:px-6 lg:px-10 lg:py-8 border-t border-white/5 bg-background-dark flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                     <p className="text-zinc-500 font-heading text-[10px] tracking-widest">© {new Date().getFullYear()} Konastone Autos. All rights reserved.</p>
-                    <div className="flex gap-8 mt-4 md:mt-0">
+                    <div className="flex flex-wrap justify-center gap-4 sm:gap-8 md:mt-0">
                         <a className="text-zinc-600 font-heading text-[10px] tracking-widest hover:text-zinc-300 transition-colors" href="#">Privacy</a>
                         <a className="text-zinc-600 font-heading text-[10px] tracking-widest hover:text-zinc-300 transition-colors" href="#">Terms</a>
                         <a className="text-zinc-600 font-heading text-[10px] tracking-widest hover:text-zinc-300 transition-colors" href="#">Admin portal</a>

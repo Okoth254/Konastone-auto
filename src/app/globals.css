@@ -349,6 +349,74 @@ html, body {
   }
 }
 
+
+
+/* Admin responsive layout utilities */
+.admin-page-shell {
+  width: 100%;
+  padding: 1.5rem 1rem;
+}
+
+.admin-section-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.admin-panel {
+  border-radius: 1.5rem;
+}
+
+.admin-panel-pad {
+  padding: 1.25rem;
+}
+
+.admin-table-scroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.admin-table-min {
+  min-width: 720px;
+}
+
+.admin-safe-bottom {
+  padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+}
+
+@media (min-width: 640px) {
+  .admin-page-shell {
+    padding: 2rem 1.5rem;
+  }
+
+  .admin-section-stack {
+    gap: 2rem;
+  }
+
+  .admin-panel-pad {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .admin-page-shell {
+    padding: 2.5rem;
+  }
+
+  .admin-section-stack {
+    gap: 3rem;
+  }
+
+  .admin-panel {
+    border-radius: 3rem;
+  }
+
+  .admin-panel-pad {
+    padding: 2.5rem;
+  }
+}
+
 /* Gradient Text Utilities */
 .text-gradient-gold {
   background-clip: text;

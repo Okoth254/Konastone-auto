@@ -39,9 +39,9 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="sticky top-0 z-50 flex justify-between items-center w-full px-10 py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
+                className="sticky top-0 z-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full px-4 py-4 sm:px-6 lg:px-10 lg:py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
             >
-                <div className="flex items-center gap-10">
+                <div className="flex items-center gap-4 lg:gap-10 w-full sm:w-auto">
                     <Link href="/admin/reviews" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all group">
                         <span className="material-symbols-outlined text-xl group-hover:-translate-x-1 transition-transform">west</span>
                     </Link>
@@ -63,18 +63,18 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
                 </div>
             </motion.header>
 
-            <div className="p-10 grid grid-cols-12 gap-10">
+            <div className="admin-page-shell grid grid-cols-12 gap-6 lg:gap-10">
                 <div className="col-span-12 xl:col-span-4 space-y-10">
                     <motion.section
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 overflow-hidden"
+                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[3rem] border border-white/5 overflow-hidden"
                     >
                         <div className="relative aspect-16/10 bg-white/2 overflow-hidden">
                             <Image fill className="object-cover grayscale opacity-80 hover:grayscale-0 hover:opacity-100 transition-all duration-700" src={vehicleImage} alt={vehicleName} />
                             <div className="absolute inset-0 bg-linear-to-t from-background-dark/70 to-transparent" />
                         </div>
-                        <div className="p-8 space-y-8">
+                        <div className="p-5 sm:p-6 lg:p-8 space-y-8">
                             <div>
                                 <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-2">Asset_Link</p>
                                 <h1 className="font-heading text-3xl font-black tracking-tighter text-white uppercase italic leading-none">{vehicleName}</h1>
@@ -102,18 +102,18 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[3rem] border border-white/5 p-10 relative overflow-hidden"
+                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[3rem] border border-white/5 p-5 sm:p-6 lg:p-10 relative overflow-hidden"
                     >
                         <div className="absolute top-0 right-0 w-72 h-72 bg-primary/5 blur-3xl" />
                         <div className="relative z-10 space-y-10">
-                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-8">
+                            <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 lg:gap-8">
                                 <div className="flex items-center gap-6">
                                     <div className="w-20 h-20 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                                         <span className="material-symbols-outlined text-4xl text-primary">person_check</span>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Verified_Client</p>
-                                        <h1 className="font-heading text-4xl md:text-5xl font-black tracking-tighter text-white uppercase italic leading-none">{review.customer_name}</h1>
+                                        <h1 className="font-heading text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter text-white uppercase italic leading-none">{review.customer_name}</h1>
                                         <div className="flex items-center gap-1 mt-4">
                                             {[1, 2, 3, 4, 5].map((star) => (
                                                 <span key={star} className={`material-symbols-outlined text-base ${star <= review.rating ? 'text-primary' : 'text-slate-700'}`}>star</span>
@@ -128,7 +128,7 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
                                 </div>
                             </div>
 
-                            <div className="relative rounded-[2rem] bg-white/2 border border-white/5 p-8 border-l-2 border-l-primary">
+                            <div className="relative rounded-[2rem] bg-white/2 border border-white/5 p-5 sm:p-6 lg:p-8 border-l-2 border-l-primary">
                                 <span className="absolute -top-5 left-8 text-6xl font-heading text-primary/20 select-none">&quot;</span>
                                 <p className="text-lg md:text-xl leading-relaxed text-slate-300 font-medium italic relative z-10">
                                     {review.review_text}
@@ -147,9 +147,9 @@ export default async function ReviewModerationDetail({ params }: { params: Promi
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[2.5rem] border border-white/5 p-8"
+                        className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[2.5rem] border border-white/5 p-5 sm:p-6 lg:p-8"
                     >
-                        <div className="flex flex-col sm:flex-row gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
                             <form action={updateReviewStatus.bind(null, review.id, 'approved')} className="flex-1 flex">
                                 <button type="submit" className="w-full h-14 rounded-2xl bg-primary text-black font-heading font-black tracking-[0.2em] text-[10px] uppercase hover:shadow-2xl hover:shadow-primary/20 transition-all active:scale-[0.98]">
                                     APPROVE_TRANSMISSION

@@ -54,14 +54,14 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
     };
 
     return (
-        <div className="space-y-12">
+        <div className="space-y-6 lg:space-y-12">
             {/* Command Toggle */}
             <motion.div 
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex items-center justify-between border-b border-white/5 pb-10"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/5 pb-6 lg:pb-10"
             >
-                <div className="flex bg-surface-dark/40 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl">
+                <div className="grid grid-cols-1 sm:grid-cols-2 w-full md:w-auto bg-surface-dark/40 p-1.5 rounded-2xl border border-white/5 backdrop-blur-xl">
                     <button
                         onClick={() => setViewMode('focus')}
                         className={`flex items-center gap-3 px-8 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 ${
@@ -102,7 +102,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
                         exit={{ opacity: 0, scale: 1.02, filter: "blur(10px)" }}
                         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                        className="py-12"
+                        className="py-6 lg:py-12"
                     >
                         {localPending.length > 0 ? (
                             <ReviewSwipeDeck 
@@ -123,18 +123,18 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -30 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[3rem] overflow-hidden"
+                        className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[1.5rem] lg:rounded-[3rem] overflow-hidden"
                     >
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="bg-white/2 border-b border-white/5 text-slate-500 text-[9px] font-black uppercase tracking-[0.4em]">
-                                        <th className="px-10 py-6">Registry_ID</th>
-                                        <th className="px-10 py-6">Identity</th>
-                                        <th className="px-10 py-6">Asset_Link</th>
-                                        <th className="px-10 py-6 text-center">Sentiment_Metric</th>
-                                        <th className="px-10 py-6">Protocol_State</th>
-                                        <th className="px-10 py-6 text-right">Access</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Registry_ID</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Identity</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Asset_Link</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-center">Sentiment_Metric</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Protocol_State</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-right">Access</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -146,10 +146,10 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                             transition={{ delay: index * 0.05 }}
                                             className="border-b border-white/2 hover:bg-white/2 transition-all group cursor-pointer"
                                         >
-                                            <td className="px-10 py-6 font-mono text-[10px] text-slate-600 uppercase tracking-tighter">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6 font-mono text-[10px] text-slate-600 uppercase tracking-tighter">
                                                 {review.id.substring(0, 8)}
                                             </td>
-                                            <td className="px-10 py-6">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <p className="font-heading font-black text-white uppercase tracking-tight text-lg group-hover:text-primary transition-colors">
                                                     {review.customer_name}
                                                 </p>
@@ -157,12 +157,12 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                                     Verified Client
                                                 </p>
                                             </td>
-                                            <td className="px-10 py-6">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <span className="text-slate-400 text-[11px] font-black uppercase tracking-widest italic">
                                                     {review.vehicles ? `${review.vehicles.year} ${review.vehicles.make} ${review.vehicles.model}` : "GENERAL_INQUIRY"}
                                                 </span>
                                             </td>
-                                            <td className="px-10 py-6">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <div className="flex justify-center gap-0.5 text-primary">
                                                     {Array.from({ length: 5 }).map((_, starIndex) => (
                                                         <span key={starIndex} className={`material-symbols-outlined text-sm ${starIndex < review.rating ? 'fill-1' : 'opacity-10'}`}>
@@ -171,7 +171,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                                     ))}
                                                 </div>
                                             </td>
-                                            <td className="px-10 py-6">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <MotionBadge 
                                                     color={review.status === 'approved' ? 'primary' : 'neutral'}
                                                     className={`uppercase tracking-widest ${
@@ -183,7 +183,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                                     {review.status}
                                                 </MotionBadge>
                                             </td>
-                                            <td className="px-10 py-6 text-right">
+                                            <td className="px-4 py-4 lg:px-10 lg:py-6 text-right">
                                                 <Link 
                                                     href={`/admin/reviews/${review.id}`}
                                                     className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-all group/link"

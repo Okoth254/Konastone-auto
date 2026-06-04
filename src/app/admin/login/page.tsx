@@ -32,7 +32,7 @@ export default function AdminLogin() {
             <div className="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 blur-3xl rounded-full" />
             <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent-teal/5 blur-3xl rounded-full" />
 
-            <div className="w-full max-w-md bg-surface-dark/50 backdrop-blur-3xl border border-white/10 rounded-[3rem] p-8 md:p-10 relative z-10 shadow-2xl shadow-black/40 overflow-hidden">
+            <div className="w-full max-w-md bg-surface-dark/50 backdrop-blur-3xl border border-white/10 rounded-[2rem] md:rounded-[3rem] p-6 sm:p-8 md:p-10 relative z-10 shadow-2xl shadow-black/40 overflow-hidden">
                 <div className="absolute top-0 right-0 w-40 h-40 bg-primary/5 blur-3xl" />
                 <div className="relative z-10">
                     <div className="mb-10 text-center">
@@ -40,7 +40,7 @@ export default function AdminLogin() {
                             <span className="material-symbols-outlined text-4xl text-primary">lock</span>
                         </div>
                         <span className="font-heading text-[10px] tracking-[0.3em] text-accent-teal uppercase block mb-3 font-black">Secure staff access</span>
-                        <h1 className="font-heading text-5xl tracking-tighter text-white uppercase italic leading-none font-black">
+                        <h1 className="font-heading text-4xl sm:text-5xl tracking-tighter text-white uppercase italic leading-none font-black">
                             KONASTONE <span className="text-primary">AUTOS</span>
                         </h1>
                     </div>

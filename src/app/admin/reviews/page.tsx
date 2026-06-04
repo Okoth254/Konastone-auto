@@ -51,15 +51,15 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
         .order('created_at', { ascending: true });
 
     return (
-        <div className="p-10 space-y-12 min-h-screen">
+        <div className="admin-page-shell admin-section-stack min-h-screen">
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
+                className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 lg:gap-8"
             >
                 <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
                             REVIEW <span className="text-primary">MODERATION</span>
                         </h1>
                         <span className="hidden sm:inline-flex px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg text-[10px] font-black text-primary uppercase tracking-[0.2em]">Queue</span>
@@ -76,7 +76,7 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
                     </div>
                 </div>
 
-                <div className="bg-surface-dark/40 backdrop-blur-xl p-6 rounded-[2rem] border border-white/5 flex items-start gap-4 max-w-sm">
+                <div className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 rounded-[1.5rem] lg:rounded-[2rem] border border-white/5 flex items-start gap-4 w-full lg:max-w-sm">
                     <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center shrink-0">
                         <span className="material-symbols-outlined text-primary">rate_review</span>
                     </div>

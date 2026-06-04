@@ -11,14 +11,14 @@ export default async function AdminSettingsPage() {
     const { count: reviewCount } = await supabase.from('customer_reviews').select('*', { count: 'exact', head: true });
 
     return (
-        <div className="p-10 space-y-12 min-h-screen">
+        <div className="admin-page-shell admin-section-stack min-h-screen">
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
+                className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 lg:gap-8"
             >
                 <div className="space-y-3">
-                    <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
                         SYSTEM <span className="text-primary">SETTINGS</span>
                     </h1>
                     <div className="flex items-center gap-2">
@@ -35,7 +35,7 @@ export default async function AdminSettingsPage() {
                 </div>
             </motion.header>
 
-            <div className="space-y-10 max-w-6xl">
+            <div className="space-y-6 lg:space-y-10 max-w-6xl">
                 <CollapsibleSection title="Business Information" icon="store" defaultOpen>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {[

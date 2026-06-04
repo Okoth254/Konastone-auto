@@ -43,7 +43,7 @@ export default function KpiCard({
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             whileHover={{ y: -5 }}
-            className={`relative overflow-hidden bg-surface-dark/40 backdrop-blur-xl border-l-4 p-8 rounded-4xl group transition-all duration-500 hover:bg-surface-dark/60 ${colors[variant]}`}
+            className={`relative overflow-hidden bg-surface-dark/40 backdrop-blur-xl border-l-4 p-5 sm:p-6 lg:p-8 rounded-[1.5rem] lg:rounded-4xl group transition-all duration-500 hover:bg-surface-dark/60 ${colors[variant]}`}
         >
             {/* Background Glow */}
             <div className={`absolute -right-4 -bottom-4 w-32 h-32 blur-3xl transition-colors duration-500 opacity-20 group-hover:opacity-40 ${glows[variant]}`} />
@@ -69,7 +69,7 @@ export default function KpiCard({
                 </div>
 
                 <div className="flex items-end gap-3">
-                    <h3 className="text-5xl font-heading font-black tracking-tighter text-white">
+                    <h3 className="text-4xl lg:text-5xl font-heading font-black tracking-tighter text-white">
                         <AnimatedCounter text={value.toString()} />
                     </h3>
                     {subValue && (
@@ -78,7 +78,7 @@ export default function KpiCard({
                 </div>
 
                 {/* Telemetry Bars */}
-                <div className="mt-8 flex gap-1.5">
+                <div className="mt-6 lg:mt-8 flex gap-1.5">
                     {[0, 1, 2, 3, 4, 5, 6].map((i) => (
                         <motion.div 
                             key={i}

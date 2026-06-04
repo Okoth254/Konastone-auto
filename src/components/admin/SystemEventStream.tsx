@@ -31,7 +31,7 @@ export function SystemEventStream({ events }: { events: TimelineEvent[] }) {
     return (
         <div 
             ref={scrollRef}
-            className="bg-surface-dark/60 backdrop-blur-3xl p-8 border border-white/5 rounded-[2.5rem] font-mono text-[10px] leading-relaxed h-[450px] overflow-y-auto relative group scrollbar-hide"
+            className="bg-surface-dark/60 backdrop-blur-3xl p-5 sm:p-6 lg:p-8 border border-white/5 rounded-[1.5rem] lg:rounded-[2.5rem] font-mono text-[10px] leading-relaxed h-[320px] sm:h-[380px] lg:h-[450px] overflow-y-auto relative group scrollbar-hide"
         >
             {/* Scanned Line Overlay */}
             <div className="absolute inset-0 pointer-events-none opacity-5 bg-[linear-gradient(transparent_0%,rgba(255,191,41,0.1)_50%,transparent_100%)] bg-size-[100%_4px]" />

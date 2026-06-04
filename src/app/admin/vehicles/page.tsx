@@ -59,7 +59,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
     };
 
     return (
-        <div className="p-10 space-y-12">
+        <div className="admin-page-shell admin-section-stack">
             {/* Header Section */}
             <motion.div 
                 initial={{ opacity: 0, y: -20 }}
@@ -67,7 +67,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                 className="flex flex-col md:flex-row md:items-end justify-between gap-8"
             >
                 <div className="space-y-2">
-                    <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic">INVENTORY <span className="text-primary">FLEET</span></h1>
+                    <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic">INVENTORY <span className="text-primary">FLEET</span></h1>
                     <div className="flex items-center gap-6">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
@@ -80,9 +80,9 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 bg-surface-dark/40 backdrop-blur-xl p-2 rounded-2xl border border-white/5">
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-4 bg-surface-dark/40 backdrop-blur-xl p-2 rounded-2xl border border-white/5 w-full md:w-auto">
                     <div className="relative group">
-                        <button className="h-12 px-6 flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all min-w-[200px]">
+                        <button className="h-12 px-4 sm:px-6 flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all w-full sm:min-w-[200px]">
                             {currentSort === 'price_asc' ? 'VALUATION: LOW-HIGH' : currentSort === 'price_desc' ? 'VALUATION: HIGH-LOW' : 'SORT: NEWEST'}
                             <span className="material-symbols-outlined text-sm">filter_list</span>
                         </button>
@@ -98,14 +98,14 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                 </div>
             </motion.div>
 
-            <div className="flex flex-col xl:flex-row gap-12">
+            <div className="flex flex-col xl:flex-row gap-6 lg:gap-10">
                 {/* Protocol Sidebar */}
-                <aside className="w-full xl:w-80 shrink-0 space-y-10">
+                <aside className="w-full xl:w-80 shrink-0 space-y-6 lg:space-y-10">
                     <motion.div 
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/5 space-y-8"
+                        className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-8 rounded-[1.5rem] lg:rounded-[2.5rem] border border-white/5 space-y-6 lg:space-y-8"
                     >
                         <div className="space-y-6">
                             <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">FILTER_PROTOCOL</p>
@@ -119,7 +119,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                     <Link 
                                         key={filter.label}
                                         href={getStatusLink(filter.value as string)} 
-                                        className={`px-6 py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex justify-between items-center group transition-all duration-500 border ${
+                                        className={`px-4 sm:px-6 py-3 sm:py-4 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex justify-between items-center group transition-all duration-500 border ${
                                             currentStatus === filter.value 
                                                 ? 'bg-primary/10 border-primary/20 text-primary' 
                                                 : 'border-transparent text-slate-500 hover:border-white/10 hover:text-slate-200'
@@ -147,7 +147,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="bg-surface-dark/40 backdrop-blur-xl p-8 rounded-4xl border border-white/5 overflow-hidden relative group"
+                        className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-8 rounded-[1.5rem] lg:rounded-4xl border border-white/5 overflow-hidden relative group"
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-accent-teal/5 blur-3xl" />
                         <div className="flex items-center gap-3 mb-6 relative z-10">
@@ -170,7 +170,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
 
                 {/* Heavy-Duty Grid Content */}
                 <section className="flex-1">
-                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-5 lg:gap-8">
                         {vehicles?.map((vehicle, i) => {
                              const imgs = (vehicle as { vehicle_images?: { public_url: string; is_main: boolean; sort_order: number }[] }).vehicle_images;
                              const imgSrc = imgs?.find(img => img.is_main)?.public_url 
@@ -183,7 +183,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                     initial={{ opacity: 0, scale: 0.95 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     transition={{ delay: i * 0.05 + 0.3 }}
-                                    className="bg-surface-dark/40 backdrop-blur-xl flex flex-col group border border-white/5 rounded-4xl overflow-hidden hover:border-primary/40 transition-all duration-700"
+                                    className="bg-surface-dark/40 backdrop-blur-xl flex flex-col group border border-white/5 rounded-[1.5rem] lg:rounded-4xl overflow-hidden hover:border-primary/40 transition-all duration-700"
                                 >
                                     <div className="relative aspect-16/10 overflow-hidden">
                                         <Image 
@@ -213,8 +213,8 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                         </div>
                                     </div>
 
-                                    <div className="p-8 flex-1 flex flex-col gap-8">
-                                        <div className="flex justify-between items-start gap-4">
+                                    <div className="p-5 sm:p-6 lg:p-8 flex-1 flex flex-col gap-6 lg:gap-8">
+                                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-4">
                                             <div className="space-y-1">
                                                 <h3 className="font-heading font-black text-2xl text-white uppercase tracking-tighter group-hover:text-primary transition-colors leading-none">
                                                     {vehicle.year} {vehicle.make} <br />
@@ -227,11 +227,11 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                             </div>
                                             <div className="text-right">
                                                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1">Valuation</p>
-                                                <span className="text-3xl font-heading font-black text-white tracking-tighter italic">KSH {Intl.NumberFormat('en-KE').format(vehicle.price || 0)}</span>
+                                                <span className="text-2xl lg:text-3xl font-heading font-black text-white tracking-tighter italic">KSH {Intl.NumberFormat('en-KE').format(vehicle.price || 0)}</span>
                                             </div>
                                         </div>
 
-                                        <div className="grid grid-cols-3 gap-6 pt-6 border-t border-white/5">
+                                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 lg:gap-6 pt-6 border-t border-white/5">
                                             <div className="flex flex-col gap-1">
                                                 <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">DRIVETRAIN</span>
                                                 <span className="text-[11px] font-black text-slate-200 uppercase truncate">{vehicle.engine_type || 'N/A'}</span>
@@ -246,7 +246,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                                             </div>
                                         </div>
 
-                                        <div className="flex gap-3">
+                                        <div className="flex flex-col sm:flex-row gap-3">
                                             <MotionButton 
                                                 href={`/admin/vehicles/edit/${vehicle.id}`}
                                                 variant="outline"

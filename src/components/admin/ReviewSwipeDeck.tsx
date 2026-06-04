@@ -27,7 +27,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
     const rotate = useTransform(x, [-300, 300], [-30, 30]);
     const opacity = useTransform(x, [-400, -250, 0, 250, 400], [0, 1, 1, 1, 0]);
     const scale = useTransform(x, [-400, 0, 400], [0.5, 1, 0.5]);
-    
+
     const approveOpacity = useTransform(x, [50, 150], [0, 1]);
     const rejectOpacity = useTransform(x, [-150, -50], [1, 0]);
 
@@ -39,7 +39,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
         }
     };
 
-    const vehicleName = review.vehicles 
+    const vehicleName = review.vehicles
         ? `${review.vehicles.year} ${review.vehicles.make} ${review.vehicles.model}`
         : "General Review";
 
@@ -53,27 +53,27 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
             className="absolute inset-0 cursor-grab z-10"
         >
             {/* Visual Indicators */}
-            <motion.div 
+            <motion.div
                 style={{ opacity: approveOpacity }}
-                className="absolute top-16 left-16 border-4 border-primary text-primary px-8 py-3 rounded-2xl font-heading font-black text-4xl uppercase tracking-tighter -rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(255,191,41,0.5)]"
+                className="absolute top-8 left-6 sm:top-12 sm:left-12 lg:top-16 lg:left-16 border-2 lg:border-4 border-primary text-primary px-4 lg:px-8 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-heading font-black text-2xl lg:text-4xl uppercase tracking-tighter -rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(255,191,41,0.5)]"
             >
                 AUTHORIZE
             </motion.div>
-            <motion.div 
+            <motion.div
                 style={{ opacity: rejectOpacity }}
-                className="absolute top-16 right-16 border-4 border-red-500 text-red-500 px-8 py-3 rounded-2xl font-heading font-black text-4xl uppercase tracking-tighter rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(239,68,68,0.5)]"
+                className="absolute top-8 right-6 sm:top-12 sm:right-12 lg:top-16 lg:right-16 border-2 lg:border-4 border-red-500 text-red-500 px-4 lg:px-8 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-heading font-black text-2xl lg:text-4xl uppercase tracking-tighter rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(239,68,68,0.5)]"
             >
                 REDACT
             </motion.div>
 
             {/* Main Card */}
-            <div className="h-full w-full bg-surface-dark/60 backdrop-blur-3xl border border-white/10 rounded-[3.5rem] p-12 flex flex-col shadow-[0_60px_100px_-20px_rgba(0,0,0,0.8)] relative overflow-hidden group">
+            <div className="h-full w-full bg-surface-dark/60 backdrop-blur-3xl border border-white/10 rounded-[1.75rem] lg:rounded-[3.5rem] p-5 sm:p-8 lg:p-12 flex flex-col shadow-[0_60px_100px_-20px_rgba(0,0,0,0.8)] relative overflow-hidden group">
                 {/* Glow Effects */}
                 <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 blur-[100px] group-hover:bg-primary/20 transition-all duration-1000" />
                 <div className="absolute bottom-0 left-0 w-64 h-64 bg-accent-teal/5 blur-[80px]" />
-                
+
                 {/* ID & Star Rating */}
-                <div className="flex justify-between items-start mb-10 relative z-10">
+                <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-6 lg:mb-10 relative z-10">
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
@@ -91,27 +91,27 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                 </div>
 
                 {/* Content */}
-                <div className="flex-1 space-y-8 relative z-10">
+                <div className="flex-1 space-y-5 lg:space-y-8 relative z-10">
                     <div className="space-y-2">
-                        <h3 className="text-4xl md:text-6xl font-heading font-black text-white uppercase tracking-tighter leading-none">{review.customer_name}</h3>
+                        <h3 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-tighter leading-none">{review.customer_name}</h3>
                         <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-sm">directions_car</span>
                             <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] font-mono">{vehicleName}</p>
                         </div>
                     </div>
-                    
+
                     <div className="relative">
                         <span className="material-symbols-outlined absolute -top-12 -left-6 text-8xl text-white opacity-5 select-none">format_quote</span>
-                        <p className="text-xl md:text-2xl text-slate-200 leading-relaxed font-medium relative z-10 italic tracking-tight">
+                        <p className="text-base sm:text-xl md:text-2xl text-slate-200 leading-relaxed font-medium relative z-10 italic tracking-tight">
                             &quot;{review.content}&quot;
                         </p>
                     </div>
                 </div>
 
                 {/* Footer Interaction Hints */}
-                <div className="pt-10 border-t border-white/5 flex justify-between items-center text-slate-600 relative z-10">
+                <div className="pt-5 lg:pt-10 border-t border-white/5 flex justify-between items-center gap-3 text-slate-600 relative z-10">
                     <div className="flex items-center gap-3 group/hint">
-                        <motion.span 
+                        <motion.span
                             animate={{ x: [-5, 5, -5] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
                             className="material-symbols-outlined text-sm"
@@ -129,7 +129,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                     </div>
                     <div className="flex items-center gap-3 group/hint">
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Approve</span>
-                        <motion.span 
+                        <motion.span
                             animate={{ x: [5, -5, 5] }}
                             transition={{ duration: 1.5, repeat: Infinity }}
                             className="material-symbols-outlined text-sm text-primary"
@@ -156,13 +156,13 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
 
     if (reviews.length === 0) {
         return (
-            <motion.div 
+            <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="flex flex-col items-center justify-center p-24 bg-surface-dark/20 rounded-[4rem] border border-dashed border-white/10 relative overflow-hidden"
+                className="flex flex-col items-center justify-center p-8 sm:p-10 lg:p-16 bg-surface-dark/20 rounded-[1.75rem] lg:rounded-[4rem] border border-dashed border-white/10 relative overflow-hidden"
             >
                 <div className="absolute inset-0 bg-primary/5 blur-[100px] -z-10" />
-                <motion.div 
+                <motion.div
                     initial={{ rotate: -180, scale: 0 }}
                     animate={{ rotate: 0, scale: 1 }}
                     transition={{ type: "spring", damping: 15 }}
@@ -171,11 +171,11 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                     <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping" />
                     <span className="material-symbols-outlined text-primary text-5xl">verified</span>
                 </motion.div>
-                <h3 className="text-3xl font-heading font-black text-white uppercase tracking-tighter mb-4">Registry Clear</h3>
+                <h3 className="text-2xl lg:text-3xl font-heading font-black text-white uppercase tracking-tighter mb-4">Registry Clear</h3>
                 <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] text-center max-w-xs leading-loose">
                     All incoming transmissions have been processed and encrypted.
                 </p>
-                
+
                 <motion.button
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -191,7 +191,7 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
     const progress = (1 - reviews.length / initialReviews.length) * 100;
 
     return (
-        <div className="relative w-full max-w-2xl mx-auto h-[600px] perspective-2000">
+        <div className="relative w-full max-w-2xl mx-auto h-[min(560px,72vh)] sm:h-[min(580px,72vh)] lg:h-[min(600px,72vh)] perspective-2000">
             <AnimatePresence mode="popLayout" initial={false}>
                 {reviews.slice(0, 3).reverse().map((review, reversedIndex) => {
                     const i = Math.min(2, reviews.length - 1) - reversedIndex;
@@ -199,15 +199,15 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                         <motion.div
                             key={review.id}
                             initial={{ scale: 0.8, y: 50, opacity: 0 }}
-                            animate={{ 
-                                scale: 1 - i * 0.08, 
-                                y: i * 25, 
+                            animate={{
+                                scale: 1 - i * 0.08,
+                                y: i * 25,
                                 opacity: 1 - i * 0.2,
                                 zIndex: 10 - i,
                                 filter: `blur(${i * 2}px)`
                             }}
-                            exit={{ 
-                                x: 600, 
+                            exit={{
+                                x: 600,
                                 opacity: 0,
                                 scale: 0.5,
                                 rotate: 45,
@@ -222,7 +222,7 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                                     onReject={() => handleAction(review.id, 'rejected')}
                                 />
                             ) : (
-                                <div className="h-full w-full bg-surface-dark/40 backdrop-blur-md border border-white/10 rounded-[3.5rem] shadow-2xl" />
+                                <div className="h-full w-full bg-surface-dark/40 backdrop-blur-md border border-white/10 rounded-[1.75rem] lg:rounded-[3.5rem] shadow-2xl" />
                             )}
                         </motion.div>
                     );
@@ -230,7 +230,7 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
             </AnimatePresence>
 
             {/* Progress Telemetry */}
-            <div className="absolute -bottom-24 left-0 right-0 px-8">
+            <div className="absolute -bottom-20 lg:-bottom-24 left-0 right-0 px-2 sm:px-8">
                 <div className="flex justify-between items-end mb-4 px-2">
                     <div className="flex flex-col">
                         <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Moderation_Velocity</span>
@@ -242,7 +242,7 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                     </div>
                 </div>
                 <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                    <motion.div 
+                    <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
                         className="h-full bg-linear-to-r from-primary to-accent-teal shadow-[0_0_20px_rgba(255,191,41,0.5)]"

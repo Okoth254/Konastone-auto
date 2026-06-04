@@ -71,15 +71,15 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
     };
 
     return (
-        <div className="p-10 space-y-12 min-h-screen">
+        <div className="admin-page-shell admin-section-stack min-h-screen">
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col md:flex-row md:items-end justify-between gap-8"
+                className="flex flex-col lg:flex-row lg:items-end justify-between gap-6 lg:gap-8"
             >
                 <div className="space-y-3">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
+                        <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
                             LEADS <span className="text-primary">TERMINAL</span>
                         </h1>
                         <span className="hidden sm:inline-flex px-3 py-1 bg-primary/10 border border-primary/20 rounded-lg text-[10px] font-black text-primary uppercase tracking-[0.2em]">Live</span>
@@ -98,7 +98,7 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
 
                 <div className="flex flex-col sm:flex-row gap-4 bg-surface-dark/40 backdrop-blur-xl p-2 rounded-2xl border border-white/5">
                     <div className="relative group cursor-pointer z-50">
-                        <button className="h-12 px-6 min-w-[190px] flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all rounded-xl">
+                        <button className="h-12 px-4 sm:px-6 w-full sm:min-w-[190px] flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all rounded-xl">
                             STATUS: <span className="text-primary">{currentStatus ? currentStatus.replace('_', ' ') : 'All'}</span>
                             <span className="material-symbols-outlined text-sm">expand_more</span>
                         </button>
@@ -110,7 +110,7 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
                         </div>
                     </div>
                     <div className="relative group cursor-pointer z-50">
-                        <button className="h-12 px-6 min-w-[190px] flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all rounded-xl">
+                        <button className="h-12 px-4 sm:px-6 w-full sm:min-w-[190px] flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all rounded-xl">
                             SEQUENCE: <span className="text-primary">{currentSort === 'oldest' ? 'Oldest' : 'Newest'}</span>
                             <span className="material-symbols-outlined text-sm">expand_more</span>
                         </button>
