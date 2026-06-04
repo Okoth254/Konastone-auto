@@ -83,7 +83,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
         return (
             <div className="p-6 sm:p-8 lg:p-12 text-center border-2 border-dashed border-zinc-800 rounded-[1.5rem] lg:rounded-[3rem] bg-surface-dark/40 backdrop-blur-xl">
                 <span className="material-symbols-outlined text-4xl text-zinc-700 mb-4 block">analytics</span>
-                <p className="text-zinc-500 font-black uppercase tracking-[0.3em] text-xs">No active telemetry available</p>
+                <p className="text-zinc-500 font-black uppercase tracking-[0.3em] text-xs">No leads match this view</p>
             </div>
         );
     }
@@ -179,7 +179,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                                         >
                                                             <span className="material-symbols-outlined text-3xl font-black">arrow_forward_ios</span>
                                                         </motion.div>
-                                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 mt-4 opacity-0 group-hover/card:opacity-100 transition-opacity">Full Dossier</p>
+                                                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600 mt-4 opacity-0 group-hover/card:opacity-100 transition-opacity">Open Lead</p>
                                                     </div>
                                                 </div>
                                             </div>

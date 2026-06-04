@@ -62,7 +62,7 @@ export function SystemEventStream({ events }: { events: TimelineEvent[] }) {
                                         {event.event_type.replace('_', ' ')}
                                     </span>
                                     <span className="w-1 h-1 rounded-full bg-slate-800" />
-                                    <span className="text-slate-600 text-[8px] font-black uppercase tracking-widest">TRK_ID: {event.id.substring(0, 6)}</span>
+                                    <span className="text-slate-600 text-[8px] font-black uppercase tracking-widest">NOTE ID: {event.id.substring(0, 6)}</span>
                                 </div>
                                 <p className="text-slate-400 font-medium leading-normal group-hover/entry:text-slate-200 transition-colors">
                                     {event.description}
@@ -80,7 +80,7 @@ export function SystemEventStream({ events }: { events: TimelineEvent[] }) {
                     )) : (
                         <div className="flex flex-col items-center justify-center h-full gap-4 opacity-40">
                             <span className="material-symbols-outlined text-4xl animate-pulse">broadcast_on_personal</span>
-                            <span className="text-primary font-black tracking-[0.5em] uppercase text-xs">Awaiting data packets...</span>
+                            <span className="text-primary font-black tracking-[0.5em] uppercase text-xs">No recent lead activity</span>
                         </div>
                     )}
                 </AnimatePresence>

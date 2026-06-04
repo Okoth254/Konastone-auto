@@ -10,10 +10,14 @@ import MotionBadge from "@/components/ui/MotionBadge";
 
 interface Review {
     id: string;
-    customer_name: string;
+    customer_name?: string | null;
+    reviewer_name?: string | null;
     rating: number;
-    content: string;
-    status: string;
+    content?: string | null;
+    review_text?: string | null;
+    comment?: string | null;
+    status?: string | null;
+    is_approved?: boolean | null;
     created_at: string;
     vehicles?: {
         year: number;
@@ -32,17 +36,19 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
     const [reviews, setReviews] = useState(initialReviews);
     const [localPending, setLocalPending] = useState(pendingReviews);
 
+    const getReviewStatus = (review: Review) => review.status || (review.is_approved ? 'approved' : 'pending');
+
     const handleAction = async (id: string, status: 'approved' | 'rejected') => {
         try {
             const { error } = await supabase
                 .from('customer_reviews')
-                .update({ status })
+                .update({ status, is_approved: status === 'approved' })
                 .eq('id', id);
 
             if (error) throw error;
             
             // Update states
-            setReviews(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+            setReviews(prev => prev.map(r => r.id === id ? { ...r, status, is_approved: status === 'approved' } : r));
             setLocalPending(prev => prev.filter(r => r.id !== id));
             
             if (localPending.length <= 1 && viewMode === 'focus') {
@@ -71,7 +77,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         }`}
                     >
                         <span className="material-symbols-outlined text-lg">target</span>
-                        Focus_Decider
+                        Review Queue
                     </button>
                     <button
                         onClick={() => setViewMode('list')}
@@ -82,14 +88,14 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         }`}
                     >
                         <span className="material-symbols-outlined text-lg">database</span>
-                        Tactical_Archive
+                        All Reviews
                     </button>
                 </div>
 
                 <div className="hidden md:flex items-center gap-6">
                     <div className="flex items-center gap-2">
                         <span className={`w-2 h-2 rounded-full ${localPending.length > 0 ? 'bg-primary animate-pulse' : 'bg-slate-800'}`} />
-                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Active Packets: {localPending.length}</span>
+                        <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Pending reviews: {localPending.length}</span>
                     </div>
                 </div>
             </motion.div>
@@ -112,8 +118,8 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                         ) : (
                             <div className="flex flex-col items-center justify-center py-20 gap-6 opacity-40">
                                 <span className="material-symbols-outlined text-7xl animate-bounce">inventory_2</span>
-                                <h3 className="text-2xl font-heading font-black text-white uppercase italic">DECISION_QUEUE_CLEAR</h3>
-                                <MotionButton variant="outline" onClick={() => setViewMode('list')}>Return to Archive</MotionButton>
+                                <h3 className="text-2xl font-heading font-black text-white uppercase italic">Review queue clear</h3>
+                                <MotionButton variant="outline" onClick={() => setViewMode('list')}>View all reviews</MotionButton>
                             </div>
                         )}
                     </motion.div>
@@ -129,17 +135,20 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                             <table className="w-full text-left">
                                 <thead>
                                     <tr className="bg-white/2 border-b border-white/5 text-slate-500 text-[9px] font-black uppercase tracking-[0.4em]">
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Registry_ID</th>
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Identity</th>
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Asset_Link</th>
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-center">Sentiment_Metric</th>
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Protocol_State</th>
-                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-right">Access</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Review ID</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Customer</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Vehicle</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-center">Rating</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6">Publish Status</th>
+                                        <th className="px-4 py-4 lg:px-10 lg:py-6 text-right">Open</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {reviews.map((review, index) => (
-                                        <motion.tr 
+                                    {reviews.map((review, index) => {
+                                        const reviewStatus = getReviewStatus(review);
+
+                                        return (
+                                        <motion.tr
                                             key={review.id} 
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: 1, x: 0 }}
@@ -151,7 +160,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                             </td>
                                             <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <p className="font-heading font-black text-white uppercase tracking-tight text-lg group-hover:text-primary transition-colors">
-                                                    {review.customer_name}
+                                                    {review.customer_name || review.reviewer_name || "Customer"}
                                                 </p>
                                                 <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest mt-1">
                                                     Verified Client
@@ -159,7 +168,7 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                             </td>
                                             <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <span className="text-slate-400 text-[11px] font-black uppercase tracking-widest italic">
-                                                    {review.vehicles ? `${review.vehicles.year} ${review.vehicles.make} ${review.vehicles.model}` : "GENERAL_INQUIRY"}
+                                                    {review.vehicles ? `${review.vehicles.year} ${review.vehicles.make} ${review.vehicles.model}` : "General Review"}
                                                 </span>
                                             </td>
                                             <td className="px-4 py-4 lg:px-10 lg:py-6">
@@ -173,14 +182,14 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                             </td>
                                             <td className="px-4 py-4 lg:px-10 lg:py-6">
                                                 <MotionBadge 
-                                                    color={review.status === 'approved' ? 'primary' : 'neutral'}
+                                                    color={reviewStatus === 'approved' ? 'primary' : 'neutral'}
                                                     className={`uppercase tracking-widest ${
-                                                        review.status === 'approved' ? 'bg-primary/10 text-primary border-primary/20' :
-                                                        review.status === 'pending' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                                                        reviewStatus === 'approved' ? 'bg-primary/10 text-primary border-primary/20' :
+                                                        reviewStatus === 'pending' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
                                                         'bg-red-500/10 text-red-500 border-red-500/20'
                                                     }`}
                                                 >
-                                                    {review.status}
+                                                    {reviewStatus}
                                                 </MotionBadge>
                                             </td>
                                             <td className="px-4 py-4 lg:px-10 lg:py-6 text-right">
@@ -188,12 +197,13 @@ export default function ReviewsClient({ initialReviews, pendingReviews }: Review
                                                     href={`/admin/reviews/${review.id}`}
                                                     className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.2em] text-slate-600 hover:text-white transition-all group/link"
                                                 >
-                                                    EXAMINE_LOG
+                                                    OPEN REVIEW
                                                     <span className="material-symbols-outlined text-sm group-hover/link:translate-x-1 transition-transform">east</span>
                                                 </Link>
                                             </td>
                                         </motion.tr>
-                                    ))}
+                                        );
+                                    })}
                                 </tbody>
                             </table>
                         </div>

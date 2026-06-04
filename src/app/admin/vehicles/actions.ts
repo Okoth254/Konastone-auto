@@ -63,6 +63,7 @@ export async function saveVehicle(formData: FormData) {
     drivetrain: formData.get('drivetrain') as string,
     price: parseFloat((formData.get('price') as string).replace(/,/g, '')),
     status: formData.get('status') as 'available' | 'sold' | 'in_transit' | 'reserved',
+    is_featured: formData.get('is_featured') === 'on',
     folder_name: vehicleId, // Use vehicleId as the folder name going forward
   };
 
@@ -139,6 +140,7 @@ export async function saveVehicle(formData: FormData) {
   }
 
   revalidatePath('/admin/vehicles');
+  revalidatePath('/');
   revalidatePath('/inventory');
   revalidatePath(`/vehicle/${vehicleId}`);
   redirect('/admin/vehicles');

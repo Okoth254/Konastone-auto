@@ -16,14 +16,14 @@ interface KpiCardProps {
     };
 }
 
-export default function KpiCard({ 
-    label, 
-    value, 
-    subValue, 
-    icon, 
-    variant = "primary", 
+export default function KpiCard({
+    label,
+    value,
+    subValue,
+    icon,
+    variant = "primary",
     delay = 0,
-    trend 
+    trend
 }: KpiCardProps) {
     const colors = {
         primary: "border-primary text-primary",
@@ -47,7 +47,7 @@ export default function KpiCard({
         >
             {/* Background Glow */}
             <div className={`absolute -right-4 -bottom-4 w-32 h-32 blur-3xl transition-colors duration-500 opacity-20 group-hover:opacity-40 ${glows[variant]}`} />
-            
+
             <div className="relative z-10">
                 <div className="flex justify-between items-start mb-6">
                     <div>
@@ -77,19 +77,19 @@ export default function KpiCard({
                     )}
                 </div>
 
-                {/* Telemetry Bars */}
+                {/* KPI activity bars */}
                 <div className="mt-6 lg:mt-8 flex gap-1.5">
                     {[0, 1, 2, 3, 4, 5, 6].map((i) => (
-                        <motion.div 
+                        <motion.div
                             key={i}
                             initial={{ height: 4, opacity: 0.2 }}
-                            animate={{ 
+                            animate={{
                                 height: [4, 12, 4],
                                 opacity: [0.2, 0.5, 0.2]
                             }}
-                            transition={{ 
-                                duration: 2, 
-                                repeat: Infinity, 
+                            transition={{
+                                duration: 2,
+                                repeat: Infinity,
                                 delay: i * 0.15 + (delay % 1)
                             }}
                             className={`w-1 rounded-full ${variant === 'primary' ? 'bg-primary' : variant === 'secondary' ? 'bg-accent-teal' : 'bg-slate-700'}`}

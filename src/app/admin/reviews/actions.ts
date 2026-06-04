@@ -9,7 +9,7 @@ export async function updateReviewStatus(id: string, status: 'approved' | 'rejec
     
     const { error } = await supabase
         .from('customer_reviews')
-        .update({ status })
+        .update({ status, is_approved: status === 'approved' })
         .eq('id', id);
         
     if (error) {

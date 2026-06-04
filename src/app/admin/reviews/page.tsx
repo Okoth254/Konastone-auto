@@ -10,8 +10,8 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
     const supabase = await createClient();
 
     // 1. Fetch counts & stats
-    const { data: allReviews } = await supabase.from('customer_reviews').select('status');
-    const pendingReviewsCount = allReviews?.filter(r => r.status === 'pending').length || 0;
+    const { data: allReviews } = await supabase.from('customer_reviews').select('status, is_approved');
+    const pendingReviewsCount = allReviews?.filter(r => r.status === 'pending' || r.is_approved === false).length || 0;
     const totalReviewsCount = allReviews?.length || 0;
 
     // 2. Fetch data for the list view
@@ -47,7 +47,7 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
                 model
             )
         `)
-        .eq('status', 'pending')
+        .or('status.eq.pending,is_approved.eq.false')
         .order('created_at', { ascending: true });
 
     return (
@@ -67,11 +67,11 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
                     <div className="flex flex-wrap items-center gap-6">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
-                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">TOTAL_LOGS: {totalReviewsCount.toString().padStart(3, '0')}</span>
+                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">TOTAL REVIEWS: {totalReviewsCount.toString().padStart(3, '0')}</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse shadow-[0_0_10px_rgba(255,193,7,0.5)]" />
-                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">PENDING_REVIEW: {pendingReviewsCount.toString().padStart(3, '0')}</span>
+                            <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">PENDING: {pendingReviewsCount.toString().padStart(3, '0')}</span>
                         </div>
                     </div>
                 </div>
@@ -81,9 +81,9 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
                         <span className="material-symbols-outlined text-primary">rate_review</span>
                     </div>
                     <div>
-                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Sentiment_Gate</p>
+                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Public Review Gate</p>
                         <p className="text-[11px] font-medium text-slate-400 leading-relaxed uppercase tracking-widest">
-                            Authorize or redact customer sentiment telemetry to keep the public review stream clean.
+                            Approve or reject customer reviews before they appear on the public reviews page.
                         </p>
                     </div>
                 </div>

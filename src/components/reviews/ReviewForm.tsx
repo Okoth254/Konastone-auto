@@ -38,10 +38,13 @@ export default function ReviewForm() {
                 .insert([
                     {
                         reviewer_name: name,
+                        customer_name: name,
                         vehicle_make: make || null,
                         vehicle_model: model || null,
                         rating,
                         comment,
+                        review_text: comment,
+                        status: 'pending',
                         is_approved: false // Requires admin approval
                     }
                 ]);
@@ -61,7 +64,7 @@ export default function ReviewForm() {
 
         } catch (err) {
             console.error("Error submitting review:", err);
-            setError("Protocol failure. Please re-attempt.");
+            setError("Unable to submit your review. Please try again.");
         } finally {
             setIsSubmitting(false);
         }
@@ -75,10 +78,10 @@ export default function ReviewForm() {
                     className="h-16 px-10 shadow-[0_20px_40px_-12px_rgba(255,191,41,0.3)] btn-sweep"
                 >
                     <span className="material-symbols-outlined mr-3">rate_review</span>
-                    SUBMIT PERFORMANCE LOG
+                    SUBMIT REVIEW
                 </MotionButton>
                 <p className="text-[10px] text-slate-500 mt-6 font-black uppercase tracking-[0.3em] max-w-md mx-auto">
-                    *Reviews undergo 256-bit verification before publishing
+                    *Reviews are checked before publishing
                 </p>
             </div>
 

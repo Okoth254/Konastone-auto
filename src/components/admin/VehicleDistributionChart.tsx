@@ -43,7 +43,7 @@ export function VehicleDistributionChart({ available, inTransit, sold, reserved 
 
     if (data.length === 0) {
         return (
-            <div className="flex items-center justify-center h-full text-zinc-500 font-mono text-sm">NO_DATA_STREAM</div>
+            <div className="flex items-center justify-center h-full text-zinc-500 font-mono text-sm">No inventory data</div>
         );
     }
 

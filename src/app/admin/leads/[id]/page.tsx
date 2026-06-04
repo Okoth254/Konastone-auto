@@ -54,7 +54,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         <div className="flex items-center gap-3">
                             <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">UID: {lead.id.substring(0, 12).toUpperCase()}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-800" />
-                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">SOURCE: {lead.source?.toUpperCase() || 'DIRECT_WEB'}</span>
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">SOURCE: {lead.source?.toUpperCase() || 'DIRECT WEB'}</span>
                         </div>
                     </div>
                 </div>
@@ -69,7 +69,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         </MotionButton>
                     )}
                     <MotionButton variant="outline" className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
-                        PROTO_COMM
+                        CONTACT CUSTOMER
                     </MotionButton>
                 </div>
             </motion.header>
@@ -87,10 +87,10 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full" />
                         <div className="flex justify-between items-start mb-12 relative z-10">
                             <div>
-                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Subject_Profile</p>
+                                <p className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-2">Customer Profile</p>
                                 <div className="h-[2px] w-12 bg-primary" />
                             </div>
-                            <MotionBadge color="primary" icon="verified">IDENTITY_CONFIRMED</MotionBadge>
+                            <MotionBadge color="primary" icon="verified">CONTACT READY</MotionBadge>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 relative z-10">
@@ -99,12 +99,12 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 <p className="text-xl font-heading font-black text-white truncate">{lead.email}</p>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Mobile Link</p>
+                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Phone</p>
                                 <p className="text-xl font-heading font-black text-white">{lead.phone || 'N/A'}</p>
                             </div>
                             <div className="space-y-2">
-                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Deployment Zone</p>
-                                <p className="text-xl font-heading font-black text-white uppercase italic">NAIROBI_METRO</p>
+                                <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Location</p>
+                                <p className="text-xl font-heading font-black text-white uppercase italic">{lead.location || 'Kenya'}</p>
                             </div>
                         </div>
                     </motion.section>
@@ -129,7 +129,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 </div>
                                 <div className="md:col-span-3 p-5 sm:p-6 lg:p-10 flex flex-col justify-center gap-6">
                                     <div className="space-y-2">
-                                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Target_Inventory</p>
+                                        <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em]">Vehicle Interest</p>
                                         <h3 className="text-3xl lg:text-4xl font-heading font-black text-white uppercase tracking-tighter italic">
                                             {lead.vehicles.year} {lead.vehicles.make} <br /> {lead.vehicles.model}
                                         </h3>
@@ -147,7 +147,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                     </div>
 
                                     <Link href={`/admin/vehicles/${lead.vehicles.id}`} className="text-[9px] font-black text-slate-500 hover:text-primary transition-all uppercase tracking-[0.4em] flex items-center gap-2 group/link">
-                                        EXAMINE SPEC_SHEET
+                                        VIEW VEHICLE
                                         <span className="material-symbols-outlined text-sm group-hover/link:translate-x-2 transition-transform">east</span>
                                     </Link>
                                 </div>
@@ -155,8 +155,8 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         ) : (
                             <div className="p-6 sm:p-8 lg:p-12 text-center space-y-4">
                                 <span className="material-symbols-outlined text-6xl text-slate-800">search_off</span>
-                                <h3 className="text-2xl font-heading font-black text-slate-600 uppercase italic">NO_TARGET_ASSET_LOCKED</h3>
-                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">User initiated general inquiry protocol</p>
+                                <h3 className="text-2xl font-heading font-black text-slate-600 uppercase italic">NO VEHICLE SELECTED</h3>
+                                <p className="text-[10px] font-black text-slate-700 uppercase tracking-widest">Customer sent a general inquiry without selecting a vehicle.</p>
                             </div>
                         )}
                     </motion.section>
@@ -171,14 +171,14 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         >
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-accent-teal">no_crash</span>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Trade_In_Profile</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Trade-In</p>
                             </div>
                             <div className="p-6 rounded-2xl bg-white/2 border border-white/5">
                                 <p className="text-sm font-black font-heading text-white uppercase italic">
-                                    {lead.trade_in_year ? `${lead.trade_in_year} ` : ''}{lead.trade_in_make ? `${lead.trade_in_make} ` : ''}{lead.trade_in_model || 'NONE_SPECIFIED'}
+                                    {lead.trade_in_year ? `${lead.trade_in_year} ` : ''}{lead.trade_in_make ? `${lead.trade_in_make} ` : ''}{lead.trade_in_model || 'NONE SPECIFIED'}
                                 </p>
                                 {lead.trade_in_value && (
-                                    <p className="text-[10px] font-black font-mono text-accent-teal mt-2 uppercase">EST_VALUE: KSH {formatCurrency(lead.trade_in_value).split('KSh')[1]}</p>
+                                    <p className="text-[10px] font-black font-mono text-accent-teal mt-2 uppercase">EST. VALUE: KSH {formatCurrency(lead.trade_in_value).split('KSh')[1]}</p>
                                 )}
                             </div>
                         </motion.div>
@@ -191,14 +191,14 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         >
                             <div className="flex items-center gap-3">
                                 <span className="material-symbols-outlined text-primary">account_balance</span>
-                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Procurement_Plan</p>
+                                <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em]">Purchase Plan</p>
                             </div>
                             <div className="p-6 rounded-2xl bg-white/2 border border-white/5">
                                 <p className="text-sm font-black font-heading text-white uppercase italic">
-                                    {lead.finance_status ? lead.finance_status.toUpperCase() : 'CASH_PROTOCOL'}
+                                    {lead.finance_status ? lead.finance_status.toUpperCase() : 'CASH PURCHASE'}
                                 </p>
                                 <p className="text-[10px] font-black font-mono text-slate-500 mt-2 uppercase tracking-widest">
-                                    {(lead as unknown as Record<string, unknown>).expected_purchase_date as string || 'IMMEDIATE_EXECUTION'}
+                                    {(lead as unknown as Record<string, unknown>).expected_purchase_date as string || 'READY TO BUY'}
                                 </p>
                             </div>
                         </motion.div>
@@ -214,7 +214,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         className="bg-surface-dark/40 backdrop-blur-xl border border-white/5 rounded-[1.5rem] lg:rounded-[3rem] max-h-[70vh] lg:max-h-[800px] flex flex-col overflow-hidden lg:sticky lg:top-32"
                     >
                         <div className="p-5 sm:p-6 lg:p-8 border-b border-white/5 flex justify-between items-center bg-white/2">
-                            <h2 className="font-heading font-black text-xl tracking-tighter uppercase text-white">interaction_Log</h2>
+                            <h2 className="font-heading font-black text-xl tracking-tighter uppercase text-white">Follow-up Notes</h2>
                             <div className="flex gap-1">
                                 {[0, 1, 2].map(i => <div key={i} className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-pulse" style={{ animationDelay: `${i * 0.2}s` }} />)}
                             </div>
@@ -243,7 +243,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                             )) : (
                                 <div className="text-center py-20 opacity-20">
                                     <span className="material-symbols-outlined text-6xl">cloud_off</span>
-                                    <p className="text-[10px] font-black uppercase mt-4">NO_LOGS_RECORDED</p>
+                                    <p className="text-[10px] font-black uppercase mt-4">NO NOTES YET</p>
                                 </div>
                             )}
                         </div>
@@ -255,7 +255,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                     name="note"
                                     required
                                     className="w-full bg-white/2 border border-white/10 rounded-3xl p-6 text-[11px] font-mono text-white placeholder:text-slate-600 outline-none focus:border-primary/40 transition-all min-h-[120px] resize-none"
-                                    placeholder="APPEND_INTEL_NOTE..."
+                                    placeholder="Add a follow-up note..."
                                 />
                                 <button type="submit" className="absolute bottom-6 right-6 w-10 h-10 rounded-full bg-primary text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all shadow-xl shadow-primary/20">
                                     <span className="material-symbols-outlined font-black">send</span>
@@ -275,7 +275,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                 >
                     <div className="flex flex-col sm:flex-row sm:items-center gap-4 lg:gap-8 w-full sm:w-auto">
                         <div className="space-y-2">
-                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Pipeline_Status</p>
+                            <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Lead Status</p>
                             <div className="flex gap-1.5 h-1.5">
                                 {[0, 1, 2, 3].map(i => (
                                     <div key={i} className={`w-8 rounded-full ${i < 3 ? 'bg-primary' : 'bg-slate-800'}`} />
@@ -289,20 +289,20 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                                 className="bg-transparent text-sm font-black text-primary uppercase tracking-[0.2em] outline-none cursor-pointer appearance-none pr-8"
                                 defaultValue={lead.status}
                             >
-                                <option value="new">PROTOCOL: NEW</option>
-                                <option value="contacted">PROTOCOL: CONTACTED</option>
-                                <option value="negotiating">PROTOCOL: NEGOTIATING</option>
-                                <option value="sold">PROTOCOL: CONVERTED</option>
-                                <option value="lost">PROTOCOL: DORMANT</option>
+                                <option value="new">New lead</option>
+                                <option value="contacted">Contacted</option>
+                                <option value="negotiating">Negotiating</option>
+                                <option value="sold">Sold</option>
+                                <option value="lost">Lost</option>
                             </select>
                             <span className="material-symbols-outlined absolute right-0 top-1/2 -translate-y-1/2 text-slate-600 pointer-events-none text-xl">expand_more</span>
                         </div>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3 sm:gap-6 w-full sm:w-auto justify-between sm:justify-end">
-                        <button formAction={deleteLeadAction} className="text-[9px] font-black text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em]">PURGE_LEAD</button>
+                        <button formAction={deleteLeadAction} className="text-[9px] font-black text-red-500/60 hover:text-red-500 transition-colors uppercase tracking-[0.3em]">DELETE LEAD</button>
                         <MotionButton type="submit" className="px-6 sm:px-12 h-12 sm:h-14 rounded-2xl bg-primary text-black font-black uppercase tracking-[0.3em] shadow-2xl shadow-primary/20 group/save overflow-hidden">
-                            COMMIT_PROTOCOL
+                            UPDATE LEAD
                         </MotionButton>
                     </div>
                 </motion.footer>

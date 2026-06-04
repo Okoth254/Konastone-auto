@@ -30,7 +30,7 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
     return (
         <div className="flex-1 overflow-y-auto scrollbar-hide">
             {/* Command Header */}
-            <motion.header 
+            <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
                 className="sticky top-0 z-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full px-4 py-4 sm:px-6 lg:px-10 lg:py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
@@ -44,51 +44,54 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                             {vehicle.year} {vehicle.make} <span className="text-primary">{vehicle.model}</span>
                         </h2>
                         <div className="flex items-center gap-3">
-                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">ASSET_ID: {vehicle.id.substring(0, 8)}</span>
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">VEHICLE ID: {vehicle.id.substring(0, 8)}</span>
                             <span className="w-1 h-1 rounded-full bg-slate-800" />
-                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">CORE_STATE: {vehicle.status.toUpperCase()}</span>
+                            <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">STATUS: {vehicle.status.toUpperCase()}</span>
                         </div>
                     </div>
                 </div>
-                
+
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto">
                     <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5">
                         <span className="material-symbols-outlined">print</span>
                     </MotionButton>
+                    <MotionButton variant="ghost" href={`/vehicle/${vehicle.id}`} className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-white/5">
+                        PUBLIC PREVIEW
+                    </MotionButton>
                     <MotionButton variant="outline" href={`/admin/vehicles/edit/${vehicle.id}`} className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
-                        EDIT_ASSET
+                        EDIT VEHICLE
                     </MotionButton>
                 </div>
             </motion.header>
 
             <div className="admin-page-shell admin-section-stack">
                 {/* Cinematic Hero */}
-                <motion.section 
+                <motion.section
                     initial={{ opacity: 0, scale: 0.98 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                     className="relative h-[340px] sm:h-[440px] lg:h-[550px] w-full rounded-[1.5rem] lg:rounded-[3rem] overflow-hidden border border-white/10 group shadow-2xl"
                 >
-                    <Image 
-                        fill 
-                        className="object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 scale-105 group-hover:scale-100" 
-                        src={heroImage} 
-                        alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`} 
+                    <Image
+                        fill
+                        className="object-cover grayscale brightness-50 group-hover:grayscale-0 group-hover:brightness-100 transition-all duration-1000 scale-105 group-hover:scale-100"
+                        src={heroImage}
+                        alt={`${vehicle.year} ${vehicle.make} ${vehicle.model}`}
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-background-dark via-transparent to-transparent opacity-80" />
-                    
+
                     <div className="absolute bottom-6 left-6 sm:bottom-10 sm:left-10 lg:bottom-16 lg:left-16 space-y-4 lg:space-y-6 max-w-2xl pr-6">
                         <div className="flex gap-3">
                             <MotionBadge color="primary" className="px-6 py-2 tracking-[0.2em]">OPERATIONAL</MotionBadge>
                             <MotionBadge color="secondary" className="px-6 py-2 tracking-[0.2em]">{vehicle.status.toUpperCase()}</MotionBadge>
                         </div>
                         <h1 className="text-4xl sm:text-6xl md:text-8xl font-heading font-black tracking-tighter text-white uppercase leading-[0.85] italic">
-                            THE <span className="text-primary">{vehicle.model.split(' ')[0]}</span> <br /> 
+                            THE <span className="text-primary">{vehicle.model.split(' ')[0]}</span> <br />
                             {vehicle.make.toUpperCase()}
                         </h1>
                     </div>
 
-                    {/* Telemetry Annex */}
+                    {/* Catalogue summary */}
                     <div className="absolute bottom-10 right-10 lg:bottom-16 lg:right-16 bg-surface-dark/40 backdrop-blur-3xl p-5 sm:p-6 lg:p-8 rounded-4xl border border-white/10 hidden lg:block">
                         <div className="flex flex-col gap-6 w-48">
                             <div className="space-y-1">
@@ -106,12 +109,12 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                 {/* Tech Cards Staggered */}
                 <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
                     {[
-                        { label: 'ENGINE & TELEMETRY', icon: 'settings_prolong', value: vehicle.engine_type, sub: vehicle.power || 'ACTIVE', color: 'primary' },
-                        { label: 'TRANSMISSION_ID', icon: 'grid_guides', value: vehicle.transmission, sub: `MIL: ${vehicle.mileage || 0} KM`, color: 'secondary' },
-                        { label: 'AESTHETIC_PROFILE', icon: 'palette', value: vehicle.exterior_color, sub: `INT: ${vehicle.interior_color || 'SLATE'}`, color: 'neutral' },
-                        { label: 'PROTOCOL_TAGS', icon: 'token', value: vehicle.tags?.[0] || 'STD_CONFIG', sub: `${vehicle.tags?.length || 0} MODULES`, color: 'primary' }
+                        { label: 'ENGINE', icon: 'settings_prolong', value: vehicle.engine_type, sub: vehicle.power || 'ACTIVE', color: 'primary' },
+                        { label: 'TRANSMISSION', icon: 'grid_guides', value: vehicle.transmission, sub: `MIL: ${vehicle.mileage || 0} KM`, color: 'secondary' },
+                        { label: 'COLOURS', icon: 'palette', value: vehicle.exterior_color, sub: `INT: ${vehicle.interior_color || 'SLATE'}`, color: 'neutral' },
+                        { label: 'FEATURES', icon: 'token', value: vehicle.tags?.[0] || 'STANDARD', sub: `${vehicle.tags?.length || 0} MODULES`, color: 'primary' }
                     ].map((card, i) => (
-                        <motion.div 
+                        <motion.div
                             key={card.label}
                             initial={{ opacity: 0, y: 30 }}
                             animate={{ opacity: 1, y: 0 }}
@@ -134,30 +137,30 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                 </section>
 
                 {/* Identification Matrix */}
-                <motion.section 
+                <motion.section
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[3rem] border border-white/5 overflow-hidden"
                 >
                     <div className="px-5 py-5 sm:px-6 lg:px-10 lg:py-8 border-b border-white/5 flex justify-between items-center bg-white/2">
-                        <h2 className="font-heading font-black text-2xl tracking-tighter uppercase text-white">Technical identification Matrix</h2>
+                        <h2 className="font-heading font-black text-2xl tracking-tighter uppercase text-white">Catalogue Details</h2>
                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">DB_ID: CORE_{vehicle.id.substring(0,6)}</span>
+                            <span className="text-[10px] font-black text-slate-600 uppercase tracking-[0.4em]">VEHICLE ID: {vehicle.id.substring(0,6)}</span>
                             <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_#26C6DA]" />
                         </div>
                     </div>
-                    
+
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
                             <tbody className="text-sm">
                                 {[
-                                    { label: 'VIN_PROTOCOL', value: vehicle.vin || 'PENDING_ASSIGNMENT' },
-                                    { label: 'ASSET_GRADE', value: vehicle.condition || 'NOMINAL' },
-                                    { label: 'BODY_STRUCTURE', value: vehicle.body_style || 'STANDARD' },
-                                    { label: 'FUEL_PROFILE', value: vehicle.fuel_type || 'PETROL' },
-                                    { label: 'REG_COUNTRY', value: 'KENYA (OPERATIONAL)' },
-                                    { label: 'CHASSIS_CODE', value: vehicle.chassis_no || 'TBD' }
+                                    { label: 'VIN', value: vehicle.vin || 'PENDING' },
+                                    { label: 'CONDITION', value: vehicle.condition || 'NOMINAL' },
+                                    { label: 'BODY STYLE', value: vehicle.body_style || 'STANDARD' },
+                                    { label: 'FUEL TYPE', value: vehicle.fuel_type || 'PETROL' },
+                                    { label: 'MARKET', value: 'KENYA (OPERATIONAL)' },
+                                    { label: 'CHASSIS CODE', value: vehicle.chassis_no || 'TBD' }
                                 ].map((row) => (
                                     <tr key={row.label} className="border-b border-white/5 hover:bg-white/2 transition-colors group">
                                         <td className="px-5 py-4 lg:px-10 lg:py-6 text-[11px] font-black text-slate-500 uppercase tracking-[0.2em] w-1/3">{row.label}</td>

@@ -53,7 +53,7 @@ export default async function AdminDashboard() {
   return (
     <div className="admin-page-shell admin-section-stack">
       {/* Header Section */}
-      <motion.header 
+      <motion.header
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         className="flex flex-col lg:flex-row justify-between items-start lg:items-end gap-6"
@@ -66,60 +66,60 @@ export default async function AdminDashboard() {
           <div className="flex flex-wrap items-center gap-4 sm:gap-6">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 bg-accent-teal rounded-full animate-pulse shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
-              <span className="text-slate-500 text-[9px] font-black tracking-[0.4em] uppercase">LINK_STATE: NOMINAL</span>
+              <span className="text-slate-500 text-[9px] font-black tracking-[0.4em] uppercase">CATALOGUE: LIVE</span>
             </div>
             <div className="flex items-center gap-2">
               <span className="material-symbols-outlined text-slate-700 text-sm">sensors</span>
-              <span className="text-slate-500 text-[9px] font-black tracking-[0.4em] uppercase">LATENCY: 14ms</span>
+              <span className="text-slate-500 text-[9px] font-black tracking-[0.4em] uppercase">PUBLIC SITE: SYNCED</span>
             </div>
           </div>
         </div>
-        
+
         <div className="flex flex-wrap gap-4 bg-surface-dark p-4 rounded-2xl border border-white/5 shadow-inner w-full sm:w-auto">
             <div className="text-right px-4 border-r border-white/5">
-                <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">LOCAL_TIME</p>
+                <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">LOCAL TIME</p>
                 <p className="text-lg font-heading font-black text-white">{new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}</p>
             </div>
             <div className="px-4">
-                <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">STATION_ID</p>
-                <p className="text-lg font-heading font-black text-white">MBS-ALPHA-01</p>
+                <p className="text-[9px] text-slate-500 font-black uppercase tracking-[0.2em] mb-1">STORE LOCATION</p>
+                <p className="text-lg font-heading font-black text-white">MOMBASA</p>
             </div>
         </div>
       </motion.header>
-      
+
       {/* Metrics Row */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 lg:gap-8">
-        <KpiCard 
-          label="INVENTORY_UNITS" 
-          value={inventoryCount || 0} 
-          subValue="TOTAL" 
-          icon="directions_car" 
+        <KpiCard
+          label="INVENTORY"
+          value={inventoryCount || 0}
+          subValue="TOTAL"
+          icon="directions_car"
           variant="secondary"
           delay={0.1}
           trend={{ value: 12, isPositive: true }}
         />
-        <KpiCard 
-          label="ACTIVE_LEADS" 
-          value={activeLeadsCount || 0} 
-          subValue="OPEN" 
-          icon="leaderboard" 
+        <KpiCard
+          label="ACTIVE LEADS"
+          value={activeLeadsCount || 0}
+          subValue="OPEN"
+          icon="leaderboard"
           variant="primary"
           delay={0.2}
           trend={{ value: 5, isPositive: true }}
         />
-        <KpiCard 
-          label="PENDING_LOGS" 
-          value={pendingReviewsCount || 0} 
-          subValue="REVIEWS" 
-          icon="rate_review" 
+        <KpiCard
+          label="PENDING REVIEWS"
+          value={pendingReviewsCount || 0}
+          subValue="REVIEWS"
+          icon="rate_review"
           variant="neutral"
           delay={0.3}
         />
       </div>
-      
+
       <div className="grid grid-cols-12 gap-6 lg:gap-10">
         {/* Inventory Stream */}
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
@@ -128,29 +128,29 @@ export default async function AdminDashboard() {
           <div className="flex justify-between items-center px-2">
             <h4 className="font-heading font-black tracking-widest text-sm uppercase flex items-center gap-3 text-white">
                                <span className="w-8 h-[2px] bg-primary"></span>
-                               Live Telemetry Stream
+                               Latest Catalogue Updates
                             </h4>
             <Link href="/admin/vehicles" className="text-[10px] font-black tracking-[0.3em] text-slate-500 hover:text-primary transition-all group flex items-center gap-2">
-              VIEW ARCHIVES
+              VIEW INVENTORY
               <span className="material-symbols-outlined text-sm group-hover:translate-x-1 transition-transform">arrow_forward</span>
             </Link>
           </div>
-          
+
           <div className="bg-surface-dark/40 backdrop-blur-xl rounded-[1.5rem] lg:rounded-[2.5rem] border border-white/5 overflow-hidden">
             <div className="admin-table-scroll">
             <table className="w-full min-w-[720px] text-left">
               <thead>
                 <tr className="border-b border-white/5 bg-white/2">
-                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Registry_ID</th>
-                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Specification</th>
-                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Core_State</th>
-                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase text-right">Valuation</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Vehicle ID</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Vehicle</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase">Catalogue Status</th>
+                  <th className="px-4 py-4 lg:px-8 lg:py-5 text-[9px] font-black tracking-[0.4em] text-slate-500 uppercase text-right">Price</th>
                 </tr>
               </thead>
               <tbody className="text-sm">
                 {latestVehicles?.map((vehicle, i) => (
-                  <motion.tr 
-                    key={vehicle.id} 
+                  <motion.tr
+                    key={vehicle.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.5 + (i * 0.05) }}
@@ -178,25 +178,25 @@ export default async function AdminDashboard() {
             </div>
           </div>
         </motion.div>
-        
+
         {/* System Logs */}
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.5 }}
             className="col-span-12 lg:col-span-4 space-y-6"
         >
           <div className="flex items-center gap-3 px-2">
-            <h4 className="font-heading font-black tracking-widest text-sm uppercase text-white">SYSLOG_FEED</h4>
-            <span className="text-[8px] bg-red-500/10 text-red-500 border border-red-500/20 px-2 py-0.5 rounded-full font-black animate-pulse">INTERNAL_COMMS</span>
+            <h4 className="font-heading font-black tracking-widest text-sm uppercase text-white">LEAD ACTIVITY</h4>
+            <span className="text-[8px] bg-red-500/10 text-red-500 border border-red-500/20 px-2 py-0.5 rounded-full font-black animate-pulse">RECENT NOTES</span>
           </div>
           <SystemEventStream events={timelineEvents || []} />
         </motion.div>
       </div>
-      
+
       {/* Visual Analytics */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 pb-10">
-        <motion.div 
+        <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -204,7 +204,7 @@ export default async function AdminDashboard() {
         >
           <div className="flex justify-between items-center mb-6 lg:mb-10">
             <div>
-              <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Inventory_Dist_Matrix</p>
+              <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Inventory Status Mix</p>
               <div className="h-[2px] w-12 bg-accent-teal" />
             </div>
             <span className="material-symbols-outlined text-slate-700 opacity-20 text-4xl">pie_chart</span>
@@ -218,8 +218,8 @@ export default async function AdminDashboard() {
             />
           </div>
         </motion.div>
-        
-        <motion.div 
+
+        <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -227,17 +227,17 @@ export default async function AdminDashboard() {
         >
           <div className="flex justify-between items-center mb-6 lg:mb-10">
             <div>
-              <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Lead_Funnel_Metrics</p>
+              <p className="text-[10px] font-black tracking-[0.4em] text-slate-600 mb-1 uppercase">Lead Pipeline</p>
               <div className="h-[2px] w-12 bg-primary" />
             </div>
             <span className="material-symbols-outlined text-slate-700 opacity-20 text-4xl">analytics</span>
           </div>
-          
+
           <div className="flex-1 space-y-8 flex flex-col justify-center">
             {[
               { label: "New Inquiries", value: leadStats['new'] || 0, color: "bg-primary" },
               { label: "Active Negotiating", value: leadStats['negotiating'] || 0, color: "bg-accent-teal" },
-              { label: "Conversions & Arch", value: (leadStats['sold'] || 0) + (leadStats['lost'] || 0), color: "bg-slate-700" }
+              { label: "Closed Leads", value: (leadStats['sold'] || 0) + (leadStats['lost'] || 0), color: "bg-slate-700" }
             ].map((stat, i) => {
               const total = allLeads?.length || 1;
               const percent = Math.min(100, (stat.value / total) * 100);
@@ -248,7 +248,7 @@ export default async function AdminDashboard() {
                     <span className="text-xl font-heading font-black text-white">{stat.value}</span>
                   </div>
                   <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
-                    <motion.div 
+                    <motion.div
                       initial={{ width: 0 }}
                       whileInView={{ width: `${percent}%` }}
                       viewport={{ once: true }}

@@ -19,18 +19,18 @@ export default async function AdminSettingsPage() {
             >
                 <div className="space-y-3">
                     <h1 className="text-4xl sm:text-5xl md:text-7xl font-heading font-black tracking-tighter text-white uppercase italic leading-none">
-                        SYSTEM <span className="text-primary">SETTINGS</span>
+                        ADMIN <span className="text-primary">SETTINGS</span>
                     </h1>
                     <div className="flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-accent-teal shadow-[0_0_10px_rgba(38,198,218,0.5)]" />
-                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">CONFIGURATION_CORE: ONLINE</span>
+                        <span className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em]">SETTINGS: READY</span>
                     </div>
                 </div>
                 <div className="bg-surface-dark/40 backdrop-blur-xl p-6 rounded-[2rem] border border-white/5 flex items-center gap-4">
                     <span className="material-symbols-outlined text-primary text-3xl">settings</span>
                     <div>
-                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Admin_Node</p>
-                        <p className="text-sm font-heading font-black text-white uppercase tracking-tight">Configuration Registry</p>
+                        <p className="text-[9px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Admin Area</p>
+                        <p className="text-sm font-heading font-black text-white uppercase tracking-tight">Business Configuration</p>
                     </div>
                 </div>
             </motion.header>
@@ -82,7 +82,7 @@ export default async function AdminSettingsPage() {
                     </div>
                 </CollapsibleSection>
 
-                <CollapsibleSection title="Database Telemetry" icon="database" iconColor="text-accent-teal" borderColor="border-accent-teal/30">
+                <CollapsibleSection title="Catalogue Counts" icon="database" iconColor="text-accent-teal" borderColor="border-accent-teal/30">
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                         {[
                             { label: "Vehicles", value: vehicleCount ?? 0, icon: "directions_car", href: "/admin/vehicles" },
@@ -122,7 +122,7 @@ export default async function AdminSettingsPage() {
                 <section className="bg-surface-dark/40 backdrop-blur-xl border border-primary/25 rounded-[2.5rem] p-6 flex items-start gap-4">
                     <span className="material-symbols-outlined text-primary text-xl mt-0.5">warning</span>
                     <div>
-                        <h3 className="text-primary font-heading font-black text-xs tracking-widest uppercase mb-1">Pending Migration</h3>
+                        <h3 className="text-primary font-heading font-black text-xs tracking-widest uppercase mb-1">Setup Checklist</h3>
                         <p className="text-slate-400 text-xs leading-relaxed">
                             If you have not yet run <code className="bg-white/5 px-1.5 py-1 rounded text-primary">supabase_migration_images.sql</code>,
                             vehicle image uploads and gallery features will not work. Go to the Supabase SQL Editor and run this file once.

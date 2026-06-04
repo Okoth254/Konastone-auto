@@ -5,9 +5,12 @@ import { motion, useMotionValue, useTransform, AnimatePresence } from "framer-mo
 
 export interface Review {
     id: string;
-    customer_name: string;
+    customer_name?: string | null;
+    reviewer_name?: string | null;
     rating: number;
-    content: string;
+    content?: string | null;
+    review_text?: string | null;
+    comment?: string | null;
     created_at: string;
     status: string;
     vehicles?: {
@@ -57,13 +60,13 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                 style={{ opacity: approveOpacity }}
                 className="absolute top-8 left-6 sm:top-12 sm:left-12 lg:top-16 lg:left-16 border-2 lg:border-4 border-primary text-primary px-4 lg:px-8 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-heading font-black text-2xl lg:text-4xl uppercase tracking-tighter -rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(255,191,41,0.5)]"
             >
-                AUTHORIZE
+                APPROVE
             </motion.div>
             <motion.div
                 style={{ opacity: rejectOpacity }}
                 className="absolute top-8 right-6 sm:top-12 sm:right-12 lg:top-16 lg:right-16 border-2 lg:border-4 border-red-500 text-red-500 px-4 lg:px-8 py-2 lg:py-3 rounded-xl lg:rounded-2xl font-heading font-black text-2xl lg:text-4xl uppercase tracking-tighter rotate-12 z-20 pointer-events-none shadow-[0_0_50px_rgba(239,68,68,0.5)]"
             >
-                REDACT
+                REJECT
             </motion.div>
 
             {/* Main Card */}
@@ -77,7 +80,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
-                            <p className="text-[10px] font-black font-mono text-slate-500 tracking-[0.4em] uppercase">SECURE_LOG_{review.id.substring(0, 8)}</p>
+                            <p className="text-[10px] font-black font-mono text-slate-500 tracking-[0.4em] uppercase">REVIEW_{review.id.substring(0, 8)}</p>
                         </div>
                         <p className="text-[10px] font-black font-mono text-slate-600 tracking-[0.2em] uppercase">{new Date(review.created_at).toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
                     </div>
@@ -93,7 +96,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                 {/* Content */}
                 <div className="flex-1 space-y-5 lg:space-y-8 relative z-10">
                     <div className="space-y-2">
-                        <h3 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-tighter leading-none">{review.customer_name}</h3>
+                        <h3 className="text-3xl md:text-5xl lg:text-6xl font-heading font-black text-white uppercase tracking-tighter leading-none">{review.customer_name || review.reviewer_name || "Customer"}</h3>
                         <div className="flex items-center gap-2">
                             <span className="material-symbols-outlined text-primary text-sm">directions_car</span>
                             <p className="text-primary text-[10px] font-black uppercase tracking-[0.3em] font-mono">{vehicleName}</p>
@@ -103,7 +106,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                     <div className="relative">
                         <span className="material-symbols-outlined absolute -top-12 -left-6 text-8xl text-white opacity-5 select-none">format_quote</span>
                         <p className="text-base sm:text-xl md:text-2xl text-slate-200 leading-relaxed font-medium relative z-10 italic tracking-tight">
-                            &quot;{review.content}&quot;
+                            &quot;{review.content || review.review_text || review.comment}&quot;
                         </p>
                     </div>
                 </div>
@@ -121,7 +124,7 @@ function SwipeCard({ review, onApprove, onReject }: { review: Review; onApprove:
                         <span className="text-[10px] font-black uppercase tracking-[0.3em]">Reject</span>
                     </div>
                     <div className="flex flex-col items-center">
-                        <span className="text-[8px] font-black font-mono text-slate-700 tracking-[0.5em] mb-2 uppercase">Decision Protocol</span>
+                        <span className="text-[8px] font-black font-mono text-slate-700 tracking-[0.5em] mb-2 uppercase">Moderation Decision</span>
                         <div className="flex gap-1">
                             <div className="w-1.5 h-1.5 rounded-full bg-red-500/30" />
                             <div className="w-1.5 h-1.5 rounded-full bg-primary/30" />
@@ -171,9 +174,9 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                     <div className="absolute inset-0 rounded-full border border-primary/20 animate-ping" />
                     <span className="material-symbols-outlined text-primary text-5xl">verified</span>
                 </motion.div>
-                <h3 className="text-2xl lg:text-3xl font-heading font-black text-white uppercase tracking-tighter mb-4">Registry Clear</h3>
+                <h3 className="text-2xl lg:text-3xl font-heading font-black text-white uppercase tracking-tighter mb-4">Review Queue Clear</h3>
                 <p className="text-slate-500 text-[10px] font-black uppercase tracking-[0.5em] text-center max-w-xs leading-loose">
-                    All incoming transmissions have been processed and encrypted.
+                    All pending customer reviews have been processed.
                 </p>
 
                 <motion.button
@@ -229,15 +232,15 @@ export function ReviewSwipeDeck({ reviews: initialReviews, onAction }: ReviewSwi
                 })}
             </AnimatePresence>
 
-            {/* Progress Telemetry */}
+            {/* Review progress */}
             <div className="absolute -bottom-20 lg:-bottom-24 left-0 right-0 px-2 sm:px-8">
                 <div className="flex justify-between items-end mb-4 px-2">
                     <div className="flex flex-col">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Moderation_Velocity</span>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Moderation Progress</span>
                         <span className="text-sm font-mono text-primary">{Math.round(progress)}% COMPLETE</span>
                     </div>
                     <div className="flex flex-col items-end">
-                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Remaining_Logs</span>
+                        <span className="text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-1">Remaining Reviews</span>
                         <span className="text-sm font-mono text-slate-400">{reviews.length} / {initialReviews.length}</span>
                     </div>
                 </div>
