@@ -39,26 +39,26 @@ export default function AdminLogin() {
                         <div className="mx-auto mb-6 w-16 h-16 rounded-3xl bg-primary/10 border border-primary/20 flex items-center justify-center shadow-2xl shadow-primary/10">
                             <span className="material-symbols-outlined text-4xl text-primary">lock</span>
                         </div>
-                        <span className="font-heading text-[10px] tracking-[0.3em] text-accent-teal uppercase block mb-3 font-black">AUTH_GATEWAY // SECURE</span>
+                        <span className="font-heading text-[10px] tracking-[0.3em] text-accent-teal uppercase block mb-3 font-black">Secure staff access</span>
                         <h1 className="font-heading text-5xl tracking-tighter text-white uppercase italic leading-none font-black">
-                            COMMAND<span className="text-primary">CENTER</span>
+                            KONASTONE <span className="text-primary">AUTOS</span>
                         </h1>
                     </div>
 
                     <form onSubmit={handleLogin} className="space-y-6">
                         <div className="group relative">
-                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">OPERATOR_ID (Email)</label>
+                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">Email address</label>
                             <input
                                 type="email"
                                 required
                                 className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-mono text-sm focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all placeholder:text-slate-700"
-                                placeholder="admin@konastone.com"
+                                placeholder="admin@konastoneautos.co.ke"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className="group relative">
-                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">ACCESS_KEY (Password)</label>
+                            <label className="absolute -top-2.5 left-4 px-2 bg-surface-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">Password</label>
                             <input
                                 type="password"
                                 required
@@ -88,7 +88,7 @@ export default function AdminLogin() {
 
                     <div className="mt-8 text-center border-t border-white/5 pt-6">
                         <p className="font-mono text-[9px] text-slate-600 uppercase tracking-widest">
-                            UNAUTHORIZED ACCESS IS STRICTLY PROHIBITED AND MONITORED.
+                            Sign in to manage Konastone Autos inventory, leads, and reviews.
                         </p>
                     </div>
                 </div>
@@ -96,9 +96,9 @@ export default function AdminLogin() {
 
             <div className="absolute bottom-6 left-6 opacity-30 pointer-events-none hidden sm:block">
                 <div className="font-heading text-[10px] tracking-[0.4em] space-y-1 text-accent-teal uppercase font-black">
-                    <p>VER: KONASTONE_CORE_V1.2</p>
-                    <p>NODE: ADMIN_ALPHA</p>
-                    <p>STATUS: ONLINE</p>
+                    <p>KONASTONE AUTOS ADMIN</p>
+                    <p>SECURE STAFF PORTAL</p>
+                    <p>STATUS: READY</p>
                 </div>
             </div>
         </div>

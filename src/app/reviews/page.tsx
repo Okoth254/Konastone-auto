@@ -114,7 +114,7 @@ export default function ReviewsPage() {
                     transition={{ delay: 0.2 }}
                     className="text-slate-400 text-lg md:text-xl font-medium max-w-2xl leading-relaxed italic"
                 >
-                    Every Konastone vehicle represents a commitment to excellence. These are the stories of the drivers who trusted us with their journey.
+                    Every Konastone Autos vehicle represents a commitment to excellence. These are the stories of the drivers who trusted us with their journey.
                 </motion.p>
             </header>
 

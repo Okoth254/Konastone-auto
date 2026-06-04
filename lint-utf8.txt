@@ -1,5 +1,5 @@
 ﻿
-> konastone-motors@0.1.0 lint
+> konastone-autos@0.1.0 lint
 > eslint
 
 

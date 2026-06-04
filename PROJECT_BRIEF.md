@@ -74,6 +74,6 @@ This outlines the complete workflow a prospective buyer takes from landing on th
 
 ### Step 5: Inquiry & Conversion
 *   Once convinced, the user decides to reach out to the dealership. They have multiple convenient options situated prominently on the page:
-    *   **Direct WhatsApp:** They click the "WhatsApp" button, which opens their WhatsApp app with a pre-filled message specific to that exact car (e.g., *"Hi Konastone! I'm interested in the 2020 Mercedes-Benz GLC going for KES 6.50M. Is it still available?"*).
+    *   **Direct WhatsApp:** They click the "WhatsApp" button, which opens their WhatsApp app with a pre-filled message specific to that exact car (e.g., *"Hi Konastone Autos! I'm interested in the 2020 Mercedes-Benz GLC going for KES 6.50M. Is it still available?"*).
     *   **Direct Call:** They click the "Call Now" button to immediately phone the sales team.
     *   **Lead Form Submission:** They fill out the structured `LeadForm` directly on the page, providing their Name, Email, Phone number, and a custom message requesting a test drive or more details. Upon submission, the dealership receives the lead tied directly to that specific vehicle ID.

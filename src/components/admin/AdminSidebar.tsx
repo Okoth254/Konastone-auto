@@ -71,15 +71,15 @@ export default function AdminSidebar() {
                         </div>
                         <div>
                             <h1 className="text-white font-heading font-black tracking-tighter text-2xl uppercase italic leading-none">
-                                KONASTONE<span className="text-primary">CORE</span>
+                                KONASTONE <span className="text-primary">AUTOS</span>
                             </h1>
-                            <p className="text-[7px] text-slate-500 font-black tracking-[0.5em] uppercase mt-1">Registry_Alpha_v3</p>
+                            <p className="text-[9px] text-slate-500 font-black tracking-[0.3em] uppercase mt-1">Admin portal</p>
                         </div>
                     </div>
                 </div>
 
                 <div className="flex-1 px-6 space-y-3">
-                    <p className="px-4 text-[8px] font-black text-slate-600 uppercase tracking-[0.4em] mb-6">Main_Operations</p>
+                    <p className="px-4 text-[9px] font-black text-slate-600 uppercase tracking-[0.3em] mb-6">Main menu</p>
                     {navItems.map((item) => {
                         const isActive = item.exact ? pathname === item.href : pathname?.startsWith(item.href);
                         return (
@@ -129,7 +129,7 @@ export default function AdminSidebar() {
                                 className="w-full h-14 rounded-2xl bg-linear-to-br from-primary to-amber-500 text-black flex items-center justify-center gap-3 shadow-2xl shadow-primary/20 cursor-pointer"
                             >
                                 <span className="material-symbols-outlined font-black">add</span>
-                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">New_Asset</span>
+                                <span className="text-[10px] font-black uppercase tracking-[0.2em]">Add vehicle</span>
                             </motion.div>
                         </Link>
                     </div>
@@ -148,7 +148,7 @@ export default function AdminSidebar() {
                         }`}
                     >
                         <span className="material-symbols-outlined text-2xl transition-transform group-hover:rotate-90 duration-500">settings</span>
-                        <span className="font-heading text-[11px] font-black uppercase tracking-[0.2em]">Core_Settings</span>
+                        <span className="font-heading text-[11px] font-black uppercase tracking-[0.2em]">Settings</span>
                     </Link>
 
                     <form action={logout}>
@@ -157,7 +157,7 @@ export default function AdminSidebar() {
                             className="w-full h-14 px-6 flex items-center gap-4 text-slate-500 hover:text-red-400 hover:bg-red-500/5 transition-all duration-500 rounded-2xl group cursor-pointer"
                         >
                             <span className="material-symbols-outlined text-2xl group-hover:translate-x-1 transition-transform">logout</span>
-                            <span className="font-heading text-[11px] font-black uppercase tracking-[0.2em]">Exit_Registry</span>
+                            <span className="font-heading text-[11px] font-black uppercase tracking-[0.2em]">Sign out</span>
                         </button>
                     </form>
                 </div>
