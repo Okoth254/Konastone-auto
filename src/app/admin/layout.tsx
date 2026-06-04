@@ -4,7 +4,7 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 // Load Google Fonts for Admin (Material Symbols and Space Grotesk)
 import { Space_Grotesk } from "next/font/google";
 
-const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk" });
+const spaceGrotesk = Space_Grotesk({ subsets: ["latin"], variable: "--font-space-grotesk", display: "swap", preload: false });
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
     return (

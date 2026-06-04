@@ -10,6 +10,7 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
+  preload: false,
   weight: ["400", "500", "600", "700", "800", "900"],
 });
 
@@ -17,6 +18,7 @@ const lato = Lato({
   subsets: ["latin"],
   variable: "--font-lato",
   display: "swap",
+  preload: false,
   weight: ["100", "300", "400", "700", "900"],
 });
 

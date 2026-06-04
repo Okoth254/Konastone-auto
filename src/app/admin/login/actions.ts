@@ -19,7 +19,7 @@ export async function login(formData: FormData) {
   }
 
   revalidatePath('/admin', 'layout')
-  redirect('/admin')
+  return { success: true }
 }
 
 export async function logout() {

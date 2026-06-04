@@ -83,6 +83,7 @@ html, body {
 @utility scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
+  overflow-anchor: none;
 }
 @utility scrollbar-hide {
   &::-webkit-scrollbar {
@@ -375,6 +376,7 @@ html, body {
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
+  overflow-anchor: none;
 }
 
 .admin-table-min {

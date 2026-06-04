@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { login } from "./actions"
 
 export default function AdminLogin() {
@@ -8,6 +9,7 @@ export default function AdminLogin() {
     const [password, setPassword] = useState("")
     const [error, setError] = useState<string | null>(null)
     const [loading, setLoading] = useState(false)
+    const router = useRouter()
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -17,10 +19,21 @@ export default function AdminLogin() {
         formData.append('email', email)
         formData.append('password', password)
 
-        const res = await login(formData)
+        try {
+            const res = await login(formData)
 
-        if (res?.error) {
-            setError(res.error)
+            if (res?.error) {
+                setError(res.error)
+                setLoading(false)
+                return
+            }
+
+            if (res?.success) {
+                router.replace("/admin")
+                router.refresh()
+            }
+        } catch {
+            setError("Unable to complete sign in. Please try again.")
             setLoading(false)
         }
     }
