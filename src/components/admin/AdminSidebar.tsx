@@ -122,7 +122,7 @@ export default function AdminSidebar() {
                     })}
 
                     <div className="pt-6 sm:pt-10 px-2 sm:px-4">
-                        <Link href="/admin/vehicles/new" onClick={() => setIsOpen(false)}>
+                        <Link href="/admin/vehicles/edit/new" onClick={() => setIsOpen(false)}>
                             <motion.div
                                 whileHover={{ y: -2, scale: 1.02 }}
                                 whileTap={{ scale: 0.98 }}

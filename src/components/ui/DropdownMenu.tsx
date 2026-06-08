@@ -1,6 +1,7 @@
 "use client";
 
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu";
+import Link from "next/link";
 import { ReactNode } from "react";
 
 interface DropdownMenuProps {
@@ -43,18 +44,26 @@ interface DropdownMenuItemProps {
 export function DropdownMenuItem({
   children,
   onClick,
+  href,
   destructive = false,
 }: DropdownMenuItemProps) {
+  const className = [
+    "flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl cursor-pointer outline-none transition-all duration-200",
+    destructive
+      ? "text-red-400 hover:bg-red-500/10 focus:bg-red-500/10"
+      : "text-slate-400 hover:bg-white/5 hover:text-primary focus:bg-white/5 focus:text-primary",
+  ].join(" ");
+
+  if (href) {
+    return (
+      <DropdownMenuPrimitive.Item asChild className={className}>
+        <Link href={href}>{children}</Link>
+      </DropdownMenuPrimitive.Item>
+    );
+  }
+
   return (
-    <DropdownMenuPrimitive.Item
-      onClick={onClick}
-      className={[
-        "flex items-center gap-3 px-4 py-3 text-[10px] font-black uppercase tracking-[0.2em] rounded-xl cursor-pointer outline-none transition-all duration-200",
-        destructive
-          ? "text-red-400 hover:bg-red-500/10 focus:bg-red-500/10"
-          : "text-slate-400 hover:bg-white/5 hover:text-primary focus:bg-white/5 focus:text-primary",
-      ].join(" ")}
-    >
+    <DropdownMenuPrimitive.Item onClick={onClick} className={className}>
       {children}
     </DropdownMenuPrimitive.Item>
   );

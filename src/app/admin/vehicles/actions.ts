@@ -143,7 +143,7 @@ export async function saveVehicle(formData: FormData) {
   revalidatePath('/');
   revalidatePath('/inventory');
   revalidatePath(`/vehicle/${vehicleId}`);
-  redirect('/admin/vehicles');
+  redirect(`/admin/vehicles/edit/${vehicleId}?saved=1`);
 }
 
 export async function deleteVehicle(id: string) {
@@ -170,6 +170,42 @@ export async function deleteVehicle(id: string) {
   }
 
   revalidatePath('/admin/vehicles');
+  revalidatePath('/');
   revalidatePath('/inventory');
-  redirect('/admin/vehicles');
+  revalidatePath(`/vehicle/${id}`);
+  redirect('/admin/vehicles?vehicleAction=deleted');
+}
+
+export async function updateVehicleCatalogueState(
+  id: string,
+  updates: {
+    status?: 'available' | 'sold' | 'in_transit' | 'reserved';
+    is_featured?: boolean;
+  },
+  redirectTo?: string,
+) {
+  const supabase = await createClient();
+
+  const vehicleData: Record<string, unknown> = {};
+  if (updates.status) vehicleData.status = updates.status;
+  if (typeof updates.is_featured === 'boolean') vehicleData.is_featured = updates.is_featured;
+
+  if (Object.keys(vehicleData).length === 0) return;
+
+  const { error } = await supabase.from('vehicles').update(vehicleData).eq('id', id);
+
+  if (error) {
+    console.error('Error updating vehicle catalogue state:', error);
+    throw new Error('Failed to update vehicle catalogue state');
+  }
+
+  revalidatePath('/admin/vehicles');
+  revalidatePath(`/admin/vehicles/${id}`);
+  revalidatePath('/');
+  revalidatePath('/inventory');
+  revalidatePath(`/vehicle/${id}`);
+
+  if (redirectTo) {
+    redirect(redirectTo);
+  }
 }

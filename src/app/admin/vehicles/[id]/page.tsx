@@ -6,6 +6,8 @@ import { formatCurrency } from "@/utils/format";
 import * as motion from "framer-motion/client";
 import MotionButton from "@/components/ui/MotionButton";
 import MotionBadge from "@/components/ui/MotionBadge";
+import AdminPrintButton from "@/components/admin/AdminPrintButton";
+import { updateVehicleCatalogueState } from "../actions";
 
 export default async function VehicleSpecsView({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
@@ -26,6 +28,15 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
         || vehicle.main_image_url
         || (vehicle.folder_name ? `/images/inventory/${vehicle.folder_name}/1.jpeg` : null)
         || 'https://placehold.co/1600x900/1a1a1a/444444?text=No+Image';
+
+    const markReserved = updateVehicleCatalogueState.bind(null, vehicle.id, { status: 'reserved' }, `/admin/vehicles/${vehicle.id}?vehicleAction=reserved`);
+    const markSold = updateVehicleCatalogueState.bind(null, vehicle.id, { status: 'sold' }, `/admin/vehicles/${vehicle.id}?vehicleAction=sold`);
+    const toggleFeatured = updateVehicleCatalogueState.bind(null, vehicle.id, { is_featured: !vehicle.is_featured }, `/admin/vehicles/${vehicle.id}?vehicleAction=${vehicle.is_featured ? 'unfeatured' : 'featured'}`);
+    const publicVisibility = vehicle.status === 'available'
+        ? vehicle.is_featured ? 'Homepage + inventory' : 'Inventory only'
+        : vehicle.status === 'in_transit' ? 'Shipment stock'
+        : vehicle.status === 'reserved' ? 'Reserved record'
+        : 'Sold archive';
 
     return (
         <div className="flex-1 overflow-y-auto scrollbar-hide">
@@ -52,15 +63,28 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5">
-                        <span className="material-symbols-outlined">print</span>
-                    </MotionButton>
+                    <AdminPrintButton />
                     <MotionButton variant="ghost" href={`/vehicle/${vehicle.id}`} className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-white/5">
                         PUBLIC PREVIEW
                     </MotionButton>
                     <MotionButton variant="outline" href={`/admin/vehicles/edit/${vehicle.id}`} className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
                         EDIT VEHICLE
                     </MotionButton>
+                    <form action={toggleFeatured}>
+                        <button className="h-11 sm:h-12 rounded-xl bg-white/3 border border-white/5 px-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-primary hover:border-primary/30 transition-all">
+                            {vehicle.is_featured ? 'Unfeature' : 'Feature'}
+                        </button>
+                    </form>
+                    <form action={markReserved}>
+                        <button disabled={vehicle.status === 'reserved'} className="h-11 sm:h-12 rounded-xl bg-orange-500/5 border border-orange-500/10 px-4 text-[9px] font-black uppercase tracking-[0.2em] text-orange-400 hover:border-orange-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+                            Reserve
+                        </button>
+                    </form>
+                    <form action={markSold}>
+                        <button disabled={vehicle.status === 'sold'} className="h-11 sm:h-12 rounded-xl bg-red-500/5 border border-red-500/10 px-4 text-[9px] font-black uppercase tracking-[0.2em] text-red-400 hover:border-red-500/30 disabled:opacity-40 disabled:cursor-not-allowed transition-all">
+                            Mark sold
+                        </button>
+                    </form>
                 </div>
             </motion.header>
 
@@ -99,8 +123,8 @@ export default async function VehicleSpecsView({ params }: { params: Promise<{ i
                                 <p className="text-2xl font-heading font-black text-white italic">KSH {formatCurrency(vehicle.price || 0).split('KSh')[1]}</p>
                             </div>
                             <div className="space-y-1">
-                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">DRIVETRAIN</p>
-                                <p className="text-lg font-heading font-black text-primary uppercase">{vehicle.drivetrain || 'ALL-WHEEL'}</p>
+                                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">VISIBILITY</p>
+                                <p className="text-lg font-heading font-black text-primary uppercase">{publicVisibility}</p>
                             </div>
                         </div>
                     </div>

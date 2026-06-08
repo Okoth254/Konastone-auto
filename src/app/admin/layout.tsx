@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
+import AdminToaster from "@/components/admin/AdminToaster";
 
 // Load Google Fonts for Admin (Material Symbols and Space Grotesk)
 import { Space_Grotesk } from "next/font/google";
@@ -27,6 +28,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     </div>
                 </footer>
             </div>
+            <AdminToaster />
         </div>
     );
 }
