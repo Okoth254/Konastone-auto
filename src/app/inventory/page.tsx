@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import { supabase } from "@/lib/supabase";
 import { Vehicle } from "@/types/database";
 import InventorySidebar from "@/components/inventory/InventorySidebar";
@@ -75,8 +76,13 @@ export default async function Inventory({
 
             <div className="section-padding container-luxury relative z-10">
                 <div className="flex flex-col lg:flex-row gap-8">
-                    {/* Dynamic Client Sidebar Component */}
-                    <InventorySidebar />
+                    <Suspense
+                        fallback={
+                            <aside className="w-full lg:w-80 shrink-0 rounded-2xl border border-white/5 bg-surface-dark/30 p-6 min-h-64 animate-pulse" />
+                        }
+                    >
+                        <InventorySidebar />
+                    </Suspense>
 
                     <InventoryMotionGrid vehicles={vehicles} isSupabaseConfigured={!!isSupabaseConfigured} />
                 </div>

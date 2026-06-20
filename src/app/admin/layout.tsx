@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Suspense } from "react";
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminToaster from "@/components/admin/AdminToaster";
 
@@ -23,7 +24,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
                     </div>
                 </footer>
             </div>
-            <AdminToaster />
+            <Suspense fallback={null}>
+                <AdminToaster />
+            </Suspense>
         </div>
     );
 }
