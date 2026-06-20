@@ -31,9 +31,9 @@ export default function Dialog({ open, onOpenChange, children }: DialogProps) {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
                 transition={{ type: "spring", damping: 25, stiffness: 300 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+                className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4"
               >
-                <div className="w-full max-w-2xl bg-surface-dark/95 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden max-h-[90vh] flex flex-col">
+                <div className="w-full max-w-2xl bg-surface-dark/95 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-[2rem] lg:rounded-[2.5rem] shadow-[0_0_100px_rgba(0,0,0,0.5)] overflow-hidden max-h-[calc(100dvh-1.5rem)] sm:max-h-[90vh] flex flex-col">
                   {children}
                 </div>
               </motion.div>
@@ -53,7 +53,7 @@ export function DialogHeader({
   onClose?: () => void;
 }) {
   return (
-    <div className="flex justify-between items-center p-8 border-b border-white/5">
+    <div className="flex justify-between items-center gap-4 p-5 sm:p-8 border-b border-white/5">
       <div>{children}</div>
       {onClose && (
         <DialogPrimitive.Close asChild>
@@ -87,12 +87,12 @@ export function DialogDescription({ children }: { children: ReactNode }) {
 
 export function DialogBody({ children }: { children: ReactNode }) {
   return (
-    <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">{children}</div>
+    <div className="flex-1 overflow-y-auto p-5 sm:p-8 custom-scrollbar">{children}</div>
   );
 }
 
 export function DialogFooter({ children }: { children: ReactNode }) {
   return (
-    <div className="p-8 border-t border-white/5 bg-white/2">{children}</div>
+    <div className="p-5 sm:p-8 border-t border-white/5 bg-white/2">{children}</div>
   );
 }

@@ -9,7 +9,7 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
             <AdminSidebar />
 
             {/* Main Canvas Context */}
-            <div className="flex-1 flex flex-col min-h-screen xl:ml-72 transition-all duration-700">
+            <div className="flex-1 flex flex-col min-h-screen pt-16 xl:pt-0 xl:ml-72 transition-all duration-700">
                 <main className="flex-1 w-full overflow-x-hidden overflow-y-visible">
                     {children}
                 </main>

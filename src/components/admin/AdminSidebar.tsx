@@ -10,14 +10,23 @@ export default function AdminSidebar() {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = useState(false);
 
-    // Close sidebar on route change for mobile
-    // We use a safe check to avoid cascading renders warning
     useEffect(() => {
-        if (isOpen) {
-            const timer = setTimeout(() => setIsOpen(false), 0);
-            return () => clearTimeout(timer);
-        }
-    }, [pathname, isOpen]);
+        setIsOpen(false);
+    }, [pathname]);
+
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") setIsOpen(false);
+        };
+
+        document.body.style.overflow = isOpen ? "hidden" : "";
+        window.addEventListener("keydown", handleKeyDown);
+
+        return () => {
+            document.body.style.overflow = "";
+            window.removeEventListener("keydown", handleKeyDown);
+        };
+    }, [isOpen]);
 
     const navItems = [
         { name: "Dashboard", href: "/admin", icon: "dashboard", exact: true },
@@ -28,17 +37,26 @@ export default function AdminSidebar() {
 
     return (
         <>
-            {/* Mobile Toggle Trigger */}
-            <motion.button
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                onClick={() => setIsOpen(!isOpen)}
-                className="xl:hidden fixed top-4 right-4 sm:top-6 sm:right-6 z-100 w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-primary text-black flex items-center justify-center shadow-2xl shadow-primary/20 border border-white/20 active:scale-95 transition-transform"
-            >
-                <span className="material-symbols-outlined font-black">
-                    {isOpen ? 'close' : 'menu'}
-                </span>
-            </motion.button>
+            <div className="xl:hidden fixed inset-x-0 top-0 z-[110] h-16 bg-background-dark/95 backdrop-blur-2xl border-b border-white/5 px-4 flex items-center justify-between">
+                <div className="min-w-0">
+                    <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600">Admin portal</p>
+                    <h1 className="text-sm font-heading font-black uppercase italic tracking-tight text-white truncate">
+                        KONASTONE <span className="text-primary">AUTOS</span>
+                    </h1>
+                </div>
+                <motion.button
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    onClick={() => setIsOpen(!isOpen)}
+                    aria-label={isOpen ? "Close admin menu" : "Open admin menu"}
+                    aria-expanded={isOpen}
+                    className="w-11 h-11 rounded-xl bg-primary text-black flex items-center justify-center shadow-2xl shadow-primary/20 border border-white/20 active:scale-95 transition-transform"
+                >
+                    <span className="material-symbols-outlined font-black">
+                        {isOpen ? 'close' : 'menu'}
+                    </span>
+                </motion.button>
+            </div>
 
             {/* Mobile Backdrop Overlay */}
             <AnimatePresence>
@@ -48,13 +66,13 @@ export default function AdminSidebar() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setIsOpen(false)}
-                        className="xl:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-md"
+                        className="xl:hidden fixed inset-0 z-[90] bg-black/60 backdrop-blur-md"
                     />
                 )}
             </AnimatePresence>
 
             <nav className={`
-                fixed top-0 left-0 z-50 h-screen w-[min(18rem,calc(100vw-4rem))] sm:w-72 pt-8 lg:pt-12 pb-8 lg:pb-12 flex flex-col
+                fixed top-0 left-0 z-[100] h-screen w-[min(20rem,calc(100vw-2rem))] sm:w-72 pt-20 xl:pt-8 2xl:pt-12 pb-8 lg:pb-12 flex flex-col
                 bg-background-dark/95 backdrop-blur-3xl border-r border-white/5
                 transition-all duration-700 ease-[0.16, 1, 0.3, 1]
                 ${isOpen ? 'translate-x-0' : '-translate-x-full xl:translate-x-0'}

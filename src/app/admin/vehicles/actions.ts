@@ -14,20 +14,56 @@ export async function saveVehicle(formData: FormData) {
   // We'll use a pre-generated UUID if new, or the existing ID if editing
   const vehicleId = isNew ? crypto.randomUUID() : id;
 
-  // --- 1. Handle all image uploads ---
+  // --- 1. Validate the requested publishing state before storage writes ---
   let mainImageUrl = formData.get('main_image_url') as string | null;
   const galleryFiles = formData.getAll('gallery_images') as File[];
   const mainImageIndex = parseInt(formData.get('main_image_index') as string || '0');
   const deletedImageIds = (formData.get('deleted_image_ids') as string || '').split(',').filter(Boolean);
   const existingImageOrder = (formData.get('existing_image_order') as string || '').split(',').filter(Boolean);
-  const requestedStatus = formData.get('status') as 'draft' | 'available' | 'sold' | 'in_transit' | 'reserved';
-  const requestedFeatured = formData.get('is_featured') === 'on';
+  const saveIntent = formData.get('save_intent') === 'draft' ? 'draft' : 'publish';
+  const requestedStatusRaw = formData.get('status') as 'draft' | 'available' | 'sold' | 'in_transit' | 'reserved';
+  const requestedStatus = saveIntent === 'draft'
+    ? 'draft'
+    : requestedStatusRaw === 'draft'
+      ? 'available'
+      : requestedStatusRaw;
+  const requestedFeatured = saveIntent === 'draft' ? false : formData.get('is_featured') === 'on';
+  const realGalleryFiles = galleryFiles.filter((file) => file && file.size > 0);
+
+  const databaseMinimumFields = [
+    formData.get('make'),
+    formData.get('model'),
+    formData.get('year'),
+    formData.get('price'),
+  ].every((value) => String(value || '').trim().length > 0);
+
+  if (!databaseMinimumFields) {
+    const errorPath = isNew ? '/admin/vehicles/edit/new?vehicleError=draft_incomplete' : `/admin/vehicles/edit/${vehicleId}?vehicleError=draft_incomplete`;
+    redirect(errorPath);
+  }
+
+  const retainedImageCount = existingImageOrder.filter((imageId) => !deletedImageIds.includes(imageId)).length;
+  const finalImageCountBeforeUpload = retainedImageCount + realGalleryFiles.length + (mainImageUrl && retainedImageCount === 0 && realGalleryFiles.length === 0 ? 1 : 0);
+  const requiredFields = [
+    formData.get('make'),
+    formData.get('model'),
+    formData.get('year'),
+    formData.get('price'),
+    formData.get('mileage'),
+    formData.get('fuel_type'),
+    formData.get('transmission'),
+  ].every((value) => String(value || '').trim().length > 0);
+
+  const requiresPublicReadiness = requestedStatus === 'available' || requestedStatus === 'in_transit' || requestedFeatured;
+  if (requiresPublicReadiness && (!requiredFields || finalImageCountBeforeUpload === 0)) {
+    const errorPath = isNew ? '/admin/vehicles/edit/new?vehicleError=publish_incomplete' : `/admin/vehicles/edit/${vehicleId}?vehicleError=publish_incomplete`;
+    redirect(errorPath);
+  }
 
   // Upload each new gallery file to Supabase Storage
   const newlyUploadedImages: { storage_path: string; public_url: string }[] = [];
 
-  for (const file of galleryFiles) {
-    if (!file || file.size === 0) continue;
+  for (const file of realGalleryFiles) {
     const fileExt = file.name.split('.').pop() || 'jpg';
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
     const storagePath = `${vehicleId}/${fileName}`; // organized per vehicle
@@ -49,22 +85,6 @@ export async function saveVehicle(formData: FormData) {
   if (newlyUploadedImages.length > 0 && !mainImageUrl) {
     const mainIdx = Math.min(mainImageIndex, newlyUploadedImages.length - 1);
     mainImageUrl = newlyUploadedImages[mainIdx].public_url;
-  }
-
-  const retainedImageCount = existingImageOrder.filter((id) => !deletedImageIds.includes(id)).length;
-  const finalImageCount = retainedImageCount + newlyUploadedImages.length + (mainImageUrl && retainedImageCount === 0 && newlyUploadedImages.length === 0 ? 1 : 0);
-  const requiredFields = [
-    formData.get('make'),
-    formData.get('model'),
-    formData.get('year'),
-    formData.get('price'),
-    formData.get('mileage'),
-    formData.get('fuel_type'),
-    formData.get('transmission'),
-  ].every((value) => String(value || '').trim().length > 0);
-
-  if ((requestedStatus === 'available' || requestedFeatured) && (!requiredFields || finalImageCount === 0)) {
-    throw new Error('Vehicle needs make, model, year, price, mileage, fuel type, transmission, and at least one image before it can be published or featured.');
   }
 
   // --- 2. Save/Update core vehicle data ---
@@ -120,12 +140,13 @@ export async function saveVehicle(formData: FormData) {
 
   // --- 3. Insert new images into vehicle_images table ---
   if (newlyUploadedImages.length > 0) {
+    const newImageSortStart = existingImageOrder.length;
     const imageRecords = newlyUploadedImages.map((img, idx) => ({
       vehicle_id: vehicleId,
       storage_path: img.storage_path,
       public_url: img.public_url,
       is_main: img.public_url === mainImageUrl,
-      sort_order: idx,
+      sort_order: newImageSortStart + idx,
     }));
 
     const { error: imgInsertError } = await supabase.from('vehicle_images').insert(imageRecords);
@@ -144,8 +165,10 @@ export async function saveVehicle(formData: FormData) {
       .in('id', deletedImageIds);
 
     if (toDelete && toDelete.length > 0) {
-      const paths = toDelete.map(img => img.storage_path);
-      await supabase.storage.from('vehicles').remove(paths);
+      const paths = toDelete.map(img => img.storage_path).filter((path): path is string => Boolean(path));
+      if (paths.length > 0) {
+        await supabase.storage.from('vehicles').remove(paths);
+      }
     }
 
     await supabase.from('vehicle_images').delete().in('id', deletedImageIds);
@@ -181,25 +204,53 @@ export async function saveVehicle(formData: FormData) {
 export async function deleteVehicle(id: string) {
   const supabase = await createClient();
 
-  // 1. Fetch all storage paths for this vehicle's images
-  const { data: images } = await supabase
+  const { data: vehicle } = await supabase
+    .from('vehicles')
+    .select('year, make, model')
+    .eq('id', id)
+    .single();
+
+  const { data: images, error: imageFetchError } = await supabase
     .from('vehicle_images')
     .select('storage_path')
     .eq('vehicle_id', id);
 
-  // 2. Delete from Supabase Storage
-  if (images && images.length > 0) {
-    const paths = images.map(img => img.storage_path);
-    await supabase.storage.from('vehicles').remove(paths);
+  if (imageFetchError) {
+    console.error('Error preparing vehicle deletion:', imageFetchError);
+    redirect(`/admin/vehicles/edit/${id}?vehicleError=delete_prepare_failed`);
   }
 
-  // 3. Delete vehicle (cascade deletes vehicle_images rows via FK)
+  await supabase.from('admin_audit_log').insert({
+    action: 'vehicle_delete_attempted',
+    entity_type: 'vehicle',
+    entity_id: id,
+    summary: `Delete requested for ${vehicle?.year || ''} ${vehicle?.make || ''} ${vehicle?.model || ''}`.trim(),
+  }).then(() => undefined);
+
+  if (images && images.length > 0) {
+    const paths = images.map(img => img.storage_path).filter((path): path is string => Boolean(path));
+    if (paths.length > 0) {
+      const { error: storageError } = await supabase.storage.from('vehicles').remove(paths);
+      if (storageError) {
+        console.error('Error removing vehicle images from storage:', storageError);
+        redirect(`/admin/vehicles/edit/${id}?vehicleError=delete_storage_failed`);
+      }
+    }
+  }
+
   const { error } = await supabase.from('vehicles').delete().eq('id', id);
 
   if (error) {
     console.error('Error deleting vehicle:', error);
-    throw new Error('Failed to delete vehicle');
+    redirect(`/admin/vehicles/edit/${id}?vehicleError=delete_failed`);
   }
+
+  await supabase.from('admin_audit_log').insert({
+    action: 'vehicle_deleted',
+    entity_type: 'vehicle',
+    entity_id: id,
+    summary: `Deleted ${vehicle?.year || ''} ${vehicle?.make || ''} ${vehicle?.model || ''}`.trim(),
+  }).then(() => undefined);
 
   revalidatePath('/admin/vehicles');
   revalidatePath('/');
@@ -211,7 +262,7 @@ export async function deleteVehicle(id: string) {
 export async function updateVehicleCatalogueState(
   id: string,
   updates: {
-    status?: 'available' | 'sold' | 'in_transit' | 'reserved';
+    status?: 'draft' | 'available' | 'sold' | 'in_transit' | 'reserved';
     is_featured?: boolean;
   },
   redirectTo?: string,
@@ -224,13 +275,17 @@ export async function updateVehicleCatalogueState(
 
   if (Object.keys(vehicleData).length === 0) return;
 
-  if (updates.status === 'available' || updates.is_featured === true) {
+  if (updates.status === 'available' || updates.status === 'in_transit' || updates.is_featured === true) {
     const [{ data: vehicle }, { count: imageCount }] = await Promise.all([
       supabase.from('vehicles').select('make, model, year, price, mileage, fuel_type, transmission').eq('id', id).single(),
       supabase.from('vehicle_images').select('*', { count: 'exact', head: true }).eq('vehicle_id', id),
     ]);
     const ready = vehicle && vehicle.make && vehicle.model && vehicle.year && vehicle.price && vehicle.mileage !== null && vehicle.fuel_type && vehicle.transmission && (imageCount || 0) > 0;
     if (!ready) {
+      if (redirectTo) {
+        const separator = redirectTo.includes('?') ? '&' : '?';
+        redirect(`${redirectTo}${separator}vehicleError=publish_incomplete`);
+      }
       throw new Error('Vehicle needs complete public details and at least one image before it can be available or featured.');
     }
   }

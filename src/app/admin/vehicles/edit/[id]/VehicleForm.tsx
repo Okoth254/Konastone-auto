@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { ChangeEvent, ReactNode } from "react";
+import type { ChangeEvent, FormEvent, ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -39,18 +39,26 @@ const itemVars = {
 
 const steps = [
     { id: 'details', label: 'Details', icon: 'badge' },
-    { id: 'pricing', label: 'Pricing & Status', icon: 'payments' },
+    { id: 'description', label: 'Description', icon: 'notes' },
     { id: 'specs', label: 'Specs', icon: 'tune' },
     { id: 'photos', label: 'Photos', icon: 'add_a_photo' },
+    { id: 'pricing', label: 'Pricing & Status', icon: 'payments' },
     { id: 'review', label: 'Review', icon: 'task_alt' },
 ] as const;
 
-function SaveVehicleButton() {
+function SaveVehicleButton({ intent = 'publish', children }: { intent?: 'draft' | 'publish'; children?: ReactNode }) {
     const { pending } = useFormStatus();
 
     return (
-        <MotionButton type="submit" variant="primary" loading={pending} className="px-5 sm:px-10">
-            {pending ? 'SAVING' : 'SAVE VEHICLE'}
+        <MotionButton
+            type="submit"
+            name="save_intent"
+            value={intent}
+            variant={intent === 'draft' ? 'outline' : 'primary'}
+            loading={pending}
+            className="px-5 sm:px-10"
+        >
+            {pending ? 'SAVING' : children || (intent === 'draft' ? 'SAVE DRAFT' : 'PUBLISH / SAVE')}
         </MotionButton>
     );
 }
@@ -62,7 +70,7 @@ function DeleteConfirmButton({ disabled }: { disabled: boolean }) {
         <button
             type="submit"
             disabled={disabled || pending}
-            className="h-12 rounded-2xl bg-red-500 text-white px-6 text-[10px] font-black uppercase tracking-[0.25em] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-400 transition-all"
+            className="w-full h-12 rounded-2xl bg-red-500 text-white px-6 text-[10px] font-black uppercase tracking-[0.25em] disabled:opacity-40 disabled:cursor-not-allowed hover:bg-red-400 transition-all"
         >
             {pending ? 'REMOVING' : 'DELETE VEHICLE'}
         </button>
@@ -87,10 +95,11 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     const isNew = vehicleId === 'new';
     const router = useRouter();
     const searchParams = useSearchParams();
-    const [status, setStatus] = useState(vehicle?.status || 'available');
+    const [status, setStatus] = useState<Vehicle['status']>(vehicle?.status || 'draft');
     const [isFeatured, setIsFeatured] = useState(Boolean(vehicle?.is_featured));
 
     const [previews, setPreviews] = useState<{ file: File; url: string }[]>([]);
+    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [keepImages, setKeepImages] = useState<ExistingImage[]>(existingImages);
     const [deletedIds, setDeletedIds] = useState<string[]>([]);
     const [mainImageUrl, setMainImageUrl] = useState<string>(vehicle?.main_image_url || '');
@@ -116,19 +125,24 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     const deleteAction = deleteVehicle.bind(null, vehicleId);
     const markSoldAction = updateVehicleCatalogueState.bind(null, vehicleId, { status: 'sold' }, `/admin/vehicles/edit/${vehicleId}?vehicleAction=sold`);
     const markReservedAction = updateVehicleCatalogueState.bind(null, vehicleId, { status: 'reserved' }, `/admin/vehicles/edit/${vehicleId}?vehicleAction=reserved`);
-    const deleteTarget = (vehicle?.vin || vehicle?.model || '').trim();
-    const canDelete = !isNew && deleteTarget.length > 0 && deleteConfirmation.trim().toLowerCase() === deleteTarget.toLowerCase();
+    const markDraftAction = updateVehicleCatalogueState.bind(null, vehicleId, { status: 'draft' }, `/admin/vehicles/edit/${vehicleId}?vehicleAction=drafted`);
+    const deleteVehicleLabel = [vehicle?.year, vehicle?.make, vehicle?.model].filter(Boolean).join(' ') || vehicleId.substring(0, 8);
+    const deleteTarget = `DELETE ${deleteVehicleLabel}`.trim();
+    const canDelete = !isNew && deleteConfirmation.trim().toLowerCase() === deleteTarget.toLowerCase();
 
     const imageCount = keepImages.length + previews.length;
     const completion = useMemo(() => {
         const details = Boolean(fieldValues.make.trim() && fieldValues.model.trim() && fieldValues.year.trim());
+        const description = true;
         const pricing = Boolean(fieldValues.price.trim() && status);
         const specs = Boolean(fieldValues.engine_type.trim() && fieldValues.transmission.trim() && fieldValues.drivetrain.trim());
         const photos = imageCount > 0 || Boolean(mainImageUrl);
-        const review = details && pricing && photos && Boolean(fieldValues.mileage.trim() && fieldValues.fuel_type.trim());
+        const review = details && pricing && photos && Boolean(fieldValues.mileage.trim() && fieldValues.fuel_type.trim() && fieldValues.transmission.trim());
 
-        return { details, pricing, specs, photos, review };
+        return { details, description, pricing, specs, photos, review };
     }, [fieldValues, imageCount, mainImageUrl, status]);
+
+    const requiresPublicReadiness = status === 'available' || status === 'in_transit' || isFeatured;
 
     const validationIssues = [
         !completion.details && 'Add manufacturer, model, and year.',
@@ -160,9 +174,29 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [isDirty]);
 
+    useEffect(() => {
+        return () => {
+            previews.forEach((preview) => URL.revokeObjectURL(preview.url));
+        };
+    }, [previews]);
+
     const updateField = (name: keyof typeof fieldValues, value: string) => {
         setFieldValues(prev => ({ ...prev, [name]: value }));
         setIsDirty(true);
+    };
+
+    const syncFileInput = (files: File[]) => {
+        if (!fileInputRef.current || typeof DataTransfer === 'undefined') return;
+        const dataTransfer = new DataTransfer();
+        files.forEach((file) => dataTransfer.items.add(file));
+        fileInputRef.current.files = dataTransfer.files;
+    };
+
+    const setNewImageFiles = (files: File[]) => {
+        previews.forEach((preview) => URL.revokeObjectURL(preview.url));
+        setSelectedFiles(files);
+        setPreviews(files.map(file => ({ file, url: URL.createObjectURL(file) })));
+        syncFileInput(files);
     };
 
     const addFiles = (files: File[]) => {
@@ -172,8 +206,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
         }
         if (imageFiles.length === 0) return;
 
-        const newPreviews = imageFiles.map(file => ({ file, url: URL.createObjectURL(file) }));
-        setPreviews(prev => [...prev, ...newPreviews]);
+        setNewImageFiles([...selectedFiles, ...imageFiles]);
         setIsDirty(true);
     };
 
@@ -182,23 +215,48 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     };
 
     const removeNewImage = (idx: number) => {
-        URL.revokeObjectURL(previews[idx].url);
-        setPreviews(prev => prev.filter((_, i) => i !== idx));
+        setNewImageFiles(selectedFiles.filter((_, i) => i !== idx));
+        if (mainImageIndex >= selectedFiles.length - 1) {
+            setMainImageIndex(Math.max(0, selectedFiles.length - 2));
+        }
         setIsDirty(true);
     };
 
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null;
+        const intent = submitter?.value === 'draft' ? 'draft' : 'publish';
+        const hasDatabaseMinimum = Boolean(fieldValues.make.trim() && fieldValues.model.trim() && fieldValues.year.trim() && fieldValues.price.trim());
+
+        if (!hasDatabaseMinimum) {
+            event.preventDefault();
+            toast.error('Draft needs core details', {
+                description: 'Add make, model, year, and price before saving. Public fields can stay incomplete until publish.',
+            });
+            return;
+        }
+
+        if (intent === 'publish' && (requiresPublicReadiness || status === 'draft') && !completion.review) {
+            event.preventDefault();
+            toast.error('Listing is not ready', {
+                description: 'Add make, model, year, price, mileage, fuel type, transmission, and at least one image before publishing or featuring.',
+            });
+        }
+    };
+
     const removeExistingImage = (imgId: string) => {
-        setKeepImages(prev => prev.filter(img => img.id !== imgId));
+        const removedImage = keepImages.find(img => img.id === imgId);
+        const nextImages = keepImages.filter(img => img.id !== imgId);
+        setKeepImages(nextImages);
         setDeletedIds(prev => [...prev, imgId]);
         setIsDirty(true);
-        if (keepImages.find(img => img.id === imgId)?.public_url === mainImageUrl) {
-            setMainImageUrl('');
+        if (removedImage?.public_url === mainImageUrl) {
+            setMainImageUrl(nextImages[0]?.public_url || '');
         }
     };
 
     return (
         <>
-        <form action={saveVehicle} onChange={() => setIsDirty(true)} className="flex flex-col min-h-screen bg-background-dark">
+        <form action={saveVehicle} onSubmit={handleSubmit} onChange={() => setIsDirty(true)} className="flex flex-col min-h-screen bg-background-dark">
             <input type="hidden" name="id" value={vehicleId} />
             <input type="hidden" name="status" value={status} />
             <input type="hidden" name="is_featured" value={isFeatured ? "on" : ""} />
@@ -207,13 +265,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
             <input type="hidden" name="deleted_image_ids" value={deletedIds.join(',')} />
             <input type="hidden" name="existing_image_order" value={keepImages.map((img) => img.id).join(',')} />
 
-            <header className="sticky top-0 z-100 bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-4 px-4 sm:px-6 lg:py-6 lg:px-10">
+            <header className="sticky top-16 xl:top-0 z-[80] bg-background-dark/80 backdrop-blur-2xl border-b border-white/5 py-3 px-4 sm:px-6 lg:py-6 lg:px-10">
                 <div className="max-w-[1600px] mx-auto flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
-                    <div className="flex items-center gap-4 sm:gap-8 w-full lg:w-auto">
+                    <div className="flex items-center gap-3 sm:gap-8 w-full lg:w-auto">
                         <Link href="/admin/vehicles">
                             <motion.div
                                 whileHover={{ x: -5 }}
-                                className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-slate-400 hover:text-white transition-colors"
+                                className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/5 flex items-center justify-center border border-white/10 text-slate-400 hover:text-white transition-colors"
                             >
                                 <span className="material-symbols-outlined">west</span>
                             </motion.div>
@@ -223,13 +281,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 <MotionBadge color="primary" className="text-[9px] tracking-[0.3em] font-black">{isNew ? 'NEW VEHICLE' : 'EDITING'}</MotionBadge>
                                 <span className="text-[10px] font-mono text-slate-500 uppercase tracking-widest">{isNew ? 'Not yet published' : `Vehicle ID: ${vehicleId.substring(0, 8)}`}</span>
                             </div>
-                            <h1 className="text-3xl font-heading font-black text-white uppercase tracking-tighter leading-none italic">
+                            <h1 className="text-2xl sm:text-3xl font-heading font-black text-white uppercase tracking-tighter leading-none italic">
                                 {isNew ? 'Add Vehicle' : 'Edit Vehicle'}
                             </h1>
                         </div>
                     </div>
 
-                    <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto justify-between lg:justify-end">
+                    <div className="hidden sm:flex flex-wrap items-center gap-3 sm:gap-4 w-full lg:w-auto justify-between lg:justify-end">
                         <AnimatePresence>
                             {isDirty && (
                                 <motion.span
@@ -247,12 +305,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 Preview Public Page
                             </MotionButton>
                         )}
+                        <SaveVehicleButton intent="draft" />
                         <SaveVehicleButton />
                     </div>
                 </div>
             </header>
 
-            <div className="sticky top-[81px] lg:top-[97px] z-40 bg-background-dark/70 backdrop-blur-xl border-b border-white/5 px-4 sm:px-6 lg:px-10 py-3">
+            <div className="sticky top-[129px] sm:top-[137px] xl:top-[97px] z-40 bg-background-dark/70 backdrop-blur-xl border-b border-white/5 px-4 sm:px-6 lg:px-10 py-3">
                 <div className="max-w-[1600px] mx-auto overflow-x-auto scrollbar-hide">
                     <div className="flex min-w-max gap-2">
                         {steps.map((step) => {
@@ -272,7 +331,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                 </div>
             </div>
 
-            <main className="flex-1 py-8 px-4 sm:px-6 lg:py-16 lg:px-10">
+            <main className="flex-1 py-8 px-4 pb-28 sm:px-6 sm:pb-10 lg:py-16 lg:px-10">
                 <motion.div
                     variants={containerVars}
                     initial="hidden"
@@ -289,28 +348,30 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 lg:gap-x-12 gap-y-6 lg:gap-y-10">
                                 {[
-                                    { label: 'Manufacturer', name: 'make', defaultValue: vehicle?.make },
-                                    { label: 'Model', name: 'model', defaultValue: vehicle?.model },
-                                    { label: 'Year', name: 'year', type: 'number', defaultValue: vehicle?.year },
-                                    { label: 'Mileage', name: 'mileage', type: 'number', defaultValue: vehicle?.mileage },
+                                    { label: 'Manufacturer', name: 'make', required: true, defaultValue: vehicle?.make },
+                                    { label: 'Model', name: 'model', required: true, defaultValue: vehicle?.model },
+                                    { label: 'Year', name: 'year', type: 'number', required: true, defaultValue: vehicle?.year },
+                                    { label: 'Mileage', name: 'mileage', type: 'number', required: true, defaultValue: vehicle?.mileage },
                                     { label: 'VIN', name: 'vin', defaultValue: vehicle?.vin },
                                     { label: 'Body Style', name: 'body_style', type: 'select', options: ['SUV', 'Sedan', 'Coupe', 'Truck', 'Van', 'Wagon'], defaultValue: vehicle?.body_style },
                                     { label: 'Exterior Color', name: 'exterior_color', defaultValue: vehicle?.exterior_color || vehicle?.color },
-                                    { label: 'Fuel Type', name: 'fuel_type', type: 'select', options: ['Petrol', 'Diesel', 'Hybrid', 'Electric'], defaultValue: vehicle?.fuel_type }
+                                    { label: 'Fuel Type', name: 'fuel_type', type: 'select', required: true, options: ['Petrol', 'Diesel', 'Hybrid', 'Electric'], defaultValue: vehicle?.fuel_type }
                                 ].map((field) => (
                                     <div key={field.name} className="group relative">
                                         <label className="absolute -top-2.5 left-4 px-2 bg-background-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">
-                                            {field.label}
+                                            {field.label}{field.required ? ' *' : ''}
                                         </label>
                                         {field.type === 'select' ? (
                                             <select
                                                 name={field.name}
-                                                defaultValue={field.defaultValue}
+                                                defaultValue={field.defaultValue || ''}
+                                                aria-required={field.required}
                                                 onChange={(event) => {
                                                     if (field.name === 'fuel_type') updateField('fuel_type', event.target.value);
                                                 }}
                                                 className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                                             >
+                                                <option value="" className="bg-slate-900">Select {field.label}</option>
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
                                             </select>
                                         ) : (
@@ -318,7 +379,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                                 type={field.type || 'text'}
                                                 name={field.name}
                                                 defaultValue={field.defaultValue}
-                                                required={['make', 'model', 'year'].includes(field.name)}
+                                                aria-required={field.required}
                                                 onChange={(event) => {
                                                     if (field.name === 'make' || field.name === 'model' || field.name === 'year' || field.name === 'mileage') {
                                                         updateField(field.name, event.target.value);
@@ -369,20 +430,22 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 {[
                                     { label: 'Engine', name: 'engine_type', placeholder: 'e.g. 4.0L V8', defaultValue: vehicle?.engine_type },
                                     { label: 'Power', name: 'power', placeholder: 'e.g. 500 HP', defaultValue: vehicle?.power },
-                                    { label: 'Transmission', name: 'transmission', type: 'select', options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
+                                    { label: 'Transmission', name: 'transmission', type: 'select', required: true, options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
                                     { label: 'Drivetrain', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD', '2WD'], defaultValue: vehicle?.drivetrain || vehicle?.drive_type }
                                 ].map((field) => (
                                     <div key={field.name} className="bg-white/2 border border-white/5 rounded-2xl lg:rounded-3xl p-5 sm:p-6 hover:bg-white/4 transition-all">
-                                        <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}</label>
+                                        <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}{field.required ? ' *' : ''}</label>
                                         {field.type === 'select' ? (
                                             <select
                                                 name={field.name}
-                                                defaultValue={field.defaultValue}
+                                                defaultValue={field.defaultValue || ''}
+                                                aria-required={field.required}
                                                 onChange={(event) => {
                                                     if (field.name === 'transmission' || field.name === 'drivetrain') updateField(field.name, event.target.value);
                                                 }}
                                                 className="w-full bg-transparent text-lg sm:text-xl font-heading font-black text-white outline-none cursor-pointer"
                                             >
+                                                <option value="" className="bg-slate-900">Select</option>
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
                                             </select>
                                         ) : (
@@ -549,7 +612,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                         type="number"
                                         defaultValue={vehicle?.price}
                                         onChange={(event) => updateField('price', event.target.value)}
-                                        required
+                                        aria-required
                                         className="bg-transparent border-none p-0 text-3xl sm:text-5xl lg:text-6xl font-heading font-black text-black w-full outline-none focus:ring-0"
                                     />
                                 </div>
@@ -563,13 +626,13 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             <span className="text-xl font-heading font-black text-white uppercase italic tracking-tight">{status.replace('_', ' ')}</span>
                                             <span className="text-[8px] font-black text-slate-600 uppercase tracking-widest">Available vehicles appear in inventory. Featured available vehicles also appear on the homepage.</span>
                                         </div>
-                                        <select
-                                            value={status}
-                                            onChange={(event) => { setStatus(event.target.value as Vehicle['status']); setIsDirty(true); }}
-                                            className="w-full bg-white/3 border border-white/10 rounded-2xl px-5 py-4 text-white font-black uppercase tracking-[0.2em] text-[10px] outline-none focus:border-primary/40 transition-all"
-                                        >
-                                            <option value="available" className="bg-slate-900">Available</option>
+                                <select
+                                    value={status}
+                                    onChange={(event) => { setStatus(event.target.value as Vehicle['status']); setIsDirty(true); }}
+                                    className="w-full bg-white/3 border border-white/10 rounded-2xl px-5 py-4 text-white font-black uppercase tracking-[0.2em] text-[10px] outline-none focus:border-primary/40 transition-all"
+                                >
                                             <option value="draft" className="bg-slate-900">Draft</option>
+                                            <option value="available" className="bg-slate-900">Available</option>
                                             <option value="in_transit" className="bg-slate-900">In Transit</option>
                                             <option value="reserved" className="bg-slate-900">Reserved</option>
                                             <option value="sold" className="bg-slate-900">Sold</option>
@@ -619,6 +682,27 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                 </motion.div>
             </main>
 
+            <div className="sm:hidden fixed inset-x-0 bottom-0 z-[90] border-t border-white/10 bg-background-dark/95 backdrop-blur-2xl p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
+                <div className="grid grid-cols-2 gap-2">
+                    <SaveVehicleButton intent="draft">Draft</SaveVehicleButton>
+                    <SaveVehicleButton>Publish</SaveVehicleButton>
+                    {!isNew && (
+                        <>
+                            <MotionButton href={`/vehicle/${vehicleId}`} variant="outline" className="h-11">
+                                Preview
+                            </MotionButton>
+                            <button
+                                type="button"
+                                onClick={() => setDeleteOpen(true)}
+                                className="h-11 rounded-2xl border border-red-500/25 bg-red-500/10 text-red-400 text-[10px] font-black uppercase tracking-[0.2em]"
+                            >
+                                Delete
+                            </button>
+                        </>
+                    )}
+                </div>
+            </div>
+
         </form>
 
         {!isNew && (
@@ -634,20 +718,25 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                 This permanently removes the admin record, gallery images, public vehicle page, and catalogue listing for {vehicle?.year} {vehicle?.make} {vehicle?.model}.
                             </p>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <form action={markDraftAction}>
+                                <StatusActionButton className="bg-white/3 border-white/10 text-slate-300 hover:text-white hover:bg-white/5">
+                                    Save as draft
+                                </StatusActionButton>
+                            </form>
                             <form action={markReservedAction}>
                                 <StatusActionButton className="bg-orange-500/5 border-orange-500/20 text-orange-400 hover:bg-orange-500/10">
                                     Mark reserved instead
                                 </StatusActionButton>
                             </form>
                             <form action={markSoldAction}>
-                                <StatusActionButton className="bg-white/3 border-white/10 text-slate-300 hover:text-white hover:bg-white/5">
+                                <StatusActionButton className="bg-red-500/5 border-red-500/20 text-red-300 hover:bg-red-500/10">
                                     Mark sold instead
                                 </StatusActionButton>
                             </form>
                         </div>
                         <label className="block space-y-3">
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em]">Type {deleteTarget || 'the vehicle code'} to confirm delete</span>
+                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.25em]">Type {deleteTarget} to confirm delete</span>
                             <input
                                 value={deleteConfirmation}
                                 onChange={(event) => setDeleteConfirmation(event.target.value)}
@@ -657,7 +746,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                     </div>
                 </DialogBody>
                 <DialogFooter>
-                    <div className="flex flex-col sm:flex-row justify-end gap-3">
+                    <div className="grid grid-cols-1 sm:flex sm:flex-row sm:justify-end gap-3">
                         <button type="button" onClick={() => setDeleteOpen(false)} className="h-12 rounded-2xl bg-white/3 border border-white/10 px-6 text-[10px] font-black uppercase tracking-[0.25em] text-slate-300 hover:text-white transition-all">
                             Cancel
                         </button>

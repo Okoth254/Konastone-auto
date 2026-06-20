@@ -176,7 +176,39 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
             </motion.div>
 
             <div className="flex flex-col xl:flex-row gap-6 lg:gap-10">
-                <aside className="w-full xl:w-80 shrink-0 space-y-6 lg:space-y-10">
+                <details className="xl:hidden rounded-2xl border border-white/5 bg-surface-dark/40 backdrop-blur-xl p-4 group">
+                    <summary className="list-none flex items-center justify-between gap-4 cursor-pointer">
+                        <span className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.25em] text-slate-300">
+                            <span className="material-symbols-outlined text-primary text-lg">filter_list</span>
+                            Filters
+                        </span>
+                        <span className="material-symbols-outlined text-slate-500 transition-transform group-open:rotate-180">expand_more</span>
+                    </summary>
+                    <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        {statusFilters.map((filter) => {
+                            const isActive = currentStatus === filter.value || (!currentStatus && !filter.value);
+                            return (
+                                <Link
+                                    key={filter.label}
+                                    href={getStatusLink(filter.value)}
+                                    className={`px-4 py-3 rounded-xl text-[10px] font-black uppercase tracking-[0.18em] flex justify-between items-center transition-all border ${
+                                        isActive
+                                            ? 'bg-primary/10 border-primary/20 text-primary'
+                                            : 'border-white/5 text-slate-500 hover:text-slate-200'
+                                    }`}
+                                >
+                                    <span className="flex items-center gap-3 min-w-0">
+                                        <span className="material-symbols-outlined text-lg shrink-0">{filter.icon}</span>
+                                        <span className="min-w-0 truncate">{filter.label}</span>
+                                    </span>
+                                    <span className="text-[9px] font-mono text-slate-600">{filter.value ? counts[filter.value] || 0 : counts.total || 0}</span>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </details>
+
+                <aside className="hidden xl:block w-full xl:w-80 shrink-0 space-y-6 lg:space-y-10">
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
