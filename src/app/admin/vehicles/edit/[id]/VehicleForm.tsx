@@ -378,7 +378,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             <input
                                                 type={field.type || 'text'}
                                                 name={field.name}
-                                                defaultValue={field.defaultValue}
+                                                defaultValue={field.defaultValue ?? ''}
                                                 aria-required={field.required}
                                                 onChange={(event) => {
                                                     if (field.name === 'make' || field.name === 'model' || field.name === 'year' || field.name === 'mileage') {
@@ -451,7 +451,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                         ) : (
                                             <input
                                                 name={field.name}
-                                                defaultValue={field.defaultValue}
+                                                defaultValue={field.defaultValue ?? ''}
                                                 placeholder={field.placeholder}
                                                 onChange={(event) => {
                                                     if (field.name === 'engine_type') updateField(field.name, event.target.value);
