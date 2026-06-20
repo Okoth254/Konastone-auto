@@ -9,7 +9,7 @@ interface Lead {
     id: string;
     name?: string | null;
     client_name?: string | null;
-    status: string;
+    status?: string | null;
     created_at: string;
     vehicles?: {
         year: number;
@@ -43,9 +43,9 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
             'Older': []
         };
 
-        leads.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const sortedLeads = [...leads].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
 
-        leads.forEach(lead => {
+        sortedLeads.forEach(lead => {
             const date = parseISO(lead.created_at);
             if (isToday(date)) groups['Today'].push(lead);
             else if (isYesterday(date)) groups['Yesterday'].push(lead);
@@ -159,9 +159,9 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                                     <div className="flex items-center gap-4 mb-4">
                                                         <motion.span 
                                                             whileHover={{ scale: 1.05 }}
-                                                            className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border ${getStatusStyles(lead.status)}`}
+                                                            className={`px-4 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] rounded-full border ${getStatusStyles(lead.status || 'new')}`}
                                                         >
-                                                            {lead.status.replace('_', ' ')}
+                                                            {(lead.status || 'new').replace('_', ' ')}
                                                         </motion.span>
                                                         <p className="md:hidden text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">{dateStr}</p>
                                                     </div>

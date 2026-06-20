@@ -28,6 +28,18 @@ const vehicleErrorMessages: Record<string, { title: string; description: string 
   delete_failed: { title: "Vehicle was not deleted", description: "The database delete failed. Check permissions or try again." },
 };
 
+const leadActionMessages: Record<string, { title: string; description: string }> = {
+  note_added: { title: "Lead note added", description: "The follow-up timeline has been updated." },
+  status_updated: { title: "Lead updated", description: "The lead status and timeline have been refreshed." },
+  deleted: { title: "Lead deleted", description: "The lead record was removed from the CRM queue." },
+};
+
+const leadErrorMessages: Record<string, { title: string; description: string }> = {
+  note_failed: { title: "Note was not saved", description: "The lead timeline could not be updated." },
+  status_failed: { title: "Lead was not updated", description: "The status change failed. Check permissions and try again." },
+  delete_failed: { title: "Lead was not deleted", description: "The database delete failed. Check permissions and try again." },
+};
+
 export default function AdminToaster() {
   const router = useRouter();
   const pathname = usePathname();
@@ -46,11 +58,25 @@ export default function AdminToaster() {
       toast.error(errorMessage.title, { description: errorMessage.description });
     }
 
-    if (!message && !errorMessage) return;
+    const leadAction = searchParams.get("leadAction");
+    const leadMessage = leadAction ? leadActionMessages[leadAction] : undefined;
+    if (leadMessage) {
+      toast.success(leadMessage.title, { description: leadMessage.description });
+    }
+
+    const leadError = searchParams.get("leadError");
+    const leadErrorMessage = leadError ? leadErrorMessages[leadError] : undefined;
+    if (leadErrorMessage) {
+      toast.error(leadErrorMessage.title, { description: leadErrorMessage.description });
+    }
+
+    if (!message && !errorMessage && !leadMessage && !leadErrorMessage) return;
 
     const params = new URLSearchParams(searchParams.toString());
     params.delete("vehicleAction");
     params.delete("vehicleError");
+    params.delete("leadAction");
+    params.delete("leadError");
     const nextUrl = params.toString() ? `${pathname}?${params.toString()}` : pathname;
     router.replace(nextUrl, { scroll: false });
   }, [pathname, router, searchParams]);

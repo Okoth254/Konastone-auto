@@ -21,10 +21,18 @@ export async function addTimelineNote(leadId: string, formData: FormData) {
 
     if (error) {
         console.error('Error adding timeline note:', error);
-        throw new Error('Failed to add technical note');
+        redirect(`/admin/leads/${leadId}?leadError=note_failed`);
     }
+
+    await supabase.from('admin_audit_log').insert({
+        action: 'lead_note_added',
+        entity_type: 'lead',
+        entity_id: leadId,
+        summary: 'Lead follow-up note added',
+    }).then(() => undefined);
     
     revalidatePath(`/admin/leads/${leadId}`);
+    redirect(`/admin/leads/${leadId}?leadAction=note_added`);
 }
 
 export async function updateLeadStatus(leadId: string, formData: FormData) {
@@ -41,7 +49,7 @@ export async function updateLeadStatus(leadId: string, formData: FormData) {
 
     if (updateError) {
         console.error('Error updating lead status:', updateError);
-        throw new Error('Failed to update lead status');
+        redirect(`/admin/leads/${leadId}?leadError=status_failed`);
     }
 
     // Add timeline event for status change
@@ -63,6 +71,7 @@ export async function updateLeadStatus(leadId: string, formData: FormData) {
 
     revalidatePath(`/admin/leads`);
     revalidatePath(`/admin/leads/${leadId}`);
+    redirect(`/admin/leads/${leadId}?leadAction=status_updated`);
 }
 
 export async function deleteLead(leadId: string) {
@@ -77,9 +86,16 @@ export async function deleteLead(leadId: string) {
 
     if (error) {
         console.error('Error deleting lead:', error);
-        throw new Error('Failed to delete lead');
+        redirect(`/admin/leads/${leadId}?leadError=delete_failed`);
     }
 
+    await supabase.from('admin_audit_log').insert({
+        action: 'lead_deleted',
+        entity_type: 'lead',
+        entity_id: leadId,
+        summary: 'Lead deleted from admin CRM',
+    }).then(() => undefined);
+
     revalidatePath('/admin/leads');
-    redirect('/admin/leads');
+    redirect('/admin/leads?leadAction=deleted');
 }

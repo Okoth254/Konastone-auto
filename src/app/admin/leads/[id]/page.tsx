@@ -34,6 +34,14 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
     const leadEmail = lead.email || lead.client_email || '';
     const leadPhone = lead.phone || lead.client_phone || '';
     const leadMessage = lead.message || lead.client_message || '';
+    const whatsappPhone = leadPhone.replace(/[^\d]/g, '');
+    const contactHref = whatsappPhone
+        ? `https://wa.me/${whatsappPhone}?text=${encodeURIComponent(`Hello ${leadName}, this is Konastone Autos following up on your inquiry.`)}`
+        : leadEmail
+            ? `mailto:${leadEmail}?subject=${encodeURIComponent('Konastone Autos inquiry follow-up')}`
+            : '/admin/leads';
+    const statusOrder = ['new', 'contacted', 'negotiating', 'sold'];
+    const statusProgress = lead.status === 'lost' ? 1 : Math.max(1, statusOrder.indexOf(lead.status) + 1);
 
     const deleteLeadAction = async () => {
         "use server";
@@ -45,7 +53,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
             <motion.header
                 initial={{ opacity: 0, y: -20 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="sticky top-0 z-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full px-4 py-4 sm:px-6 lg:px-10 lg:py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
+                className="sticky top-16 xl:top-0 z-50 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 w-full px-4 py-4 sm:px-6 lg:px-10 lg:py-6 bg-surface-dark/40 backdrop-blur-xl border-b border-white/5"
             >
                 <div className="flex items-center gap-4 lg:gap-10 w-full sm:w-auto">
                     <Link href="/admin/leads" className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center hover:bg-primary/20 hover:text-primary transition-all group">
@@ -64,15 +72,22 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`mailto:${leadEmail}`}>
-                        <span className="material-symbols-outlined">mail</span>
-                    </MotionButton>
+                    {leadEmail && (
+                        <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`mailto:${leadEmail}`}>
+                            <span className="material-symbols-outlined">mail</span>
+                        </MotionButton>
+                    )}
                     {leadPhone && (
                         <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`tel:${leadPhone}`}>
                             <span className="material-symbols-outlined">call</span>
                         </MotionButton>
                     )}
-                    <MotionButton variant="outline" className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
+                    {whatsappPhone && (
+                        <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`https://wa.me/${whatsappPhone}`} target="_blank" rel="noreferrer">
+                            <span className="material-symbols-outlined">chat</span>
+                        </MotionButton>
+                    )}
+                    <MotionButton href={contactHref} target={whatsappPhone ? '_blank' : undefined} rel={whatsappPhone ? 'noreferrer' : undefined} variant="outline" className="px-4 sm:px-8 h-11 sm:h-12 rounded-xl border-primary/20 text-primary">
                         CONTACT CUSTOMER
                     </MotionButton>
                 </div>
@@ -294,7 +309,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                             <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest">Lead Status</p>
                             <div className="flex gap-1.5 h-1.5">
                                 {[0, 1, 2, 3].map(i => (
-                                    <div key={i} className={`w-8 rounded-full ${i < 3 ? 'bg-primary' : 'bg-slate-800'}`} />
+                                    <div key={i} className={`w-8 rounded-full ${i < statusProgress ? 'bg-primary' : 'bg-slate-800'}`} />
                                 ))}
                             </div>
                         </div>
