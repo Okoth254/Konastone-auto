@@ -12,7 +12,8 @@ export interface Review {
     review_text?: string | null;
     comment?: string | null;
     created_at: string;
-    status: string;
+    status?: string | null;
+    is_approved?: boolean | null;
     vehicles?: {
         year: number;
         make: string;
