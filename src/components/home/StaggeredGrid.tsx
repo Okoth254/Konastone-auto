@@ -60,7 +60,7 @@ export function StaggeredGrid({ vehicles, isSupabaseConfigured, featuredError, c
                             <h3 className="font-bold text-xl text-gray-900 dark:text-white line-clamp-2">{car.year} {car.make} {car.model}</h3>
                             <div className="flex flex-wrap gap-3 text-sm text-gray-600 dark:text-gray-400">
 
-                                <div className="flex items-center"><span className="material-icons text-[16px] mr-1">speed</span>{car.mileage.toLocaleString()} km</div>
+                                <div className="flex items-center"><span className="material-icons text-[16px] mr-1">speed</span>{(car.mileage || 0).toLocaleString()} km</div>
                                 <div className="flex items-center"><span className="material-icons text-[16px] mr-1">local_gas_station</span>{car.fuel_type}</div>
                                 <div className="flex items-center"><span className="material-icons text-[16px] mr-1">settings</span>{car.transmission}</div>
                             </div>
