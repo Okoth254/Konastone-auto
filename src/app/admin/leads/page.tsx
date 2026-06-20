@@ -7,19 +7,28 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
     const searchParams = await props.searchParams;
     const currentStatus = searchParams?.status as string | undefined;
     const currentSort = searchParams?.sort as string | undefined;
+    const currentQuery = typeof searchParams?.q === 'string' ? searchParams.q.trim() : '';
     const currentPage = searchParams?.page ? parseInt(searchParams.page as string) : 1;
 
     const supabase = await createClient();
 
     // 1. Fetch counts independent of filters
     const { data: allLeads } = await supabase.from('leads').select('status');
-    const activeLeadsCount = allLeads?.filter(l => l.status !== 'lost' && l.status !== 'sold').length || 0;
+    const activeLeadsCount = allLeads?.filter(l => !['lost', 'sold'].includes(l.status)).length || 0;
     const totalLeadsCount = allLeads?.length || 0;
 
     // 2. Fetch filtered paginated data
     let query = supabase.from('leads').select(`
         id,
         name,
+        email,
+        phone,
+        message,
+        source,
+        client_name,
+        client_email,
+        client_phone,
+        client_message,
         status,
         created_at,
         vehicles (
@@ -31,6 +40,10 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
 
     if (currentStatus) {
         query = query.eq('status', currentStatus);
+    }
+
+    if (currentQuery) {
+        query = query.or(`name.ilike.%${currentQuery}%,client_name.ilike.%${currentQuery}%,email.ilike.%${currentQuery}%,client_email.ilike.%${currentQuery}%,phone.ilike.%${currentQuery}%,client_phone.ilike.%${currentQuery}%`);
     }
 
     if (currentSort === 'oldest') {
@@ -51,6 +64,7 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
     const getSortLink = (sortType: string) => {
         const params = new URLSearchParams();
         if (currentStatus) params.set('status', currentStatus);
+        if (currentQuery) params.set('q', currentQuery);
         params.set('sort', sortType);
         return `?${params.toString()}`;
     };
@@ -59,6 +73,7 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
         const params = new URLSearchParams();
         if (statusType !== 'all') params.set('status', statusType);
         if (currentSort) params.set('sort', currentSort);
+        if (currentQuery) params.set('q', currentQuery);
         return `?${params.toString()}`;
     };
 
@@ -66,6 +81,7 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
         const params = new URLSearchParams();
         if (currentStatus) params.set('status', currentStatus);
         if (currentSort) params.set('sort', currentSort);
+        if (currentQuery) params.set('q', currentQuery);
         params.set('page', page.toString());
         return `?${params.toString()}`;
     };
@@ -97,6 +113,17 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-4 bg-surface-dark/40 backdrop-blur-xl p-2 rounded-2xl border border-white/5">
+                    <form className="flex h-12 min-w-0 sm:min-w-[260px] items-center gap-2 rounded-xl bg-white/3 px-4 border border-white/5">
+                        {currentStatus && <input type="hidden" name="status" value={currentStatus} />}
+                        {currentSort && <input type="hidden" name="sort" value={currentSort} />}
+                        <span className="material-symbols-outlined text-slate-600 text-lg">search</span>
+                        <input
+                            name="q"
+                            defaultValue={currentQuery}
+                            placeholder="Search leads"
+                            className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
+                        />
+                    </form>
                     <div className="relative group cursor-pointer z-50">
                         <button className="h-12 px-4 sm:px-6 w-full sm:min-w-[190px] flex items-center justify-between gap-4 text-[10px] font-black uppercase tracking-[0.2em] text-slate-300 hover:text-white transition-all rounded-xl">
                             STATUS: <span className="text-primary">{currentStatus ? currentStatus.replace('_', ' ') : 'All'}</span>
@@ -107,6 +134,8 @@ export default async function LeadsListView(props: { searchParams?: Promise<{ [k
                             <Link href={getStatusLink('new')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/5 hover:text-primary border-t border-white/5 transition-all">New</Link>
                             <Link href={getStatusLink('contacted')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/5 hover:text-primary border-t border-white/5 transition-all">Contacted</Link>
                             <Link href={getStatusLink('negotiating')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/5 hover:text-primary border-t border-white/5 transition-all">Negotiating</Link>
+                            <Link href={getStatusLink('sold')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/5 hover:text-primary border-t border-white/5 transition-all">Sold</Link>
+                            <Link href={getStatusLink('lost')} className="block px-6 py-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-400 hover:bg-white/5 hover:text-primary border-t border-white/5 transition-all">Lost</Link>
                         </div>
                     </div>
                     <div className="relative group cursor-pointer z-50">

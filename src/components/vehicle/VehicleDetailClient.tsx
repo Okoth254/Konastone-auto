@@ -25,6 +25,7 @@ import { siteConfig } from "@/config/site";
 import FinanceCalculator from "./FinanceCalculator";
 import LeadForm from "./LeadForm";
 import ImageGallery from "./ImageGallery";
+import { getVehicleImageUrl } from "@/lib/vehicle-images";
 
 interface Vehicle {
     id: string;
@@ -32,15 +33,17 @@ interface Vehicle {
     model: string;
     year: number;
     price: number;
-    mileage: number;
-    transmission: string;
-    fuel_type: string;
+    mileage: number | null;
+    transmission: string | null;
+    fuel_type: string | null;
     body_type?: string;
     color?: string;
     drive_type?: string;
     status: string;
     is_featured: boolean;
-    folder_name: string;
+    folder_name: string | null;
+    main_image_url?: string | null;
+    vehicle_images?: { public_url: string; is_main?: boolean | null; sort_order?: number | null }[];
     description?: string;
 }
 
@@ -50,6 +53,8 @@ interface VehicleDetailClientProps {
     features: string[];
     similarVehicles: Vehicle[];
     whatsappLink: string;
+    financeSettings?: typeof siteConfig.finance;
+    contactSettings?: typeof siteConfig.contact;
 }
 
 export default function VehicleDetailClient({ 
@@ -57,7 +62,9 @@ export default function VehicleDetailClient({
     images, 
     features,
     similarVehicles,
-    whatsappLink
+    whatsappLink,
+    financeSettings,
+    contactSettings
 }: VehicleDetailClientProps) {
     const [isFavorite, setIsFavorite] = useState(false);
     const [activeTab, setActiveTab] = useState("overview");
@@ -78,12 +85,13 @@ export default function VehicleDetailClient({
         }
         return `KES ${price.toLocaleString()}`;
     };
+    const contact = contactSettings || siteConfig.contact;
 
     const specs = [
         { label: "Year", value: vehicle.year, icon: Calendar },
-        { label: "Mileage", value: `${vehicle.mileage.toLocaleString()} km`, icon: Gauge },
-        { label: "Transmission", value: vehicle.transmission, icon: Settings },
-        { label: "Fuel Type", value: vehicle.fuel_type, icon: Fuel },
+        { label: "Mileage", value: `${(vehicle.mileage || 0).toLocaleString()} km`, icon: Gauge },
+        { label: "Transmission", value: vehicle.transmission || "N/A", icon: Settings },
+        { label: "Fuel Type", value: vehicle.fuel_type || "N/A", icon: Fuel },
         { label: "Color", value: vehicle.color || "N/A", icon: Palette },
         { label: "Body Type", value: vehicle.body_type || "N/A", icon: Box },
     ];
@@ -314,7 +322,7 @@ export default function VehicleDetailClient({
                             viewport={{ once: true }}
                             className="pt-8 border-t border-white/10"
                         >
-                            <FinanceCalculator price={vehicle.price} />
+                            <FinanceCalculator price={vehicle.price} settings={financeSettings} />
                         </motion.div>
 
                         {/* Lead Form Section */}
@@ -350,7 +358,7 @@ export default function VehicleDetailClient({
                                             >
                                                 <div className="relative aspect-4/3">
                                                     <Image
-                                                        src={`/images/inventory/${v.folder_name}/1.jpeg`}
+                                                        src={getVehicleImageUrl(v)}
                                                         alt={`${v.make} ${v.model}`}
                                                         fill
                                                         className="object-cover transition-transform duration-500 group-hover:scale-110"
@@ -402,7 +410,7 @@ export default function VehicleDetailClient({
                                     </a>
                                     
                                     <a
-                                        href={`tel:${siteConfig.contact.phone}`}
+                                        href={`tel:${contact.phoneFormatted}`}
                                         className="btn-glass w-full justify-center"
                                     >
                                         <Phone className="w-5 h-5" />
@@ -475,7 +483,7 @@ export default function VehicleDetailClient({
                                 WhatsApp
                             </a>
                             <a
-                                href={`tel:${siteConfig.contact.phone}`}
+                                href={`tel:${contact.phoneFormatted}`}
                                 className="flex-1 btn-glass justify-center py-3 text-sm"
                             >
                                 <Phone className="w-4 h-4" />

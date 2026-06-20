@@ -76,7 +76,7 @@ CREATE TABLE IF NOT EXISTS public.leads (
     finance_tier   TEXT,
 
     status         TEXT        NOT NULL DEFAULT 'new',
-                                         -- 'new' | 'contacted' | 'negotiation' | 'resolved' | 'dormant'
+                                         -- 'new' | 'contacted' | 'negotiating' | 'sold' | 'lost'
     created_at     TIMESTAMPTZ DEFAULT NOW(),
     updated_at     TIMESTAMPTZ DEFAULT NOW()
 );

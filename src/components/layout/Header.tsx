@@ -6,6 +6,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Phone } from "lucide-react";
 import { siteConfig } from "@/config/site";
+import type { SiteSettings } from "@/types/database";
 
 const navLinks = [
   { href: "/inventory", label: "Inventory" },
@@ -13,7 +14,7 @@ const navLinks = [
   { href: "/reviews", label: "Reviews" },
 ];
 
-export default function Header() {
+export default function Header({ settings }: { settings?: SiteSettings }) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
@@ -36,6 +37,7 @@ export default function Header() {
   }, [mobileMenuOpen]);
 
   const closeMenu = () => setMobileMenuOpen(false);
+  const contact = settings?.contact || siteConfig.contact;
 
   return (
     <>
@@ -90,7 +92,7 @@ export default function Header() {
           })}
           
           <motion.a
-            href={`tel:${siteConfig.contact.phoneFormatted}`}
+            href={`tel:${contact.phoneFormatted}`}
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             className="flex items-center gap-2 px-6 py-2.5 bg-primary text-black rounded-full text-sm font-semibold hover:bg-yellow-400 transition-colors"
@@ -193,7 +195,7 @@ export default function Header() {
                   className="mt-auto pb-6 flex flex-col gap-4"
                 >
                   <a
-                    href={`tel:${siteConfig.contact.phoneFormatted}`}
+                  href={`tel:${contact.phoneFormatted}`}
                     onClick={closeMenu}
                     className="btn-premium bg-primary text-black hover:bg-yellow-400 py-4 rounded-full text-center font-display tracking-widest text-lg transition-colors w-full shadow-lg flex items-center justify-center gap-2"
                   >
@@ -202,13 +204,13 @@ export default function Header() {
                   </a>
 
                   <div className="mt-6 flex flex-col gap-3 text-sm text-gray-400">
-                    <a href={`tel:${siteConfig.contact.phoneFormatted}`} className="flex items-center gap-3 hover:text-primary transition-colors">
+                    <a href={`tel:${contact.phoneFormatted}`} className="flex items-center gap-3 hover:text-primary transition-colors">
                       <span className="material-symbols-outlined text-primary">call</span>
-                      {siteConfig.contact.phone}
+                      {contact.phone}
                     </a>
                     <div className="flex items-center gap-3">
                       <span className="material-symbols-outlined text-primary">location_on</span>
-                      {siteConfig.contact.address}, {siteConfig.contact.city}
+                      {contact.address}, {contact.city}
                     </div>
                   </div>
                 </motion.div>

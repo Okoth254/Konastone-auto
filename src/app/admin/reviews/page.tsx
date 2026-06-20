@@ -6,6 +6,8 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
     const searchParams = await props.searchParams;
     const currentStatus = searchParams?.status as string | undefined;
     const currentSort = searchParams?.sort as string | undefined;
+    const currentQuery = typeof searchParams?.q === 'string' ? searchParams.q.trim() : '';
+    const currentRating = typeof searchParams?.rating === 'string' ? Number(searchParams.rating) : undefined;
 
     const supabase = await createClient();
 
@@ -26,6 +28,14 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
 
     if (currentStatus) {
         listQuery = listQuery.eq('status', currentStatus);
+    }
+
+    if (currentRating && Number.isFinite(currentRating)) {
+        listQuery = listQuery.eq('rating', currentRating);
+    }
+
+    if (currentQuery) {
+        listQuery = listQuery.or(`customer_name.ilike.%${currentQuery}%,reviewer_name.ilike.%${currentQuery}%,vehicle_make.ilike.%${currentQuery}%,vehicle_model.ilike.%${currentQuery}%,review_text.ilike.%${currentQuery}%,comment.ilike.%${currentQuery}%`);
     }
 
     if (currentSort === 'newest') {
@@ -88,6 +98,20 @@ export default async function ReviewsPage(props: { searchParams?: Promise<{ [key
                     </div>
                 </div>
             </motion.header>
+
+            <form className="grid grid-cols-1 md:grid-cols-[1fr_auto_auto] gap-3 rounded-2xl border border-white/5 bg-surface-dark/40 p-2">
+                {currentStatus && <input type="hidden" name="status" value={currentStatus} />}
+                {currentSort && <input type="hidden" name="sort" value={currentSort} />}
+                <label className="flex h-12 items-center gap-3 rounded-xl bg-white/3 px-4">
+                    <span className="material-symbols-outlined text-slate-600 text-lg">search</span>
+                    <input name="q" defaultValue={currentQuery} placeholder="Search reviews" className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-600" />
+                </label>
+                <select name="rating" defaultValue={currentRating || ''} className="h-12 rounded-xl bg-white/3 px-4 text-sm text-slate-300 outline-none">
+                    <option value="">All ratings</option>
+                    {[5, 4, 3, 2, 1].map((rating) => <option key={rating} value={rating}>{rating} stars</option>)}
+                </select>
+                <button className="btn-premium btn-premium-ghost h-12 px-6">Filter</button>
+            </form>
 
             <ReviewsClient
                 initialReviews={reviews || []}

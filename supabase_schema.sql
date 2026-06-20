@@ -7,7 +7,7 @@ CREATE TYPE vehicle_transmission AS ENUM ('Automatic', 'Manual');
 CREATE TYPE vehicle_drive_type AS ENUM ('2WD', '4WD', 'AWD');
 CREATE TYPE vehicle_body_type AS ENUM ('SUV', 'Sedan', 'Hatchback', 'Wagon', 'Truck');
 CREATE TYPE vehicle_status AS ENUM ('available', 'reserved', 'sold', 'in_transit');
-CREATE TYPE lead_status AS ENUM ('new', 'contacted', 'negotiation', 'resolved', 'dormant');
+CREATE TYPE lead_status AS ENUM ('new', 'contacted', 'negotiating', 'sold', 'lost');
 CREATE TYPE lead_event_type AS ENUM ('email', 'note', 'website_interaction', 'status_change', 'system');
 
 -- Create Vehicles Table
@@ -106,27 +106,27 @@ ON CONFLICT (id) DO NOTHING;
 -- Vehicles: Public can read, authenticated users can write
 ALTER TABLE vehicles ENABLE ROW LEVEL SECURITY;
 CREATE POLICY vehicles_read_public ON vehicles FOR SELECT USING (true);
-CREATE POLICY vehicles_all_admin ON vehicles FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY vehicles_all_admin ON vehicles FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Vehicle Features: Public can read, authenticated users can write
 ALTER TABLE vehicle_features ENABLE ROW LEVEL SECURITY;
 CREATE POLICY vehicle_features_read_public ON vehicle_features FOR SELECT USING (true);
-CREATE POLICY vehicle_features_all_admin ON vehicle_features FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY vehicle_features_all_admin ON vehicle_features FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Leads: Public can insert, authenticated users can read/write
 ALTER TABLE leads ENABLE ROW LEVEL SECURITY;
 CREATE POLICY leads_insert_public ON leads FOR INSERT WITH CHECK (true);
-CREATE POLICY leads_all_admin ON leads FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY leads_all_admin ON leads FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Lead Timeline Events: Authenticated users can read/write
 ALTER TABLE lead_timeline_events ENABLE ROW LEVEL SECURITY;
-CREATE POLICY lead_timeline_events_all_admin ON lead_timeline_events FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY lead_timeline_events_all_admin ON lead_timeline_events FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Customer Reviews: Public can read approved, public can insert, authenticated users can read/write
 ALTER TABLE customer_reviews ENABLE ROW LEVEL SECURITY;
-CREATE POLICY customer_reviews_read_approved ON customer_reviews FOR SELECT USING (is_approved = true OR auth.role() = 'authenticated');
+CREATE POLICY customer_reviews_read_approved ON customer_reviews FOR SELECT TO anon, authenticated USING (is_approved = true);
 CREATE POLICY customer_reviews_insert_public ON customer_reviews FOR INSERT WITH CHECK (true);
-CREATE POLICY customer_reviews_all_admin ON customer_reviews FOR ALL USING (auth.role() = 'authenticated');
+CREATE POLICY customer_reviews_all_admin ON customer_reviews FOR ALL TO authenticated USING (true) WITH CHECK (true);
 
 -- Storage Bucket RLS
 -- Anyone can read from the vehicles bucket
@@ -137,16 +137,20 @@ USING ( bucket_id = 'vehicles' );
 -- Authenticated users can insert to the vehicles bucket
 CREATE POLICY "Admin Upload Access" 
 ON storage.objects FOR INSERT 
-WITH CHECK ( bucket_id = 'vehicles' AND auth.role() = 'authenticated');
+TO authenticated
+WITH CHECK ( bucket_id = 'vehicles' );
 
 -- Authenticated users can update/delete from vehicles bucket
 CREATE POLICY "Admin Update Access" 
 ON storage.objects FOR UPDATE 
-USING ( bucket_id = 'vehicles' AND auth.role() = 'authenticated');
+TO authenticated
+USING ( bucket_id = 'vehicles' )
+WITH CHECK ( bucket_id = 'vehicles' );
 
 CREATE POLICY "Admin Delete Access" 
 ON storage.objects FOR DELETE 
-USING ( bucket_id = 'vehicles' AND auth.role() = 'authenticated');
+TO authenticated
+USING ( bucket_id = 'vehicles' );
 
 -- Function to automatically update the updated_at timestamp
 CREATE OR REPLACE FUNCTION update_updated_at_column()

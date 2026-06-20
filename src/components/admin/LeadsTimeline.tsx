@@ -7,7 +7,8 @@ import { format, isToday, isYesterday, isThisWeek, parseISO } from "date-fns";
 
 interface Lead {
     id: string;
-    name: string;
+    name?: string | null;
+    client_name?: string | null;
     status: string;
     created_at: string;
     vehicles?: {
@@ -115,6 +116,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                         <div className="space-y-6 lg:space-y-12">
                             {groupLeads.map((lead, i) => {
                                 const vehicleData = Array.isArray(lead.vehicles) ? lead.vehicles[0] : lead.vehicles;
+                                const displayName = lead.name || lead.client_name || "Customer";
                                 const vehicleName = vehicleData
                                     ? `${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`
                                     : "General Inquiry";
@@ -163,7 +165,7 @@ export default function LeadsTimeline({ leads }: LeadsTimelineProps) {
                                                         </motion.span>
                                                         <p className="md:hidden text-[10px] font-black uppercase tracking-[0.3em] text-zinc-600">{dateStr}</p>
                                                     </div>
-                                                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter leading-none group-hover/card:text-primary transition-colors">{lead.name}</h3>
+                                                    <h3 className="text-2xl sm:text-3xl md:text-5xl font-heading font-black text-white uppercase tracking-tighter leading-none group-hover/card:text-primary transition-colors">{displayName}</h3>
                                                     <div className="flex items-center gap-3 text-slate-400">
                                                         <span className="material-symbols-outlined text-primary text-xl">directions_car</span>
                                                         <p className="text-lg font-heading tracking-tight">{vehicleName}</p>

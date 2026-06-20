@@ -14,7 +14,8 @@ export async function addTimelineNote(leadId: string, formData: FormData) {
         .from('lead_timeline_events')
         .insert({
             lead_id: leadId,
-            event_type: 'technical_note',
+            event_type: 'note',
+            title: 'Follow-up note',
             description: note.trim()
         });
 
@@ -48,9 +49,17 @@ export async function updateLeadStatus(leadId: string, formData: FormData) {
         .from('lead_timeline_events')
         .insert({
             lead_id: leadId,
-            event_type: 'status_changed',
+            event_type: 'status_change',
+            title: 'Status changed',
             description: `Lead status updated to ${status.toUpperCase()}`
         });
+
+    await supabase.from('admin_audit_log').insert({
+        action: 'lead_status_changed',
+        entity_type: 'lead',
+        entity_id: leadId,
+        summary: `Lead status updated to ${status}`,
+    }).then(() => undefined);
 
     revalidatePath(`/admin/leads`);
     revalidatePath(`/admin/leads/${leadId}`);

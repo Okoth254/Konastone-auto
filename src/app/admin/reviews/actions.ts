@@ -16,6 +16,13 @@ export async function updateReviewStatus(id: string, status: 'approved' | 'rejec
         console.error('Error updating review status:', error);
         throw new Error('Failed to update review status');
     }
+
+    await supabase.from('admin_audit_log').insert({
+        action: 'review_moderated',
+        entity_type: 'review',
+        entity_id: id,
+        summary: `Review marked ${status}`,
+    }).then(() => undefined);
     
     revalidatePath('/admin/reviews');
     revalidatePath(`/admin/reviews/${id}`);

@@ -33,7 +33,7 @@ export default async function Inventory({
     if (isSupabaseConfigured) {
         let query = supabase
             .from('vehicles')
-            .select('*')
+            .select('*, vehicle_images(public_url, is_main, sort_order)')
             .gte('year', minYearFilter)
             .lte('year', maxYearFilter)
             .lte('price', maxPriceFilter)
@@ -63,7 +63,7 @@ export default async function Inventory({
         const { data, error } = await query;
 
         if (!error && data) {
-            vehicles = data;
+            vehicles = data as Vehicle[];
         } else {
             console.error("Supabase Error:", error);
         }

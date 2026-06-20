@@ -18,6 +18,8 @@ import {
   Award
 } from "lucide-react";
 import { useState, useEffect } from "react";
+import { siteConfig } from "@/config/site";
+import type { SiteSettings } from "@/types/database";
 
 const footerLinks = {
   company: [
@@ -62,10 +64,21 @@ const businessHours = [
   { day: "Sunday", hours: "Closed" },
 ];
 
-export default function Footer() {
+export default function Footer({ settings }: { settings?: SiteSettings }) {
   const [email, setEmail] = useState("");
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [showBackToTop, setShowBackToTop] = useState(false);
+  const contact = settings?.contact || siteConfig.contact;
+  const social = settings?.social;
+  const resolvedSocialLinks = socialLinks.map((item) => ({
+    ...item,
+    href:
+      item.label === "Facebook" ? social?.facebook || item.href :
+      item.label === "Instagram" ? social?.instagram || item.href :
+      item.label === "Twitter" ? social?.twitter || item.href :
+      item.label === "LinkedIn" ? social?.linkedin || item.href :
+      item.href,
+  }));
 
   // Handle scroll for back to top button
   useEffect(() => {
@@ -124,36 +137,36 @@ export default function Footer() {
             {/* Contact Info */}
             <div className="space-y-4">
               <a 
-                href="tel:+254722511803" 
+                href={`tel:${contact.phoneFormatted}`}
                 className="flex items-center gap-3 text-gray-400 hover:text-amber-500 transition-colors group"
               >
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-amber-500/10 transition-colors">
                   <Phone className="w-5 h-5" />
                 </div>
-                <span>+254 722 511 803</span>
+                <span>{contact.phone}</span>
               </a>
               
               <a 
-                href="mailto:sales@konastoneautos.co.ke" 
+                href={`mailto:${contact.email}`}
                 className="flex items-center gap-3 text-gray-400 hover:text-amber-500 transition-colors group"
               >
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-amber-500/10 transition-colors">
                   <Mail className="w-5 h-5" />
                 </div>
-                <span>sales@konastoneautos.co.ke</span>
+                <span>{contact.email}</span>
               </a>
 
               <div className="flex items-start gap-3 text-gray-400 group">
                 <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center shrink-0">
                   <MapPin className="w-5 h-5" />
                 </div>
-                <span>Moi Avenue, Mombasa, Kenya</span>
+                <span>{contact.address}, {contact.city}</span>
               </div>
             </div>
 
             {/* Social Links */}
             <div className="flex gap-3 pt-4">
-              {socialLinks.map((social, index) => (
+              {resolvedSocialLinks.map((social, index) => (
                 <motion.a
                   key={social.label}
                   href={social.href}

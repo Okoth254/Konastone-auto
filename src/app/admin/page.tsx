@@ -17,7 +17,7 @@ export default async function AdminDashboard() {
   const { count: activeLeadsCount } = await supabase
     .from('leads')
     .select('*', { count: 'exact', head: true })
-    .not('status', 'in', '("resolved","dormant")');
+    .not('status', 'in', '("sold","lost")');
 
   // 3. Fetch Pending Reviews Count
   const { count: pendingReviewsCount } = await supabase

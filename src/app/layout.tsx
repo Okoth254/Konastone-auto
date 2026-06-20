@@ -5,6 +5,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import ScrollRevealScript from "@/components/layout/ScrollRevealScript";
 import { LazyMotion, domAnimation } from "framer-motion";
+import { getSiteSettings } from "@/lib/site-settings";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -53,11 +54,13 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const settings = await getSiteSettings();
+
   return (
     <html lang="en" className="dark relative">
       <head>
@@ -90,11 +93,11 @@ export default function RootLayout({
         bg-background-dark text-(--color-text-primary) font-(--font-body) antialiased relative
       `}>
         <LazyMotion features={domAnimation}>
-          <Header />
+          <Header settings={settings} />
           <main className="relative grow flex flex-col pt-[72px]">
             {children}
           </main>
-          <Footer />
+          <Footer settings={settings} />
           <ScrollRevealScript />
         </LazyMotion>
       </body>

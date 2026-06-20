@@ -30,6 +30,10 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
     }
 
     const timeline = (lead.lead_timeline_events as LeadTimelineEvent[])?.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime()) || [];
+    const leadName = lead.name || lead.client_name || 'Customer';
+    const leadEmail = lead.email || lead.client_email || '';
+    const leadPhone = lead.phone || lead.client_phone || '';
+    const leadMessage = lead.message || lead.client_message || '';
 
     const deleteLeadAction = async () => {
         "use server";
@@ -49,7 +53,7 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                     </Link>
                     <div className="space-y-1">
                             <h2 className="text-xl font-heading font-black text-white uppercase tracking-tighter italic">
-                                LEAD: <span className="text-primary">{lead.name?.split(' ')[0] || ''}</span> {lead.name?.split(' ').slice(1).join(' ') || ''}
+                                LEAD: <span className="text-primary">{leadName.split(' ')[0] || ''}</span> {leadName.split(' ').slice(1).join(' ') || ''}
                             </h2>
                         <div className="flex items-center gap-3">
                             <span className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">UID: {lead.id.substring(0, 12).toUpperCase()}</span>
@@ -60,11 +64,11 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                 </div>
 
                 <div className="flex flex-wrap items-center gap-3 sm:gap-4 w-full sm:w-auto">
-                    <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`mailto:${lead.email}`}>
+                    <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`mailto:${leadEmail}`}>
                         <span className="material-symbols-outlined">mail</span>
                     </MotionButton>
-                    {lead.phone && (
-                        <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`tel:${lead.phone}`}>
+                    {leadPhone && (
+                        <MotionButton variant="ghost" className="w-11 h-11 sm:w-12 sm:h-12 p-0 rounded-xl border-white/5" href={`tel:${leadPhone}`}>
                             <span className="material-symbols-outlined">call</span>
                         </MotionButton>
                     )}
@@ -96,11 +100,11 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-10 relative z-10">
                             <div className="space-y-2">
                                 <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Primary Email</p>
-                                <p className="text-xl font-heading font-black text-white truncate">{lead.email}</p>
+                                <p className="text-xl font-heading font-black text-white truncate">{leadEmail || 'N/A'}</p>
                             </div>
                             <div className="space-y-2">
                                 <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Phone</p>
-                                <p className="text-xl font-heading font-black text-white">{lead.phone || 'N/A'}</p>
+                                <p className="text-xl font-heading font-black text-white">{leadPhone || 'N/A'}</p>
                             </div>
                             <div className="space-y-2">
                                 <p className="text-[9px] font-black font-mono text-slate-500 uppercase tracking-widest">Location</p>
@@ -108,6 +112,18 @@ export default async function LeadDetailView({ params }: { params: Promise<{ id:
                             </div>
                         </div>
                     </motion.section>
+
+                    {leadMessage && (
+                        <motion.section
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: 0.15 }}
+                            className="bg-surface-dark/40 backdrop-blur-xl p-5 sm:p-6 lg:p-8 rounded-[1.5rem] border border-white/5"
+                        >
+                            <p className="text-[10px] font-black text-primary uppercase tracking-[0.4em] mb-3">Customer Message</p>
+                            <p className="text-sm text-slate-300 leading-relaxed italic">&quot;{leadMessage}&quot;</p>
+                        </motion.section>
+                    )}
 
                     {/* Target Asset Profile */}
                     <motion.section

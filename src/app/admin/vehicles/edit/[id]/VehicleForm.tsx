@@ -104,9 +104,12 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
         model: vehicle?.model?.toString() || '',
         year: vehicle?.year?.toString() || '',
         price: vehicle?.price?.toString() || '',
+        mileage: vehicle?.mileage?.toString() || '',
+        fuel_type: vehicle?.fuel_type?.toString() || '',
         engine_type: vehicle?.engine_type?.toString() || '',
         transmission: vehicle?.transmission?.toString() || '',
-        drivetrain: vehicle?.drivetrain?.toString() || '',
+        drivetrain: vehicle?.drivetrain?.toString() || vehicle?.drive_type?.toString() || '',
+        description: vehicle?.description?.toString() || '',
     });
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -122,7 +125,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
         const pricing = Boolean(fieldValues.price.trim() && status);
         const specs = Boolean(fieldValues.engine_type.trim() && fieldValues.transmission.trim() && fieldValues.drivetrain.trim());
         const photos = imageCount > 0 || Boolean(mainImageUrl);
-        const review = details && pricing && photos;
+        const review = details && pricing && photos && Boolean(fieldValues.mileage.trim() && fieldValues.fuel_type.trim());
 
         return { details, pricing, specs, photos, review };
     }, [fieldValues, imageCount, mainImageUrl, status]);
@@ -130,6 +133,8 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
     const validationIssues = [
         !completion.details && 'Add manufacturer, model, and year.',
         !completion.pricing && 'Set price and catalogue status.',
+        !fieldValues.mileage.trim() && 'Add mileage for public inventory cards.',
+        !fieldValues.fuel_type.trim() && 'Select fuel type for public inventory cards.',
         !completion.photos && 'Add at least one public-quality image.',
         !completion.specs && 'Complete engine, transmission, and drivetrain for a stronger listing.',
     ].filter(Boolean) as string[];
@@ -287,9 +292,11 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                     { label: 'Manufacturer', name: 'make', defaultValue: vehicle?.make },
                                     { label: 'Model', name: 'model', defaultValue: vehicle?.model },
                                     { label: 'Year', name: 'year', type: 'number', defaultValue: vehicle?.year },
+                                    { label: 'Mileage', name: 'mileage', type: 'number', defaultValue: vehicle?.mileage },
                                     { label: 'VIN', name: 'vin', defaultValue: vehicle?.vin },
                                     { label: 'Body Style', name: 'body_style', type: 'select', options: ['SUV', 'Sedan', 'Coupe', 'Truck', 'Van', 'Wagon'], defaultValue: vehicle?.body_style },
-                                    { label: 'Exterior Color', name: 'exterior_color', defaultValue: vehicle?.exterior_color }
+                                    { label: 'Exterior Color', name: 'exterior_color', defaultValue: vehicle?.exterior_color || vehicle?.color },
+                                    { label: 'Fuel Type', name: 'fuel_type', type: 'select', options: ['Petrol', 'Diesel', 'Hybrid', 'Electric'], defaultValue: vehicle?.fuel_type }
                                 ].map((field) => (
                                     <div key={field.name} className="group relative">
                                         <label className="absolute -top-2.5 left-4 px-2 bg-background-dark text-[9px] font-black text-slate-500 uppercase tracking-widest z-10 group-focus-within:text-primary transition-colors">
@@ -299,6 +306,9 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             <select
                                                 name={field.name}
                                                 defaultValue={field.defaultValue}
+                                                onChange={(event) => {
+                                                    if (field.name === 'fuel_type') updateField('fuel_type', event.target.value);
+                                                }}
                                                 className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold tracking-tight focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all appearance-none cursor-pointer"
                                             >
                                                 {field.options?.map(opt => <option key={opt} value={opt} className="bg-slate-900">{opt}</option>)}
@@ -310,7 +320,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                                 defaultValue={field.defaultValue}
                                                 required={['make', 'model', 'year'].includes(field.name)}
                                                 onChange={(event) => {
-                                                    if (field.name === 'make' || field.name === 'model' || field.name === 'year') {
+                                                    if (field.name === 'make' || field.name === 'model' || field.name === 'year' || field.name === 'mileage') {
                                                         updateField(field.name, event.target.value);
                                                     }
                                                 }}
@@ -323,9 +333,34 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                             </div>
                         </motion.section>
 
-                        <motion.section id="specs" variants={itemVars} className="scroll-mt-44 space-y-6 lg:space-y-10">
+                        <motion.section id="description" variants={itemVars} className="scroll-mt-44 space-y-6 lg:space-y-10">
                             <div className="flex items-center gap-6">
                                 <span className="text-4xl font-heading font-black text-white/10 italic">02</span>
+                                <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
+                                <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Public Description</h2>
+                            </div>
+                            <textarea
+                                name="description"
+                                defaultValue={vehicle?.description || ''}
+                                rows={5}
+                                onChange={(event) => updateField('description', event.target.value)}
+                                className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-medium leading-relaxed focus:border-primary focus:ring-1 focus:ring-primary/20 outline-none transition-all resize-none"
+                                placeholder="Summarize condition, ownership story, standout specs, and what buyers should know before viewing."
+                            />
+                            <label className="block space-y-3">
+                                <span className="text-[9px] font-black text-slate-500 uppercase tracking-[0.25em]">Features / tags</span>
+                                <input
+                                    name="tags"
+                                    defaultValue={(vehicle?.tags || []).join(', ')}
+                                    className="w-full bg-white/3 border border-white/10 rounded-2xl px-6 py-5 text-white font-bold outline-none focus:border-primary/40"
+                                    placeholder="Sunroof, leather seats, reverse camera"
+                                />
+                            </label>
+                        </motion.section>
+
+                        <motion.section id="specs" variants={itemVars} className="scroll-mt-44 space-y-6 lg:space-y-10">
+                            <div className="flex items-center gap-6">
+                                <span className="text-4xl font-heading font-black text-white/10 italic">03</span>
                                 <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Specifications</h2>
                             </div>
@@ -335,7 +370,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                     { label: 'Engine', name: 'engine_type', placeholder: 'e.g. 4.0L V8', defaultValue: vehicle?.engine_type },
                                     { label: 'Power', name: 'power', placeholder: 'e.g. 500 HP', defaultValue: vehicle?.power },
                                     { label: 'Transmission', name: 'transmission', type: 'select', options: ['Automatic', 'Manual', 'Dual-Clutch'], defaultValue: vehicle?.transmission },
-                                    { label: 'Drivetrain', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD'], defaultValue: vehicle?.drivetrain }
+                                    { label: 'Drivetrain', name: 'drivetrain', type: 'select', options: ['AWD', 'RWD', 'FWD', '4WD', '2WD'], defaultValue: vehicle?.drivetrain || vehicle?.drive_type }
                                 ].map((field) => (
                                     <div key={field.name} className="bg-white/2 border border-white/5 rounded-2xl lg:rounded-3xl p-5 sm:p-6 hover:bg-white/4 transition-all">
                                         <label className="block text-[8px] font-black text-slate-500 uppercase tracking-[0.3em] mb-3">{field.label}</label>
@@ -368,7 +403,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
 
                         <motion.section id="photos" variants={itemVars} className="scroll-mt-44 space-y-6 lg:space-y-10">
                             <div className="flex items-center gap-6">
-                                <span className="text-4xl font-heading font-black text-white/10 italic">03</span>
+                                <span className="text-4xl font-heading font-black text-white/10 italic">04</span>
                                 <div className="h-px flex-1 bg-linear-to-r from-white/10 to-transparent" />
                                 <h2 className="text-xs font-black text-primary uppercase tracking-[0.4em]">Photos</h2>
                             </div>
@@ -534,6 +569,7 @@ export default function VehicleForm({ vehicle, vehicleId, existingImages }: { ve
                                             className="w-full bg-white/3 border border-white/10 rounded-2xl px-5 py-4 text-white font-black uppercase tracking-[0.2em] text-[10px] outline-none focus:border-primary/40 transition-all"
                                         >
                                             <option value="available" className="bg-slate-900">Available</option>
+                                            <option value="draft" className="bg-slate-900">Draft</option>
                                             <option value="in_transit" className="bg-slate-900">In Transit</option>
                                             <option value="reserved" className="bg-slate-900">Reserved</option>
                                             <option value="sold" className="bg-slate-900">Sold</option>

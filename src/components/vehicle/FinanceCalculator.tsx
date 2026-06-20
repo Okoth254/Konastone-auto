@@ -5,13 +5,15 @@ import { siteConfig } from "@/config/site";
 import { motion } from "framer-motion";
 import MotionButton from "@/components/ui/MotionButton";
 
-export default function FinanceCalculator({ price }: { price: number }) {
-    const [depositPercent, setDepositPercent] = useState(siteConfig.finance.defaultDepositPercent);
-    const [tenure, setTenure] = useState(siteConfig.finance.tenureOptions[1]);
+type FinanceSettings = typeof siteConfig.finance;
+
+export default function FinanceCalculator({ price, settings = siteConfig.finance }: { price: number; settings?: FinanceSettings }) {
+    const [depositPercent, setDepositPercent] = useState(settings.defaultDepositPercent);
+    const [tenure, setTenure] = useState(settings.tenureOptions[1] || settings.tenureOptions[0] || 12);
 
     const depositAmount = (price * depositPercent) / 100;
     const loanAmount = price - depositAmount;
-    const interestRate = siteConfig.finance.interestRate;
+    const interestRate = settings.interestRate;
     const totalInterest = loanAmount * interestRate * (tenure / 12);
     const totalLoan = loanAmount + totalInterest;
     const monthlyPayment = totalLoan / tenure;
@@ -50,8 +52,8 @@ export default function FinanceCalculator({ price }: { price: number }) {
                     <div className="relative h-6 flex items-center group/slider">
                         <input
                             className="w-full h-1.5 bg-background-dark/50 rounded-full appearance-none cursor-pointer accent-primary border border-white/5"
-                            max={siteConfig.finance.maxDepositPercent}
-                            min={siteConfig.finance.minDepositPercent}
+                            max={settings.maxDepositPercent}
+                            min={settings.minDepositPercent}
                             step="5"
                             type="range"
                             value={depositPercent}
@@ -63,7 +65,7 @@ export default function FinanceCalculator({ price }: { price: number }) {
                 <div className="space-y-4">
                     <label className="text-[10px] text-slate-500 font-black uppercase tracking-widest px-1">Repayment Tenure</label>
                     <div className="grid grid-cols-3 gap-3">
-                        {siteConfig.finance.tenureOptions.map((months) => (
+                        {settings.tenureOptions.map((months) => (
                             <button
                                 key={months}
                                 onClick={() => setTenure(months)}

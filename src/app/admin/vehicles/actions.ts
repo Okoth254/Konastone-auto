@@ -20,6 +20,8 @@ export async function saveVehicle(formData: FormData) {
   const mainImageIndex = parseInt(formData.get('main_image_index') as string || '0');
   const deletedImageIds = (formData.get('deleted_image_ids') as string || '').split(',').filter(Boolean);
   const existingImageOrder = (formData.get('existing_image_order') as string || '').split(',').filter(Boolean);
+  const requestedStatus = formData.get('status') as 'draft' | 'available' | 'sold' | 'in_transit' | 'reserved';
+  const requestedFeatured = formData.get('is_featured') === 'on';
 
   // Upload each new gallery file to Supabase Storage
   const newlyUploadedImages: { storage_path: string; public_url: string }[] = [];
@@ -49,21 +51,44 @@ export async function saveVehicle(formData: FormData) {
     mainImageUrl = newlyUploadedImages[mainIdx].public_url;
   }
 
+  const retainedImageCount = existingImageOrder.filter((id) => !deletedImageIds.includes(id)).length;
+  const finalImageCount = retainedImageCount + newlyUploadedImages.length + (mainImageUrl && retainedImageCount === 0 && newlyUploadedImages.length === 0 ? 1 : 0);
+  const requiredFields = [
+    formData.get('make'),
+    formData.get('model'),
+    formData.get('year'),
+    formData.get('price'),
+    formData.get('mileage'),
+    formData.get('fuel_type'),
+    formData.get('transmission'),
+  ].every((value) => String(value || '').trim().length > 0);
+
+  if ((requestedStatus === 'available' || requestedFeatured) && (!requiredFields || finalImageCount === 0)) {
+    throw new Error('Vehicle needs make, model, year, price, mileage, fuel type, transmission, and at least one image before it can be published or featured.');
+  }
+
   // --- 2. Save/Update core vehicle data ---
   const vehicleData: Record<string, unknown> = {
     make: formData.get('make') as string,
     model: formData.get('model') as string,
     year: parseInt(formData.get('year') as string),
+    mileage: parseInt((formData.get('mileage') as string) || '0'),
     vin: formData.get('vin') as string,
     body_style: formData.get('body_style') as string,
+    body_type: formData.get('body_style') as string,
     exterior_color: formData.get('exterior_color') as string,
+    color: formData.get('exterior_color') as string,
+    fuel_type: formData.get('fuel_type') as string,
     engine_type: formData.get('engine_type') as string,
     power: formData.get('power') as string,
     transmission: formData.get('transmission') as string,
     drivetrain: formData.get('drivetrain') as string,
+    drive_type: formData.get('drivetrain') as string,
+    description: formData.get('description') as string,
+    tags: (formData.get('tags') as string || '').split(',').map((tag) => tag.trim()).filter(Boolean),
     price: parseFloat((formData.get('price') as string).replace(/,/g, '')),
-    status: formData.get('status') as 'available' | 'sold' | 'in_transit' | 'reserved',
-    is_featured: formData.get('is_featured') === 'on',
+    status: requestedStatus,
+    is_featured: requestedFeatured && requestedStatus === 'available',
     folder_name: vehicleId, // Use vehicleId as the folder name going forward
   };
 
@@ -85,6 +110,13 @@ export async function saveVehicle(formData: FormData) {
     console.error('Error saving vehicle:', saveError);
     throw new Error('Failed to save vehicle data');
   }
+
+  await supabase.from('admin_audit_log').insert({
+    action: isNew ? 'vehicle_created' : 'vehicle_updated',
+    entity_type: 'vehicle',
+    entity_id: vehicleId,
+    summary: `${isNew ? 'Created' : 'Updated'} ${vehicleData.year} ${vehicleData.make} ${vehicleData.model}`,
+  }).then(() => undefined);
 
   // --- 3. Insert new images into vehicle_images table ---
   if (newlyUploadedImages.length > 0) {
@@ -192,12 +224,34 @@ export async function updateVehicleCatalogueState(
 
   if (Object.keys(vehicleData).length === 0) return;
 
+  if (updates.status === 'available' || updates.is_featured === true) {
+    const [{ data: vehicle }, { count: imageCount }] = await Promise.all([
+      supabase.from('vehicles').select('make, model, year, price, mileage, fuel_type, transmission').eq('id', id).single(),
+      supabase.from('vehicle_images').select('*', { count: 'exact', head: true }).eq('vehicle_id', id),
+    ]);
+    const ready = vehicle && vehicle.make && vehicle.model && vehicle.year && vehicle.price && vehicle.mileage !== null && vehicle.fuel_type && vehicle.transmission && (imageCount || 0) > 0;
+    if (!ready) {
+      throw new Error('Vehicle needs complete public details and at least one image before it can be available or featured.');
+    }
+  }
+
+  if (updates.status && updates.status !== 'available') {
+    vehicleData.is_featured = false;
+  }
+
   const { error } = await supabase.from('vehicles').update(vehicleData).eq('id', id);
 
   if (error) {
     console.error('Error updating vehicle catalogue state:', error);
     throw new Error('Failed to update vehicle catalogue state');
   }
+
+  await supabase.from('admin_audit_log').insert({
+    action: 'vehicle_state_changed',
+    entity_type: 'vehicle',
+    entity_id: id,
+    summary: `Vehicle state updated: ${JSON.stringify(updates)}`,
+  }).then(() => undefined);
 
   revalidatePath('/admin/vehicles');
   revalidatePath(`/admin/vehicles/${id}`);

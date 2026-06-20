@@ -365,7 +365,7 @@ html, body {
 }
 
 .admin-panel {
-  border-radius: 1.5rem;
+  border-radius: 0.75rem;
 }
 
 .admin-panel-pad {
@@ -411,7 +411,7 @@ html, body {
   }
 
   .admin-panel {
-    border-radius: 3rem;
+    border-radius: 1rem;
   }
 
   .admin-panel-pad {

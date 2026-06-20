@@ -4,6 +4,7 @@ import * as motion from "framer-motion/client";
 import MotionBadge from "@/components/ui/MotionBadge";
 import MotionButton from "@/components/ui/MotionButton";
 import { siteConfig } from "@/config/site";
+import { getSiteSettings } from "@/lib/site-settings";
 
 export const metadata: Metadata = {
     title: 'About Us — Mombasa Car Dealer',
@@ -15,7 +16,11 @@ me.`,
     alternates: { canonical: 'https://konastoneautos.com/about' },
 };
 
-export default function AboutPage() {
+export default async function AboutPage() {
+    const settings = await getSiteSettings();
+    const contact = settings.contact;
+    const social = settings.social;
+
     return (
         <main className="page-shell flex-1 flex flex-col w-full py-20 gap-24 relative overflow-hidden">
             {/* Ambient Background */}
@@ -129,7 +134,7 @@ export default function AboutPage() {
                                 <span className="material-symbols-outlined text-primary text-4xl font-black">location_on</span>
                             </div>
                             <div className="mt-4 px-6 py-2 bg-background-dark/90 backdrop-blur-md rounded-full border border-white/10 shadow-2xl">
-                                <span className="text-[10px] font-black tracking-[0.4em] text-white uppercase">Moi Avenue, Mombasa</span>
+                                <span className="text-[10px] font-black tracking-[0.4em] text-white uppercase">{contact.address}, {contact.city}</span>
                             </div>
                         </motion.div>
                     </div>
@@ -141,9 +146,9 @@ export default function AboutPage() {
             {/* Contact Stacks */}
             <section className="grid grid-cols-1 md:grid-cols-3 gap-10">
                 {[
-                    { icon: "call", title: "HQ COMMS", channel: siteConfig.contact.phone, action: "CALL US", href: `tel:${siteConfig.contact.phone.replace(/\s+/g, '')}` },
-                    { icon: "mail", title: "DIGITAL INTAKE", channel: siteConfig.contact.email, action: "SEND EMAIL", href: `mailto:${siteConfig.contact.email}` },
-                    { icon: "schedule", title: "LOGISTICS OPS", channel: siteConfig.contact.workingHours, action: "VIEW TIMES", href: "#" }
+                    { icon: "call", title: "HQ COMMS", channel: contact.phone, action: "CALL US", href: `tel:${contact.phoneFormatted}` },
+                    { icon: "mail", title: "DIGITAL INTAKE", channel: contact.email, action: "SEND EMAIL", href: `mailto:${contact.email}` },
+                    { icon: "schedule", title: "LOGISTICS OPS", channel: contact.workingHours, action: "VIEW TIMES", href: "/about" }
                 ].map((stack, i) => (
                     <motion.div
                         key={stack.title}
@@ -174,9 +179,9 @@ export default function AboutPage() {
             {/* Social Matrix */}
             <section className="flex flex-wrap justify-center gap-12 py-12 border-t border-white/5 relative">
                 {[
-                    { name: "FACEBOOK", href: "#" },
-                    { name: "INSTAGRAM", href: siteConfig.contact.whatsapp },
-                    { name: "TIKTOK", href: "#" }
+                    { name: "FACEBOOK", href: social.facebook },
+                    { name: "INSTAGRAM", href: social.instagram },
+                    { name: "WHATSAPP", href: contact.whatsapp }
                 ].map((link, i) => (
                     <motion.div
                         key={link.name}

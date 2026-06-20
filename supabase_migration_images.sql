@@ -24,9 +24,8 @@ ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS exterior_color TEXT;  -- al
 ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS engine_type    TEXT;  -- textual engine description
 ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS power          TEXT;  -- e.g. "500 HP"
 ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS tags           TEXT[];-- array of feature tags
-ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS name           TEXT;  -- display name (for leads.name)
-ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS phone          TEXT;  -- for leads.phone
-ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS email          TEXT;  -- for leads.email
+ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS drivetrain     TEXT;
+ALTER TABLE public.vehicles ADD COLUMN IF NOT EXISTS featured_order INTEGER;
 
 -- 4. MAKE folder_name nullable (it was NOT NULL, blocking admin inserts)
 ALTER TABLE public.vehicles ALTER COLUMN folder_name DROP NOT NULL;
@@ -68,11 +67,62 @@ ALTER TABLE public.customer_reviews ADD COLUMN IF NOT EXISTS name TEXT;  -- alia
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS name          TEXT;  -- maps to client_name
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS email         TEXT;  -- maps to client_email
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS phone         TEXT;  -- maps to client_phone
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS message       TEXT;  -- maps to client_message
+ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS source        TEXT DEFAULT 'website';
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS notes         TEXT;
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS target_vehicle TEXT;
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS finance_score_tier TEXT;
 ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS expected_purchase_date TEXT;
-ALTER TABLE public.leads ADD COLUMN IF NOT EXISTS trade_in_year INTEGER;
+
+-- 11. ADD SETTINGS AND AUDIT TABLES
+CREATE TABLE IF NOT EXISTS public.site_settings (
+    key        TEXT PRIMARY KEY,
+    value      JSONB NOT NULL DEFAULT '{}'::jsonb,
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS public.admin_audit_log (
+    id          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    action      TEXT NOT NULL,
+    entity_type TEXT NOT NULL,
+    entity_id   UUID,
+    summary     TEXT,
+    created_at  TIMESTAMPTZ DEFAULT NOW()
+);
+
+ALTER TABLE public.site_settings ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.admin_audit_log ENABLE ROW LEVEL SECURITY;
+
+DO $$ BEGIN
+    CREATE POLICY "site_settings_public_read" ON public.site_settings
+        FOR SELECT TO anon, authenticated USING (true);
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "site_settings_admin_all" ON public.site_settings
+        FOR ALL TO authenticated USING (true) WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "admin_audit_log_admin_read" ON public.admin_audit_log
+        FOR SELECT TO authenticated USING (true);
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    CREATE POLICY "admin_audit_log_admin_insert" ON public.admin_audit_log
+        FOR INSERT TO authenticated WITH CHECK (true);
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+    IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'vehicle_status') THEN
+        ALTER TYPE vehicle_status ADD VALUE IF NOT EXISTS 'draft';
+    END IF;
+EXCEPTION WHEN duplicate_object THEN null;
+END $$;
 
 -- ==============================================================
 -- DONE. The above migrations are safe to run multiple times.

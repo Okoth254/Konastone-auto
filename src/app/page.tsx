@@ -25,11 +25,14 @@ export default async function Home() {
       transmission,
       status,
       folder_name,
+      main_image_url,
       is_featured,
-      vehicle_images(public_url)
+      vehicle_images(public_url, is_main, sort_order)
     `)
     .eq('is_featured', true)
     .eq('status', 'available')
+    .order('featured_order', { ascending: true, nullsFirst: false })
+    .order('created_at', { ascending: false })
     .limit(6);
 
   // Fetch unique makes for brand carousel

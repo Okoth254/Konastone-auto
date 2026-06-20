@@ -30,10 +30,16 @@ export default function LeadForm({ vehicleId }: LeadFormProps) {
             const { error } = await supabase.from("leads").insert([
                 {
                     vehicle_id: vehicleId,
-                    full_name: formData.name,
+                    name: formData.name,
                     email: formData.email,
                     phone: formData.phone,
                     message: formData.message,
+                    client_name: formData.name,
+                    client_email: formData.email,
+                    client_phone: formData.phone,
+                    client_message: formData.message,
+                    source: "vehicle_detail",
+                    status: "new",
                 },
             ]);
 

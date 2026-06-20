@@ -6,6 +6,7 @@ import { useState } from "react";
 import VehicleImage from "@/components/inventory/VehicleImage";
 import { Vehicle } from "@/types/database";
 import MotionBadge from "@/components/ui/MotionBadge";
+import { getVehicleImageUrls } from "@/lib/vehicle-images";
 
 interface VehicleCardProps {
   vehicle: Vehicle;
@@ -17,8 +18,9 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
   
   const isNewArrival = vehicle.status === 'available' && vehicle.is_featured;
   const inTransit = vehicle.status === 'in_transit';
-  const imagePath = `/images/inventory/${vehicle.folder_name}/1.jpeg`;
-  const secondaryImagePath = `/images/inventory/${vehicle.folder_name}/2.jpeg`;
+  const imageUrls = getVehicleImageUrls(vehicle);
+  const imagePath = imageUrls[0];
+  const secondaryImagePath = imageUrls[1] || (vehicle.folder_name ? `/images/inventory/${vehicle.folder_name}/2.jpeg` : imageUrls[0]);
 
   return (
     <motion.div
@@ -63,13 +65,13 @@ export default function VehicleCard({ vehicle, priority = false }: VehicleCardPr
       <div className="p-5 flex flex-col flex-1 gap-4">
         <div>
           <h3 className={`text-white font-display text-2xl tracking-wide uppercase line-clamp-1 group-hover:${inTransit ? 'text-accent' : isNewArrival ? 'text-primary' : 'text-white'} transition-colors`}>{vehicle.year} {vehicle.make} {vehicle.model}</h3>
-          <p className="text-slate-400 text-sm">{vehicle.body_type || 'Vehicle'} · {vehicle.fuel_type}</p>
+          <p className="text-slate-400 text-sm">{vehicle.body_type || vehicle.body_style || 'Vehicle'} · {vehicle.fuel_type || 'Fuel N/A'}</p>
         </div>
         <div className="grid grid-cols-2 gap-y-3 gap-x-2 text-sm text-slate-300 border-y border-border-color py-3">
-          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>speed</span><span>{vehicle.mileage.toLocaleString()} km</span></div>
-          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>local_gas_station</span><span>{vehicle.fuel_type}</span></div>
-          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>settings</span><span>{vehicle.transmission}</span></div>
-          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>palette</span><span>{vehicle.color || 'Standard'}</span></div>
+          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>speed</span><span>{(vehicle.mileage || 0).toLocaleString()} km</span></div>
+          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>local_gas_station</span><span>{vehicle.fuel_type || 'N/A'}</span></div>
+          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>settings</span><span>{vehicle.transmission || 'N/A'}</span></div>
+          <div className="flex items-center gap-2"><span className={`material-symbols-outlined text-[18px] ${inTransit ? 'text-accent/70' : isNewArrival ? 'text-primary/70' : 'text-slate-500'}`}>palette</span><span>{vehicle.color || vehicle.exterior_color || 'Standard'}</span></div>
         </div>
         <div className="mt-auto pt-2 flex items-end justify-between">
           <div className="flex flex-col">

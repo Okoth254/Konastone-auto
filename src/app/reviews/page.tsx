@@ -56,15 +56,15 @@ async function ReviewContent() {
                         </div>
                         
                         <p className="text-slate-300 font-medium mb-8 text-sm leading-relaxed italic relative">
-                            &quot;{review.comment}&quot;
+                            &quot;{review.review_text || review.comment}&quot;
                         </p>
                         
                         <div className="flex items-center gap-4 border-t border-white/5 pt-6 mt-auto">
                             <div className="bg-primary/10 flex items-center justify-center rounded-full size-10 font-black text-primary border border-primary/20">
-                                {review.reviewer_name.charAt(0).toUpperCase()}
+                                {(review.customer_name || review.reviewer_name || 'K').charAt(0).toUpperCase()}
                             </div>
                             <div>
-                                <p className="text-slate-100 font-heading text-sm tracking-tight uppercase">{review.reviewer_name}</p>
+                                <p className="text-slate-100 font-heading text-sm tracking-tight uppercase">{review.customer_name || review.reviewer_name}</p>
                                 {(review.vehicle_make || review.vehicle_model) && (
                                     <p className="text-[9px] text-primary font-black uppercase tracking-widest mt-0.5">
                                         Owner: {review.vehicle_make} {review.vehicle_model}

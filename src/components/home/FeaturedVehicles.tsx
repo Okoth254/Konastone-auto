@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Heart, Gauge, Fuel, Settings2, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { getVehicleImageUrl } from "@/lib/vehicle-images";
 
 interface VehicleData {
   id: string;
@@ -16,9 +17,10 @@ interface VehicleData {
   fuel_type: string;
   transmission: string;
   status: string;
-  folder_name: string;
+  folder_name: string | null;
+  main_image_url?: string | null;
   is_featured: boolean;
-  vehicle_images?: { public_url: string }[];
+  vehicle_images?: { public_url: string; is_main?: boolean | null; sort_order?: number | null }[];
 }
 
 interface FeaturedVehiclesProps {
@@ -91,8 +93,7 @@ export default function FeaturedVehicles({ vehicles }: FeaturedVehiclesProps) {
         {/* Vehicle Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {vehicles.map((vehicle, index) => {
-            const imageUrl = vehicle.vehicle_images?.[0]?.public_url || 
-              `/images/inventory/${vehicle.folder_name}/1.jpeg`;
+            const imageUrl = getVehicleImageUrl(vehicle);
             const isFavorite = favorites.has(vehicle.id);
 
             return (
@@ -190,7 +191,7 @@ export default function FeaturedVehicles({ vehicles }: FeaturedVehiclesProps) {
                       <div className="grid grid-cols-3 gap-3 pt-4 border-t border-white/10">
                         <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5">
                           <Gauge className="w-4 h-4 text-amber-500" />
-                          <span className="text-xs text-gray-400">{vehicle.mileage.toLocaleString()} km</span>
+                          <span className="text-xs text-gray-400">{(vehicle.mileage || 0).toLocaleString()} km</span>
                         </div>
                         <div className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/5">
                           <Fuel className="w-4 h-4 text-amber-500" />

@@ -13,6 +13,7 @@ const statusFilters = [
     { label: 'IN TRANSIT', value: 'in_transit', icon: 'local_shipping', description: 'Shown as shipment stock' },
     { label: 'RESERVED', value: 'reserved', icon: 'bookmark', description: 'Held for an active buyer' },
     { label: 'SOLD', value: 'sold', icon: 'history', description: 'Closed catalogue records' },
+    { label: 'DRAFT', value: 'draft', icon: 'draft', description: 'Hidden records that still need listing details' },
 ] as const;
 
 const sortLabels: Record<string, string> = {
@@ -25,6 +26,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
     const searchParams = await props.searchParams;
     const currentStatus = typeof searchParams?.status === 'string' ? searchParams.status : undefined;
     const currentSort = typeof searchParams?.sort === 'string' ? searchParams.sort : 'newest';
+    const currentQuery = typeof searchParams?.q === 'string' ? searchParams.q.trim() : '';
     const currentPage = searchParams?.page ? parseInt(searchParams.page as string) : 1;
 
     const supabase = await createClient();
@@ -43,13 +45,25 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
         query = query.eq('status', currentStatus);
     }
 
+    if (currentQuery) {
+        const yearQuery = Number(currentQuery);
+        const parts = [
+            `make.ilike.%${currentQuery}%`,
+            `model.ilike.%${currentQuery}%`,
+            `vin.ilike.%${currentQuery}%`,
+        ];
+        if (Number.isFinite(yearQuery)) parts.push(`year.eq.${yearQuery}`);
+        query = query.or(parts.join(','));
+    }
+
     if (currentSort === 'price_asc') query = query.order('price', { ascending: true });
     else if (currentSort === 'price_desc') query = query.order('price', { ascending: false });
     else query = query.order('created_at', { ascending: false });
 
     const pageSize = 12;
+    const from = (currentPage - 1) * pageSize;
     const to = (currentPage * pageSize) - 1;
-    query = query.range(0, to);
+    query = query.range(from, to);
 
     const { data: vehicles, count } = await query;
     const hasMore = count !== null && count > to + 1;
@@ -59,6 +73,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
     const getSortLink = (sortType: string) => {
         const params = new URLSearchParams();
         if (currentStatus) params.set('status', currentStatus);
+        if (currentQuery) params.set('q', currentQuery);
         params.set('sort', sortType);
         return `?${params.toString()}`;
     };
@@ -67,6 +82,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
         const params = new URLSearchParams();
         if (statusType) params.set('status', statusType);
         if (currentSort && currentSort !== 'newest') params.set('sort', currentSort);
+        if (currentQuery) params.set('q', currentQuery);
         return params.toString() ? `?${params.toString()}` : '/admin/vehicles';
     };
 
@@ -74,6 +90,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
         const params = new URLSearchParams();
         if (currentStatus) params.set('status', currentStatus);
         if (currentSort && currentSort !== 'newest') params.set('sort', currentSort);
+        if (currentQuery) params.set('q', currentQuery);
         params.set('page', (currentPage + 1).toString());
         return `?${params.toString()}`;
     };
@@ -82,6 +99,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
         const params = new URLSearchParams();
         if (currentStatus) params.set('status', currentStatus);
         if (currentSort && currentSort !== 'newest') params.set('sort', currentSort);
+        if (currentQuery) params.set('q', currentQuery);
         if (currentPage > 1) params.set('page', currentPage.toString());
         params.set('vehicleAction', vehicleAction);
         return `/admin/vehicles?${params.toString()}`;
@@ -108,6 +126,7 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                             { label: 'IN TRANSIT', value: counts.in_transit || 0, color: 'bg-blue-500' },
                             { label: 'RESERVED', value: counts.reserved || 0, color: 'bg-orange-500' },
                             { label: 'SOLD', value: counts.sold || 0, color: 'bg-slate-600' },
+                            { label: 'DRAFT', value: counts.draft || 0, color: 'bg-zinc-700' },
                         ].map((stat) => (
                             <div key={stat.label} className="flex items-center gap-2">
                                 <span className={`w-2 h-2 rounded-full ${stat.color} shadow-[0_0_10px_rgba(255,255,255,0.2)]`} />
@@ -118,6 +137,17 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                 </div>
 
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 w-full xl:w-auto">
+                    <form className="h-14 min-w-0 sm:min-w-[300px] flex items-center gap-3 rounded-2xl border border-white/5 bg-surface-dark/40 px-4">
+                        {currentStatus && <input type="hidden" name="status" value={currentStatus} />}
+                        {currentSort !== 'newest' && <input type="hidden" name="sort" value={currentSort} />}
+                        <span className="material-symbols-outlined text-slate-600">search</span>
+                        <input
+                            name="q"
+                            defaultValue={currentQuery}
+                            placeholder="Search make, model, VIN, year"
+                            className="min-w-0 flex-1 bg-transparent text-sm text-white outline-none placeholder:text-slate-600"
+                        />
+                    </form>
                     <MotionButton href="/admin/vehicles/new" variant="primary" className="h-14 px-6 sm:px-8">
                         <span className="material-symbols-outlined text-lg">add</span>
                         ADD VEHICLE
@@ -352,11 +382,27 @@ export default async function AdminVehicles(props: { searchParams?: Promise<{ [k
                         </motion.div>
                     )}
 
-                    {hasMore && (
-                        <div className="mt-16 flex justify-center">
+                    {(currentPage > 1 || hasMore) && (
+                        <div className="mt-16 flex flex-wrap justify-center gap-3">
+                            {currentPage > 1 && (
+                                <MotionButton
+                                    href={`?${new URLSearchParams({
+                                        ...(currentStatus ? { status: currentStatus } : {}),
+                                        ...(currentQuery ? { q: currentQuery } : {}),
+                                        ...(currentSort !== 'newest' ? { sort: currentSort } : {}),
+                                        page: String(currentPage - 1),
+                                    }).toString()}`}
+                                    variant="outline"
+                                    className="px-8 sm:px-12 h-14 border-white/5 text-[10px] tracking-[0.3em]"
+                                >
+                                    PREVIOUS
+                                </MotionButton>
+                            )}
+                            {hasMore && (
                             <MotionButton href={getNextPageLink()} variant="outline" className="px-8 sm:px-16 h-14 sm:h-16 border-white/5 text-[10px] tracking-[0.3em] sm:tracking-[0.4em]">
-                                LOAD MORE VEHICLES
+                                NEXT PAGE
                             </MotionButton>
+                            )}
                         </div>
                     )}
                 </section>
